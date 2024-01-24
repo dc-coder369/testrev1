@@ -63,7 +63,7 @@
               </div>
 
               <div class="d-flex justify-content-between">
-                <h5 class="card-title">RevenueCell Data</h5> 
+                <h5 class="card-title">RevenueCell Data</h5>  
               </div>
               <!-- Table with stripped rows -->
               <table class="table datatable table-responsive">
