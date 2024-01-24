@@ -8,8 +8,8 @@
 
               <div class="d-flex justify-content-center py-4">
                 <a href="index.html" class="logo d-flex align-items-center w-auto">
-                  <img src="assets/img/logo.png" alt="">
-                  <span class="d-none d-lg-block">Nice Admin</span>
+                  <img src="assets/img/g-logo.png" alt="">
+                  <span class="d-none d-lg-block">GMRC</span>
                 </a>
               </div><!-- End Logo -->
 
