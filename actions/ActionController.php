@@ -96,7 +96,8 @@ if ($type == 'download-all-files') {
          $response = DownloadSelectedFiles($database,$recordDate, 'scdata/', $recordDate . '.zip', 'scdata/' . $recordDate . '.zip', $ids);
  
     }else{
-         $response = DownloadSelectedFiles($database,$recordDate, 'scdata/', $recordDate . '.zip', 'scdata/' . $recordDate . '.zip', $ids);
+        $response =  DownloadAllFiles($recordDate ,  $baseFolderPath, $zipFileName , $zipFilePath);   
+        //  $response = DownloadSelectedFiles($database,$recordDate, 'scdata/', $recordDate . '.zip', 'scdata/' . $recordDate . '.zip', $ids);
         
         // $baseFolderPath = 'scdata/';
         // $zipFileName = $recordDate . '.zip';

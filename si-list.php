@@ -22,7 +22,7 @@
   }
 
   $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', 'id DESC');
-  $UserList = $database->select('tab_user_details', "*", ['id' => $_SESSION['user_id']], "AND", 'single', 'id desc');
+  $UserList = $database->select('tab_user_details', "*", ['id' => $_SESSION['user_id']], "AND", 'single', 'id DESC');
   $SessionList = explode(',', $UserList['stations_allotted']);
 
   ?>
@@ -172,7 +172,7 @@
               <!-- Table with stripped rows -->
               <table class="table  table-responsive" id="myDataTable">
                 <thead>
-                  <tr>
+                <tr id="<?= $list['id']; ?>">
                     <th> SC Name </th>
                     <th>Station Name</th>
                     <th>Filename</th>

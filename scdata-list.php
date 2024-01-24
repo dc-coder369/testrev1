@@ -126,11 +126,22 @@
       </div>
 
       <div class="row">
+        
         <div class="col-lg-12">
-
+          
+        
           <div class="card">
 
+         
+
             <div class="card-body">
+            <div class="action-buttons float-end mt-3 d-flex justify-content-around">
+                <form class="row g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-form">
+                  <input type="hidden" name="type" value="download-all-files">
+                  <input type="hidden" name="hiddenrecordDate2" value="<?= $date ?? date('Y-m-d'); ?>">
+                  <button type="button" class="btn btn-info" id="download-files-btn">Download All</button>
+                </form>
+              </div>
               <!-- <div class="action-buttons float-end mt-3">
                 <a href="upload-files.php" class="btn btn-success">Upload Csv</a>   
             </div> -->
@@ -142,7 +153,7 @@
               <table class="table datatable table-responsive">
                 <thead>
                   <tr>
-                    <th>id</th>
+                   
                     <th>SC Name </th>
                     <th>Station Name</th>
                     <th>Filename</th>
@@ -158,8 +169,8 @@
                   <?php foreach ($listArr as $list) :
                     $path = 'actions/scdata/' . $list['folder_name'] . '/' . $list['filename'];
                   ?>
-                    <tr>
-                      <td><?= $list['id']; ?></td>
+                    <tr id="<?= $list['id']; ?>">
+                     
                       <td><?= $list['Sc_Name']; ?></td>
                       <td><?= strtoupper($list['station_name']); ?></td>
                       <td><a href="<?= $path ?>" download target="_balnk"><?= $list['filename']; ?></a></td>

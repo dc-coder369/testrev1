@@ -63,13 +63,12 @@
               </div>
 
               <div class="d-flex justify-content-between">
-                <h5 class="card-title">SC Data</h5> 
+                <h5 class="card-title">RevenueCell Data</h5> 
               </div>
               <!-- Table with stripped rows -->
               <table class="table datatable table-responsive">
                 <thead>
-                  <tr> 
-                    <th>id</th>
+                  <tr>  
                     <th>SC Name </th>
                     <th>Station Name</th>
                     <th>Filename</th> 
@@ -83,8 +82,7 @@
                   <?php foreach ($listArr as $list) :
                     $path = 'actions/scdata/'. $list['folder_name'] . '/' . $list['filename'];
                   ?>
-                    <tr>  
-                      <td><?= $list['id']; ?></td>
+                   <tr id="<?= $list['id']; ?>"> 
                       <td><?= $list['Sc_Name']; ?></td>
                       <td><?= strtoupper($list['station_name']); ?></td>
                       <td><a href="<?= $path ?>" download target="_balnk"><?= $list['filename']; ?></a></td>
@@ -100,8 +98,7 @@
 
                 </tbody>
                 <tfoot>
-                  <tr> 
-                    <th>id</th>
+                  <tr>  
                     <th>SC Name </th>
                     <th>Station Name</th>
                     <th>Filename</th> 

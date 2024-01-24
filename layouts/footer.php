@@ -12,9 +12,9 @@
 
   <!-- Template Main JS File -->
   <script src="assets/js/main.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
-  <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+  <script src="assets/js/jquery.min.js"></script>
+  <script src="assets/js/crypto-js.js"></script>
+  <script src="assets/js/dataTables.min.js"></script> 
 <script type="text/javascript">
  
 var table = new DataTable('.datatable', {
@@ -64,14 +64,14 @@ $('#download-files-btn').on('click', function () {
     $(".temp-hide").remove(); 
     // Get the data of the filtered rows
     let filteredData = table.rows({ search: 'applied' }).data();
-
  
     // Extract the IDs from the filtered data
-    let filteredIds = filteredData.map(rowData => rowData[0]);
+    let filteredIds = filteredData.map(rowData => rowData['DT_RowId'] );
     let idsArr =[]; 
     filteredIds.map(rowData => {
         idsArr.push(rowData)     
     })
+    console.log("idsArr", idsArr)
 
     for(i=0; i<idsArr.length; i++){
         $("#download-all-files-form").append('<input type="hidden" name="ids[]" value="'+idsArr[i]+'" class="temp-hide">')

@@ -38,13 +38,12 @@ require_once 'actions/db.php';
   <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
   <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <!-- <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet"> -->
-  <link href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css" rel="stylesheet">
+  <link href="assets/css/dataTables.min.css" rel="stylesheet">
 
   <!-- Template Main CSS File -->
   <link href="assets/css/style.css" rel="stylesheet"> 
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
-
-
+  <link href="assets/css/font-awesome.min.css" rel="stylesheet"> 
+    
 
 </head>
 
