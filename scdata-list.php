@@ -139,7 +139,7 @@
                 <form class="row g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-form">
                   <input type="hidden" name="type" value="download-all-files">
                   <input type="hidden" name="hiddenrecordDate2" value="<?= $date ?? date('Y-m-d'); ?>">
-                  <button type="button" class="btn btn-info" id="download-files-btn">Download All</button>
+                  <button type="submit" class="btn btn-info" id="download-files-btn">Download All</button>
                 </form>
               </div>
               <!-- <div class="action-buttons float-end mt-3">
