@@ -70,8 +70,7 @@ $('#download-files-btn').on('click', function () {
     let idsArr =[]; 
     filteredIds.map(rowData => {
         idsArr.push(rowData)     
-    })
-    console.log("idsArr", idsArr)
+    }) 
 
     for(i=0; i<idsArr.length; i++){
         $("#download-all-files-form").append('<input type="hidden" name="ids[]" value="'+idsArr[i]+'" class="temp-hide">')

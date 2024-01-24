@@ -9,6 +9,10 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
 } 
 require_once 'actions/db.php';
+$checkBoxArr = [
+  'Daily Earning Sheet', 'Paytm POS Transaction', 'SBI POS Transaction', 'Penalty', 'URC', 'Refund Memo', 'Manual Collection', 'Outstanding',
+  'Forfeit Format', 'Ref. Def. CSC / Def. CST',  '1st Periodical', '2nd Periodical', '3rd Periodical', 'Balance Sheet' ,'Other'
+];
 ?>
 
 <!DOCTYPE html>

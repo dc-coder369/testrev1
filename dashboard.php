@@ -4,7 +4,9 @@
 <div class="pagetitle">
 
 <section class="section dashboard">
-      <div class="row">
+
+    <h3> Welcome,<?= ucwords($_SESSION['username']) ;?> </h3>
+      <div class="row d-none">
 
         <!-- Left side columns -->
         <div class="col-lg-8">

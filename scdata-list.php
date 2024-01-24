@@ -45,13 +45,7 @@
 
                 <div id="file-upload-area" <?php if ($locked) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>
                   <div class="row mt-2">
-                    <?php
-                      $checkBoxArr = [
-                        'Daily Earning Sheet', 'Paytm POS Transaction', 'SBI POS Transaction', 'Penalty', 'URC', 'Refund Memo', 'Manual Collection', 'Outstanding',
-                        'Forfeit Format', 'Ref. Def. CSC', 'Def. CST', '1st Periodical', '2nd Periodical', '3rd Periodical', 'Balance Sheet'
-                      ];
-
-                    ?>
+                     
 
                     <div class="col-md-6">
                       <label for="validationDefault04" class="form-label">Select File Type:</label>

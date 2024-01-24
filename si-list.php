@@ -111,12 +111,7 @@
                   </div>
                   <div class="row mt-2 d-none">
                     <?php
-
-                    $checkBoxArr = [
-                      'Daily Earning Sheet', 'Paytm POS Transaction', 'SBI POS Transaction', 'Penalty', 'URC', 'Refund Memo', 'Manual Collection', 'Outstanding',
-                      'Forfeit Format', 'Ref. Def. CSC', 'Def. CST', '1st Periodical', '2nd Periodical', '3rd Periodical', 'Balance Sheet'
-                    ];
-
+ 
                     foreach ($checkBoxArr as $chekBox) { ?>
                       <div class="form-check">
                         <input class="form-check-input" name="fileType[<?= $chekBox; ?>]" type="checkbox" value="<?= $chekBox; ?>" id="flex<?= $chekBox; ?>">

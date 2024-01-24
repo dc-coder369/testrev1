@@ -87,29 +87,24 @@ if ($type == 'download-all-files') {
     $formattedDate = $date->format('Y-M-d');
     $folderArr = explode('-',$formattedDate); 
 
-    $ids = $_POST['ids'];
+    $ids = (isset($_POST['ids'])) ? $_POST['ids'] : [];
     // echo "<pre>"; print_r( $ids); die; 
     // $baseFolderPath = 'scdata/' .$folderArr[0].'/'.$folderArr[1].'/'.$folderArr[2];
     $baseFolderPath = 'scdata/';
-    if(!empty($ids)){
-
+    if(!empty($ids)){ 
          $response = DownloadSelectedFiles($database,$recordDate, 'scdata/', $recordDate . '.zip', 'scdata/' . $recordDate . '.zip', $ids);
- 
     }else{
-        $response =  DownloadAllFiles($recordDate ,  $baseFolderPath, $zipFileName , $zipFilePath);   
-        //  $response = DownloadSelectedFiles($database,$recordDate, 'scdata/', $recordDate . '.zip', 'scdata/' . $recordDate . '.zip', $ids);
-        
-        // $baseFolderPath = 'scdata/';
-        // $zipFileName = $recordDate . '.zip';
-        // $zipFilePath = 'scdata/' . $zipFileName;
-        // $response =  DownloadAllFiles($recordDate ,  $baseFolderPath, $zipFileName , $zipFilePath);  
-    }
+        $response = 'error';
+        $message ="There is no file to download";  
+         
+    } 
   
 
 
      
    if($response == 'error'){
-        header("Location:".$_SERVER['HTTP_REFERER']."?message=".$message);
+        setErrorMessage($message); 
+        header("Location:".$_SERVER['HTTP_REFERER']);
    }else{
     $insert = [ 
         'record_date' => $recordDate, 
