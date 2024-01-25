@@ -57,12 +57,12 @@
                         <?php endforeach;  ?>
                       </select>
 
-                      <span class="form-text text-muted">Upload Scanned Images or PDFs of URC Receipts</span>
+                      <span class="form-text text-muted">Select a Category of the File</span>
                     </div>
 
 
                     <div class="col-md-6">
-                      <label for="validationDefault03" class="form-label">Choose Daily Revenue Sheets:</label>
+                      <label for="validationDefault03" class="form-label">Choose a File:</label>
                       <input type="file" class="form-control" id="file1" name="files[]" multiple>
                       <span class="form-text text-muted">Upload Earning Sheet, POS, NON-AFC Formats, etc.</span>
 
