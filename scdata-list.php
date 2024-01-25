@@ -26,7 +26,7 @@
 
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Upload Earning Sheet</h5>
+              <h5 class="card-title">Upload Files</h5>
 
               <!-- Browser Default Validation -->
               <form class="g-3" method="post" enctype="multipart/form-data" id="uploadForm" action="actions/ActionController.php">
@@ -64,7 +64,7 @@
                     <div class="col-md-6">
                       <label for="validationDefault03" class="form-label">Choose a File:</label>
                       <input type="file" class="form-control" id="file1" name="files[]" multiple>
-                      <span class="form-text text-muted">Upload Earning Sheet, POS, NON-AFC Formats, etc.</span>
+                      <span class="form-text text-muted">Upload File of the Selected Category</span>
 
                     </div>
                     <!-- <div class="col-md-6">

@@ -37,7 +37,7 @@
 
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Upload Earning Sheet</h5>
+              <h5 class="card-title">Upload Files</h5>
 
               <div class="adw">
                 <span> Stations Allotted:</span> <br>
@@ -93,9 +93,9 @@
                       </select>
                     </div>
                     <div class="col-md-6">
-                      <label for="validationDefault03" class="form-label">Choose Daily Revenue Sheets:</label>
+                      <label for="validationDefault03" class="form-label">Choose Files:</label>
                       <input type="file" class="form-control" id="file1" name="files[]" multiple>
-                      <span class="form-text text-muted">Upload Earning Sheet, POS, NON-AFC Formats, etc.</span>
+                      <span class="form-text text-muted">Upload File of the Selected Category.</span>
 
                     </div>
                     <!-- <div class="col-md-6">
