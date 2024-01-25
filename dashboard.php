@@ -5,7 +5,7 @@
 
 <section class="section dashboard">
 
-    <h3> Welcome,<?= ucwords($_SESSION['username']) ;?> </h3>
+    <h3> Welcome, <?= strtoupper($_SESSION['username']) ;?> </h3>
       <div class="row d-none">
 
         <!-- Left side columns -->

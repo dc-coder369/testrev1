@@ -33,7 +33,7 @@
             </li> -->
             <li>
               <a href="scdata-list.php" class="<?=($current_page == 'scdata-list.php') ?'active' : ''?>">
-                <i class="bi bi-circle"></i><span>List</span>
+                <i class="bi bi-circle"></i><span>Upload Data</span>
               </a>
             </li>
 
@@ -57,7 +57,7 @@
               <a href="revenuecell-list.php" 
                
               class="<?=($current_page == 'revenuecell-list.php') ?'active' : ''?>" >
-                <i class="bi bi-circle"></i><span>List</span>
+                <i class="bi bi-circle"></i><span>Upload Data</span>
               </a>
             </li>
             
@@ -82,7 +82,7 @@
             </li> -->
             <li>
               <a href="si-list.php" class="active">
-                <i class="bi bi-circle"></i><span>List</span>
+                <i class="bi bi-circle"></i><span>Upload Data</span>
               </a>
             </li>
 
