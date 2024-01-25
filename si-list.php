@@ -15,7 +15,7 @@
       $condition = ['record_date' => $date, 'station_name' => $stationName , 'log_type' => 'upload'];
 
     } else {
-      $condition = ['record_date' => $date];
+      $condition = ['record_date' => $date  , 'log_type' => 'upload'];
     };
   } else {
     $condition = [];
@@ -24,6 +24,8 @@
   $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', 'current_time desc');
   $UserList = $database->select('tab_user_details', "*", ['id' => $_SESSION['user_id']], "AND", 'single', 'id DESC');
   $SessionList = explode(',', $UserList['stations_allotted']);
+
+  // echo "<pre>"; print_r($listArr ); die; 
 
   ?>
   <div class="pagetitle">
@@ -159,24 +161,24 @@
                 <h5 class="card-title">SI Data List</h5>
               </div>
               <!-- Table with stripped rows -->
-              <table class="table  table-responsive" id="myDataTable">
-                <thead>
-                <tr id="<?= $list['id']; ?>">
-                    <th>SC Name </th>
-                    <th>Station Name</th>
-                    <th>Filename</th>
-                    <th>Category</th>
-                    <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
-                    <th>Current Time</th>
-                    <th>Remark</th>
-                  </tr>
-                </thead>
+              <table class="table datatable table-responsive">
+                 <thead>
+                  <tr >
+                      <th>SC Name </th>
+                      <th>Station Name</th>
+                      <th>Filename</th>
+                      <th>Category</th>
+                      <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
+                      <th>Current Time</th>
+                      <th>Remark</th>
+                    </tr>
+                  </thead>
                 <tbody>
 
                   <?php foreach ($listArr as $list) :
                     $path = 'actions/scdata/tmp/' . $list['record_date'] . '/' . $list['folder_name'] . '/' . $list['filename'];
                   ?>
-                    <tr>
+                    <tr id="<?= $list['id']; ?>">
                       <td><?= $list['Sc_Name']; ?></td>
                       <td><?= strtoupper($list['station_name']); ?></td>
                       <td><a href="<?= $path ?>" download target="_balnk"><?= $list['filename']; ?></a></td>
@@ -219,6 +221,8 @@
   var today = "<?= date('Y-m-d'); ?>";
   var stationName = "<?= isset($_GET['stationName']) ? $_GET['stationName'] : '' ?>"
   var getDate = "<?= $date; ?>";
+
+  console.log("getDate",getDate)
   if (getDate == '') {
     getAjax(today, stationName);
   }
@@ -277,34 +281,5 @@
 
   }
 
-  $(document).ready(function() {
-    // Initialize DataTable
-    var table = $('#myDataTable').DataTable({
-        // DataTable options and configurations
-    });
-
-    // Add a category filter
-    addCategoryFilter(table);
-
-    // Add dropdown filters for each column
-    table.columns().every(function() {
-        var column = this;
-
-        if (column.index() !== 2) { // Exclude column 2 (Category) from dropdown filters
-            var select = $('<select><option value=""></option></select>')
-                .appendTo($(column.header()))
-                .on('change', function() {
-                    var val = $.fn.dataTable.util.escapeRegex(
-                        $(this).val()
-                    );
-
-                    column.search(val ? '^' + val + '$' : '', true, false).draw();
-                });
-
-            column.data().unique().sort().each(function(d, j) {
-                select.append('<option value="' + d + '">' + d + '</option>');
-            });
-        }
-    });
-});
+  
 </script>

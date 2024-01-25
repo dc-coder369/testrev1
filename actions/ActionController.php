@@ -135,7 +135,10 @@ if ($type == 'upload-files') {
     // $station_name_si = isset($_POST['station_name_si']) ? $_POST['station_name_si'] : ''; 
     $station_name = $_SESSION['stationname']; 
     $fileType = str_replace(" ","_",$_POST['fileType']) ; 
-    
+    $httpRefer = basename($_SERVER['HTTP_REFERER']);  
+    $fileNamephp = parse_url($httpRefer, PHP_URL_PATH);
+
+ 
      
     $result = $database->select('tab_status_lockupload', "*", ['date' => $recordDate], "AND", 'single');
     // echo "<pre>"; print_r($_SERVER); die; 
@@ -148,16 +151,20 @@ if ($type == 'upload-files') {
         if (empty($_FILES['files']['tmp_name'][0])  && empty($_FILES['files2']['tmp_name'][0])  ) {
             
             setErrorMessage("You must Select One file from Earning Data Or URC."); 
-            header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) . "/scdata-list.php?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
+            header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
         } 
  
         if (isset($_FILES['files']['error'][0]) && $_FILES['files']['error'][0] == 0) {
 
+           
+
             $folderType = $fileType.'/'. $folderArr[0].'/'.$folderArr[1].'/'.$folderArr[2]; 
             // $folderType = "Data-scdata-Earning-Data-". $recordDate; 
             handleFileUpload($database,$_FILES['files'], $folderType, $recordDate, $station_name, $sc_name, $remark , $user_id, $fileType );
+
+            header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
             
-            header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) . "/scdata-list.php?date=".$recordDate."&i=".$result['lock_upload']);
+             
     
         }
         // Check if files are uploaded for "URC"
@@ -165,7 +172,8 @@ if ($type == 'upload-files') {
             $folderType = $fileType.'/'. $folderArr[0].'/'.$folderArr[1].'/'.$folderArr[2]; 
             // $folderType = "Data-scdata-URC-" . $recordDate; 
             handleFileUpload($database,$_FILES['files2'], $folderType, $recordDate, $station_name, $sc_name, $remark ,  $user_id , $fileType);
-            header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) . "/scdata-list.php?date=".$recordDate."&i=".$result['lock_upload']);
+            header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
+           
         }
       
     }

@@ -204,6 +204,7 @@
 <?php include 'layouts/footer.php'; ?>
 
 <script>
+  console.log("Asd")
   var today = "<?= date('Y-m-d'); ?>";
   var getDate = "<?= $date; ?>";
   if (getDate == '') {
