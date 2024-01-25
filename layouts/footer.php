@@ -34,30 +34,12 @@ var table = new DataTable('.datatable', {
                     column.search(input.value).draw();
                 }
             });
-        });
-
-        // Add sorting arrows to the header
-        $('.datatable thead th').each(function () {
-            var title = $(this).text();
-            $(this).html(title + ' <i class="fas fa-sort"></i>');
-        });
-
-        // Handle click event for sorting arrows
-        $('.datatable thead th').click(function () {
-            var column = table.column($(this).index());
-            var order = column.order()[0];
-            var icon = order == 1 ? 'fas fa-sort-up' : 'fas fa-sort-down';
-            console.log("order",icon)
-            // Remove sorting arrows from other columns
-            $('.datatable thead th').not(this).find('i').removeClass('fas fa-sort-up fas fa-sort-down');
-
-            // Toggle sorting arrow for the clicked column
-            $(this).find('i').removeClass('fas fa-sort-up fas fa-sort-down').addClass(icon);
-        });
+        }); 
+        this.api().order([5, 'desc']).draw();
     }
 });
 
-$('.datatable').removeClass('dataTable')
+// $('.datatable').removeClass('dataTable')
 
 $('#download-files-btn').on('click', function () {
 
@@ -79,6 +61,8 @@ $('#download-files-btn').on('click', function () {
     
  
 });
+
+
 
 </script>
 

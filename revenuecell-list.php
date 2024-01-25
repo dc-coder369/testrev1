@@ -13,7 +13,7 @@
   }
 
 
-  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', 'id DESC');
+  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', 'current_time desc');
 
   //  $listArr = $database->select('tab_logs_fileupload', "*", [], "AND", 'multiple');
   $userList = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
@@ -65,6 +65,8 @@
               <div class="d-flex justify-content-between">
                 <h5 class="card-title">RevenueCell Data</h5>  
               </div>
+
+               
               <!-- Table with stripped rows -->
               <table class="table datatable table-responsive">
                 <thead>

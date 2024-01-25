@@ -72,6 +72,8 @@ class DatabaseOperation {
         $sql .= " ORDER BY $orderBy";
     } 
 
+    // echo $sql;
+
     $result = $this->query($sql);
 
     $data = [];

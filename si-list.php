@@ -21,7 +21,7 @@
     $condition = [];
   }
 
-  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', 'id DESC');
+  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', 'current_time desc');
   $UserList = $database->select('tab_user_details', "*", ['id' => $_SESSION['user_id']], "AND", 'single', 'id DESC');
   $SessionList = explode(',', $UserList['stations_allotted']);
 

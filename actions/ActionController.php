@@ -174,6 +174,22 @@ if ($type == 'upload-files') {
     
 }
 
+function getUniqueFileName($fileName) {
+    $fileInfo = pathinfo($fileName);
+    $baseName = $fileInfo['filename'];
+    $extension = $fileInfo['extension'];
+
+    $counter = 1;
+    $newFileName = $baseName . '.' . $extension;
+
+    while (file_exists($newFileName)) {
+        $newFileName = $baseName . $counter . '.' . $extension;
+        $counter++;
+    }
+
+    return $newFileName;
+}
+
  
 function setSession($user , $message)
 {
@@ -230,10 +246,11 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
             $fileInfo = pathinfo($originalFileName);
             $filenameWithoutExtension = $fileInfo['filename'];
 
-            $uniqueId = uniqid();
-            $prefixedFileName = $station_name."_".$filenameWithoutExtension ."_". $uniqueId . '.' . $fileExtension;
+            $uniqueId = date('YmdHis');
+            $prefixedFileName = $station_name."_".$filenameWithoutExtension.'_.' . $fileExtension;
 
-
+            $prefixedFileName = getUniqueFileName($prefixedFileName);
+ 
             $targetFile = $targetDir . handleDuplicateFile($prefixedFileName, $targetDir);  
             if (move_uploaded_file($fileArray['tmp_name'][$i], $targetFile)) {
                
@@ -325,7 +342,8 @@ function DownloadAllFiles( $recordDate ,  $baseFolderPath, $zipFileName , $zipFi
 
             $zip = new ZipArchive();
             if ($zip->open($zipFilePath, ZipArchive::CREATE) !== true) {
-                throw new Exception('Cannot open the zip file.');
+                setErrorMessage("Cannot open the zip file."); 
+              
                 return "error";
             }
 
@@ -336,7 +354,9 @@ function DownloadAllFiles( $recordDate ,  $baseFolderPath, $zipFileName , $zipFi
             );
 
             if (iterator_count($files) === 0) {
-                throw new Exception('No files found in the specified folder.');
+                setErrorMessage("No files found in the specified folder.");
+                return "error";  
+                // throw new Exception('No files found in the specified folder.');
             }
 
             foreach ($files as $name => $file) {
@@ -346,7 +366,9 @@ function DownloadAllFiles( $recordDate ,  $baseFolderPath, $zipFileName , $zipFi
                     $relativePath = substr($filePath, strlen($baseFolderPath) + 1);
 
                     if ($zip->addFile($filePath, $relativePath) !== true) {
-                        throw new Exception('Error adding file to the zip archive.');
+                        setErrorMessage("Error adding file to the zip archive.");
+                        return "error"; 
+                        // throw new Exception('Error adding file to the zip archive.');
                     }
                 }
             }
@@ -365,10 +387,9 @@ function DownloadAllFiles( $recordDate ,  $baseFolderPath, $zipFileName , $zipFi
             // Exit to prevent further output
             exit();
         } catch (Exception $e) {
-            // Handle exceptions
-            echo 'Error: ' . $e->getMessage();
-            // You may want to redirect the user or perform other actions here
-            exit();
+            setErrorMessage($e->getMessage());
+            return "error"; 
+            
         }
 }
 
@@ -383,7 +404,8 @@ function DownloadSelectedFiles($database,$recordDate, $baseFolderPath, $zipFileN
 
         $zip = new ZipArchive();
         if ($zip->open($zipFilePath, ZipArchive::CREATE) !== true) {
-            throw new Exception('Cannot open the zip file.');
+            setErrorMessage('Cannot open the zip file.');
+            // throw new Exception('Cannot open the zip file.');
             return "error";
         }
 
@@ -392,14 +414,19 @@ function DownloadSelectedFiles($database,$recordDate, $baseFolderPath, $zipFileN
             $fileInfo = $database->select('tab_logs_fileupload', 'filename, folder_name', ['id' => $id], 'AND', 'single');
 
             if (!$fileInfo) {
-                throw new Exception('File not found for ID: ' . $id);
+                setErrorMessage('File not found for ID: ');
+                return 'error';
+                // throw new Exception('File not found for ID: ' . $id);
             }
 
             $filePath = $baseFolderPath . $fileInfo['folder_name'] . '/' . $fileInfo['filename'];
             $relativePath = $recordDate . '/' . $fileInfo['folder_name'] . '/' . $fileInfo['filename'];
 
             if ($zip->addFile($filePath, $relativePath) !== true) {
-                throw new Exception('Error adding file to the zip archive.');
+                setErrorMessage('Error adding file to the zip archive.');
+                return 'error';
+
+                // throw new Exception('Error adding file to the zip archive.');
             }
         }
 
@@ -416,10 +443,10 @@ function DownloadSelectedFiles($database,$recordDate, $baseFolderPath, $zipFileN
 
         return "success";
     } catch (Exception $e) {
-        // Handle exceptions
-        echo 'Error: ' . $e->getMessage();
-        // You may want to redirect the user or perform other actions here
-        exit();
+
+        setErrorMessage($e->getMessage());
+        return 'error';
+   
     }
 }
 
