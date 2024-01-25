@@ -174,7 +174,7 @@ if ($type == 'upload-files') {
     
 }
 
-function getUniqueFileName($fileName) {
+function getUniqueFileName($targetDir ,$fileName) {
     $fileInfo = pathinfo($fileName);
     $baseName = $fileInfo['filename'];
     $extension = $fileInfo['extension'];
@@ -182,8 +182,10 @@ function getUniqueFileName($fileName) {
     $counter = 1;
     $newFileName = $baseName . '.' . $extension;
 
-    while (file_exists($newFileName)) {
-        $newFileName = $baseName . $counter . '.' . $extension;
+    // echo $targetDir.$newFileName; die; 
+
+    while (file_exists($targetDir.$newFileName)) {
+        $newFileName = $baseName .'_'. $counter . '.' . $extension;
         $counter++;
     }
 
@@ -246,12 +248,12 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
             $fileInfo = pathinfo($originalFileName);
             $filenameWithoutExtension = $fileInfo['filename'];
 
-            $uniqueId = date('YmdHis');
-            $prefixedFileName = $station_name."_".$filenameWithoutExtension.'_.' . $fileExtension;
+            $uniqueId = date('YMd');
+            $prefixedFileName = $station_name."_".$filenameWithoutExtension.'_'. $uniqueId. '.' . $fileExtension;
 
-            $prefixedFileName = getUniqueFileName($prefixedFileName);
+            $newFileName = getUniqueFileName($targetDir,$prefixedFileName);
  
-            $targetFile = $targetDir . handleDuplicateFile($prefixedFileName, $targetDir);  
+            $targetFile = $targetDir . handleDuplicateFile($newFileName, $targetDir);  
             if (move_uploaded_file($fileArray['tmp_name'][$i], $targetFile)) {
                
                 $filesize = round($_FILES['files']['size'][$i] / 1024 / 1024, 2);
@@ -259,7 +261,7 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
                 $insert = [
                     'Sc_Name' => $sc_name,
                     'station_name' => $station_name,
-                    'filename' => $prefixedFileName,
+                    'filename' => $newFileName,
                     'size' => $filesize,
                     'record_date' => $recordDate,
                     'Remark' => $remark,
