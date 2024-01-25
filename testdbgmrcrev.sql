@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 25, 2024 at 02:05 PM
+-- Generation Time: Jan 25, 2024 at 05:43 PM
 -- Server version: 10.4.21-MariaDB
 -- PHP Version: 8.0.12
 
@@ -41,44 +41,6 @@ CREATE TABLE `tab_logs_fileupload` (
   `Remark` varchar(200) DEFAULT NULL,
   `log_type` varchar(20) NOT NULL COMMENT 'upload,download'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `tab_logs_fileupload`
---
-
-INSERT INTO `tab_logs_fileupload` (`id`, `Sc_Name`, `station_name`, `file_type`, `filename`, `size`, `record_date`, `current_time`, `upload_by`, `folder_name`, `Remark`, `log_type`) VALUES
-(8, 'dsad', 'apmc', 'Daily_Earning_Sheet', 'apmc_3.capacidad_65b0f1c51ea60.xlsx', '2.16', '2024-01-05', '2024-01-24 16:47:25', 33, 'Daily_Earning_Sheet/2024/Jan/05', '', 'upload'),
-(9, 'dsad', 'apmc', 'Daily_Earning_Sheet', 'apmc_2010 service standards compliance review - MITC template - No 1 23 05 2012_65b0f1c521ce2.xlsx', '0.67', '2024-01-05', '2024-01-24 16:47:25', 33, 'Daily_Earning_Sheet/2024/Jan/05', '', 'upload'),
-(10, 'dsad', 'apmc', 'Penalty', 'apmc_2010 service standards compliance review - MITC template - No 1 23 05 2012_65b0f1eb6de3e.xlsx', '0.67', '2024-01-05', '2024-01-24 16:48:03', 33, 'Penalty/2024/Jan/05', '', 'upload'),
-(11, 'asdfasdf', 'apmc', 'Daily_Earning_Sheet', 'apmc_2011_ghg_emissions_spreadsheet_65b0f525dec2c.xlsx', '0.12', '2024-01-05', '2024-01-24 17:01:49', 33, 'Daily_Earning_Sheet/2024/Jan/05', '', 'upload'),
-(12, 'asdfasdf', 'apmc', 'Daily_Earning_Sheet', 'apmc_2011+SEPA+Utility+Solar+Rankings+Data-Preview_65b0f525dfaf7.xlsx', '0.33', '2024-01-05', '2024-01-24 17:01:49', 33, 'Daily_Earning_Sheet/2024/Jan/05', '', 'upload'),
-(13, 'asdfasdf', 'apmc', 'Daily_Earning_Sheet', 'apmc_2012 TRACK AND FIELD STANDARDS_65b0f525e0ba2.xlsx', '0.02', '2024-01-05', '2024-01-24 17:01:49', 33, 'Daily_Earning_Sheet/2024/Jan/05', '', 'upload'),
-(14, 'chintan', 'apmc', 'Daily_Earning_Sheet', 'apmc_2010 service standards compliance review - MITC template - No 1 23 05 2012_65b0f75bd28de.xlsx', '0.67', '2024-01-05', '2024-01-24 17:11:15', 33, 'Daily_Earning_Sheet/2024/Jan/05', 'fnckjdsnckjd', 'upload'),
-(15, 'chintan', 'apmc', 'Daily_Earning_Sheet', 'apmc_2011_ghg_emissions_spreadsheet_65b0f75bd3785.xlsx', '0.12', '2024-01-05', '2024-01-24 17:11:15', 33, 'Daily_Earning_Sheet/2024/Jan/05', 'fnckjdsnckjd', 'upload'),
-(16, 'chintan', 'apmc', 'Daily_Earning_Sheet', 'apmc_2011+SEPA+Utility+Solar+Rankings+Data-Preview_65b0f75bd44d7.xlsx', '0.33', '2024-01-05', '2024-01-24 17:11:15', 33, 'Daily_Earning_Sheet/2024/Jan/05', 'fnckjdsnckjd', 'upload'),
-(17, 'Chintan', 'apmc', 'Penalty', 'apmc_2010 service standards compliance review - MITC template - No 1 23 05 2012_65b0fd8f68efd.xlsx', '0.67', '2024-01-05', '2024-01-24 17:37:43', 33, 'Penalty/2024/Jan/05', 'ncjancjaj', 'upload'),
-(18, 'Chintan', 'apmc', 'Daily_Earning_Sheet', 'apmc_2010 service standards compliance review - MITC template - No 1 23 05 2012_65b0fdbc22c3c.xlsx', '0.67', '2024-01-05', '2024-01-24 17:38:28', 33, 'Daily_Earning_Sheet/2024/Jan/05', 'dsadas', 'upload'),
-(19, 'ggg', 'apmc', 'Daily_Earning_Sheet', 'apmc_00_00_00_SAMPLE SUBMISSION FORM_PI_Lastname_First_Name1_65b0ff4f5440c.xlsx', '0.87', '2024-01-04', '2024-01-24 17:45:11', 33, 'Daily_Earning_Sheet/2024/Jan/04', 'sss', 'upload'),
-(20, 'vvjh', 'apmc', 'Daily_Earning_Sheet', 'apmc_00_00_00_SAMPLE SUBMISSION FORM_PI_Lastname_First_Name1_65b0ff59e7979.xlsx', '0.87', '2024-01-04', '2024-01-24 17:45:21', 33, 'Daily_Earning_Sheet/2024/Jan/04', 'svhcachshj', 'upload'),
-(21, 'Ccc', 'cmsr', 'Daily_Earning_Sheet', 'cmsr_2011+SEPA+Utility+Solar+Rankings+Data-Preview_65b1f45750b40.xlsx', '0.33', '2024-01-25', '2024-01-25 11:10:39', 13, 'Daily_Earning_Sheet/2024/Jan/25', 'test', 'upload'),
-(22, 'Ccc', 'cmsr', 'Daily_Earning_Sheet', 'cmsr_2012 TRACK AND FIELD STANDARDS_65b1f45752f7a.xlsx', '0.02', '2024-01-25', '2024-01-25 11:10:39', 13, 'Daily_Earning_Sheet/2024/Jan/25', 'test', 'upload'),
-(23, 'Ccc', 'cmsr', 'Daily_Earning_Sheet', 'cmsr_2012-TK-MasterPrice-List_65b1f457537f6.xlsx', '0.55', '2024-01-25', '2024-01-25 11:10:39', 13, 'Daily_Earning_Sheet/2024/Jan/25', 'test', 'upload'),
-(24, 'dsd', 'cmsr', 'Penalty', 'cmsr_00_00_00_SAMPLE SUBMISSION FORM_PI_Lastname_First_Name1_65b1f47184346.xlsx', '0.87', '2024-01-25', '2024-01-25 11:11:05', 13, 'Penalty/2024/Jan/25', 'gfdg', 'upload'),
-(25, 'dasd', 'gkrd', 'Daily_Earning_Sheet', 'gkrd_sample2 (2)_65b1f4c88c8cf.xlsx', '0.03', '2024-01-25', '2024-01-25 11:12:32', 15, 'Daily_Earning_Sheet/2024/Jan/25', 'dfasfsd', 'upload'),
-(26, 'dasd', 'gkrd', 'Daily_Earning_Sheet', 'gkrd_sample2_65b1f4c88d369.xlsx', '0.03', '2024-01-25', '2024-01-25 11:12:32', 15, 'Daily_Earning_Sheet/2024/Jan/25', 'dfasfsd', 'upload'),
-(27, 'dasd', 'gkrd', 'Daily_Earning_Sheet', 'gkrd_sample3_65b1f4c88dbb6.xlsx', '0.01', '2024-01-25', '2024-01-25 11:12:32', 15, 'Daily_Earning_Sheet/2024/Jan/25', 'dfasfsd', 'upload'),
-(28, 'dadss', 'gkrd', 'URC', 'gkrd_sample2 (2)_65b1f4e554314.xlsx', '0.03', '2024-01-25', '2024-01-25 11:13:01', 15, 'URC/2024/Jan/25', 'fsdfsdf', 'upload'),
-(29, 'dadss', 'gkrd', 'URC', 'gkrd_sample2_65b1f4e5550e4.xlsx', '0.03', '2024-01-25', '2024-01-25 11:13:01', 15, 'URC/2024/Jan/25', 'fsdfsdf', 'upload'),
-(30, 'dadss', 'gkrd', 'URC', 'gkrd_sample3_65b1f4e555ac8.xlsx', '0.01', '2024-01-25', '2024-01-25 11:13:01', 15, 'URC/2024/Jan/25', 'fsdfsdf', 'upload'),
-(31, 'dfasdas', 'gkrd', 'Penalty', 'gkrd_sample1_65b1f4f5948c6.xlsx', '0.03', '2024-01-25', '2024-01-25 11:13:17', 15, 'Penalty/2024/Jan/25', 'fasf', 'upload'),
-(32, 'dfasdas', 'gkrd', 'Penalty', 'gkrd_sample2 (1)_65b1f4f5953ad.xlsx', '0.03', '2024-01-25', '2024-01-25 11:13:17', 15, 'Penalty/2024/Jan/25', 'fasf', 'upload'),
-(33, 'dasdasd', 'gkrd', 'URC', 'gkrd_sample2 (1)_65b1f50b706b2.xlsx', '0.03', '2024-01-25', '2024-01-25 11:13:39', 15, 'URC/2024/Jan/25', 'fafasf', 'upload'),
-(34, 'dasdasd', 'gkrd', 'URC', 'gkrd_sample2 (2)_65b1f50b7103f.xlsx', '0.03', '2024-01-25', '2024-01-25 11:13:39', 15, 'URC/2024/Jan/25', 'fafasf', 'upload'),
-(35, 'dasdasd', 'gkrd', 'URC', 'gkrd_sample2_65b1f50b7182f.xlsx', '0.03', '2024-01-25', '2024-01-25 11:13:39', 15, 'URC/2024/Jan/25', 'fafasf', 'upload'),
-(36, 'dsa', 'gkrd', 'Manual_Collection', 'gkrd_2011_ghg_emissions_spreadsheet_65b1f7bc92c11.xlsx', '0.12', '2024-01-25', '2024-01-25 11:25:08', 15, 'Manual_Collection/2024/Jan/25', 'asdfaf', 'upload'),
-(37, 'dsa', 'gkrd', 'Manual_Collection', 'gkrd_2011+SEPA+Utility+Solar+Rankings+Data-Preview_65b1f7bc9432a.xlsx', '0.33', '2024-01-25', '2024-01-25 11:25:08', 15, 'Manual_Collection/2024/Jan/25', 'asdfaf', 'upload'),
-(38, NULL, 'revenuecell', NULL, 'download-all', NULL, '2024-01-25', '2024-01-25 11:32:06', NULL, NULL, NULL, 'download'),
-(39, NULL, 'revenuecell', NULL, 'download-all', NULL, '2024-01-25', '2024-01-25 11:42:08', NULL, NULL, NULL, 'download');
 
 -- --------------------------------------------------------
 
@@ -867,8 +829,8 @@ INSERT INTO `tab_user_details` (`id`, `username`, `password`, `stationname`, `ac
 (31, 'rnms', 'rnms', 'rnms', 'station', ''),
 (32, 'jvrj', 'jvrj', 'jvrj', 'station', ''),
 (33, 'apmc', 'apmc', 'apmc', 'station', ''),
+(35, 'admin', 'admin', 'admin', 'admin', ''),
 (44, 'si1', 'newpassword', 'new station', 'SI', 'vtlg,kkes'),
-(45, 'admin', 'admin', 'admin', 'admin', ''),
 (46, 'si2', 'rahil123', 'Rahil', 'SI', 'vtlg,cmsr,ohci'),
 (49, 'aba', 'aba', 'abcd', '2', ''),
 (50, 'aba', 'abaaba', 'abcd', '1', ''),
@@ -924,7 +886,7 @@ ALTER TABLE `tab_user_details`
 -- AUTO_INCREMENT for table `tab_logs_fileupload`
 --
 ALTER TABLE `tab_logs_fileupload`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 
 --
 -- AUTO_INCREMENT for table `tab_logs_lockunlock`
