@@ -57,14 +57,14 @@
                 <div class="row mt-2">
                   <div class="col-md-6">
                     <label for="inputDate" class="col-sm-6 col-form-label">Date</label>
-                    <div class="col-sm-4">
+                    
                       <input type="date" class="form-control" name="recordDate" id="recordDate" value="<?php echo htmlspecialchars($date ?? date('Y-m-d')); ?>" min="2023-11-01" max="<?php echo date('Y-m-d'); ?>" onkeydown="return false">
-                    </div>
+                  
                   </div>
 
                   <div class="col-md-6">
                     <label for="inputDate" class="col-sm-4 col-form-label">Select Station</label>
-                    <select name="station_name_si" id="station_name_si" class="form-select" style="width: 250px;">
+                    <select name="station_name_si" id="station_name_si" class="form-select">
                       <option value="">Select Station</option>
                       <?php foreach ($SessionList as $list) : ?>
                         <option value="<?= $list; ?>" <?php if ($stationName == $list) : ?> selected <?php endif; ?>><?= $list; ?></option>
@@ -74,28 +74,22 @@
 
 
                 </div>
-
-
+ 
 
                 <div id="file-upload-area" <?php if ($locked) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>
+ 
 
-                  <?php
-                      $checkBoxArr = [
-                        'Daily Earning Sheet', 'Paytm POS Transaction', 'SBI POS Transaction', 'Penalty', 'URC', 'Refund Memo', 'Manual Collection', 'Outstanding',
-                        'Forfeit Format', 'Ref. Def. CSC', 'Def. CST', '1st Periodical', '2nd Periodical', '3rd Periodical', 'Balance Sheet'
-                      ];
-
-                    ?>
-
-                    <div class="col-md-6">
+                   
+                 
+                  <div class="row mt-2">
+                  <div class="col-md-6">
                       <label for="validationDefault04" class="form-label">Select File Type:</label>
                       <select class="form-control" name="fileType" required>
                         <?php foreach ($checkBoxArr as $check) : ?>
                           <option><?= $check; ?> </option>
                         <?php endforeach;  ?>
                       </select>
-                 
-                  <div class="row mt-2">
+                    </div>
                     <div class="col-md-6">
                       <label for="validationDefault03" class="form-label">Choose Daily Revenue Sheets:</label>
                       <input type="file" class="form-control" id="file1" name="files[]" multiple>
