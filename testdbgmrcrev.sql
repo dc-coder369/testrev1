@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 24, 2024 at 09:41 AM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Generation Time: Jan 25, 2024 at 02:05 PM
+-- Server version: 10.4.21-MariaDB
+-- PHP Version: 8.0.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -40,20 +40,45 @@ CREATE TABLE `tab_logs_fileupload` (
   `folder_name` varchar(100) DEFAULT NULL,
   `Remark` varchar(200) DEFAULT NULL,
   `log_type` varchar(20) NOT NULL COMMENT 'upload,download'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `tab_logs_fileupload`
 --
 
 INSERT INTO `tab_logs_fileupload` (`id`, `Sc_Name`, `station_name`, `file_type`, `filename`, `size`, `record_date`, `current_time`, `upload_by`, `folder_name`, `Remark`, `log_type`) VALUES
-(1, 'qwe', 'ntcr', 'Penalty', 'ntcr_export_65afad974b438.csv', '0.02', '2024-01-23', '2024-01-23 17:44:15', 3, 'Penalty/2024/Jan/23', 'qwe', 'upload'),
-(2, 'asdqwe', 'ntcr', 'URC', 'ntcr_export_65afadb85d685.csv', '0.02', '2024-01-23', '2024-01-23 17:44:48', 3, 'URC/2024/Jan/23', 'aqq', 'upload'),
-(3, NULL, 'revenuecell', NULL, 'download-all', NULL, '2024-01-23', '2024-01-23 19:09:51', NULL, NULL, NULL, 'download'),
-(4, NULL, 'revenuecell', NULL, 'download-all', NULL, '2024-01-23', '2024-01-23 19:16:24', NULL, NULL, NULL, 'download'),
-(5, NULL, 'revenuecell', NULL, 'download-all', NULL, '2024-01-23', '2024-01-23 19:16:54', NULL, NULL, NULL, 'download'),
-(6, NULL, 'revenuecell', NULL, 'download-all', NULL, '2024-01-23', '2024-01-23 19:18:04', NULL, NULL, NULL, 'download'),
-(7, NULL, 'revenuecell', NULL, 'download-all', NULL, '2024-01-23', '2024-01-23 19:18:42', NULL, NULL, NULL, 'download');
+(8, 'dsad', 'apmc', 'Daily_Earning_Sheet', 'apmc_3.capacidad_65b0f1c51ea60.xlsx', '2.16', '2024-01-05', '2024-01-24 16:47:25', 33, 'Daily_Earning_Sheet/2024/Jan/05', '', 'upload'),
+(9, 'dsad', 'apmc', 'Daily_Earning_Sheet', 'apmc_2010 service standards compliance review - MITC template - No 1 23 05 2012_65b0f1c521ce2.xlsx', '0.67', '2024-01-05', '2024-01-24 16:47:25', 33, 'Daily_Earning_Sheet/2024/Jan/05', '', 'upload'),
+(10, 'dsad', 'apmc', 'Penalty', 'apmc_2010 service standards compliance review - MITC template - No 1 23 05 2012_65b0f1eb6de3e.xlsx', '0.67', '2024-01-05', '2024-01-24 16:48:03', 33, 'Penalty/2024/Jan/05', '', 'upload'),
+(11, 'asdfasdf', 'apmc', 'Daily_Earning_Sheet', 'apmc_2011_ghg_emissions_spreadsheet_65b0f525dec2c.xlsx', '0.12', '2024-01-05', '2024-01-24 17:01:49', 33, 'Daily_Earning_Sheet/2024/Jan/05', '', 'upload'),
+(12, 'asdfasdf', 'apmc', 'Daily_Earning_Sheet', 'apmc_2011+SEPA+Utility+Solar+Rankings+Data-Preview_65b0f525dfaf7.xlsx', '0.33', '2024-01-05', '2024-01-24 17:01:49', 33, 'Daily_Earning_Sheet/2024/Jan/05', '', 'upload'),
+(13, 'asdfasdf', 'apmc', 'Daily_Earning_Sheet', 'apmc_2012 TRACK AND FIELD STANDARDS_65b0f525e0ba2.xlsx', '0.02', '2024-01-05', '2024-01-24 17:01:49', 33, 'Daily_Earning_Sheet/2024/Jan/05', '', 'upload'),
+(14, 'chintan', 'apmc', 'Daily_Earning_Sheet', 'apmc_2010 service standards compliance review - MITC template - No 1 23 05 2012_65b0f75bd28de.xlsx', '0.67', '2024-01-05', '2024-01-24 17:11:15', 33, 'Daily_Earning_Sheet/2024/Jan/05', 'fnckjdsnckjd', 'upload'),
+(15, 'chintan', 'apmc', 'Daily_Earning_Sheet', 'apmc_2011_ghg_emissions_spreadsheet_65b0f75bd3785.xlsx', '0.12', '2024-01-05', '2024-01-24 17:11:15', 33, 'Daily_Earning_Sheet/2024/Jan/05', 'fnckjdsnckjd', 'upload'),
+(16, 'chintan', 'apmc', 'Daily_Earning_Sheet', 'apmc_2011+SEPA+Utility+Solar+Rankings+Data-Preview_65b0f75bd44d7.xlsx', '0.33', '2024-01-05', '2024-01-24 17:11:15', 33, 'Daily_Earning_Sheet/2024/Jan/05', 'fnckjdsnckjd', 'upload'),
+(17, 'Chintan', 'apmc', 'Penalty', 'apmc_2010 service standards compliance review - MITC template - No 1 23 05 2012_65b0fd8f68efd.xlsx', '0.67', '2024-01-05', '2024-01-24 17:37:43', 33, 'Penalty/2024/Jan/05', 'ncjancjaj', 'upload'),
+(18, 'Chintan', 'apmc', 'Daily_Earning_Sheet', 'apmc_2010 service standards compliance review - MITC template - No 1 23 05 2012_65b0fdbc22c3c.xlsx', '0.67', '2024-01-05', '2024-01-24 17:38:28', 33, 'Daily_Earning_Sheet/2024/Jan/05', 'dsadas', 'upload'),
+(19, 'ggg', 'apmc', 'Daily_Earning_Sheet', 'apmc_00_00_00_SAMPLE SUBMISSION FORM_PI_Lastname_First_Name1_65b0ff4f5440c.xlsx', '0.87', '2024-01-04', '2024-01-24 17:45:11', 33, 'Daily_Earning_Sheet/2024/Jan/04', 'sss', 'upload'),
+(20, 'vvjh', 'apmc', 'Daily_Earning_Sheet', 'apmc_00_00_00_SAMPLE SUBMISSION FORM_PI_Lastname_First_Name1_65b0ff59e7979.xlsx', '0.87', '2024-01-04', '2024-01-24 17:45:21', 33, 'Daily_Earning_Sheet/2024/Jan/04', 'svhcachshj', 'upload'),
+(21, 'Ccc', 'cmsr', 'Daily_Earning_Sheet', 'cmsr_2011+SEPA+Utility+Solar+Rankings+Data-Preview_65b1f45750b40.xlsx', '0.33', '2024-01-25', '2024-01-25 11:10:39', 13, 'Daily_Earning_Sheet/2024/Jan/25', 'test', 'upload'),
+(22, 'Ccc', 'cmsr', 'Daily_Earning_Sheet', 'cmsr_2012 TRACK AND FIELD STANDARDS_65b1f45752f7a.xlsx', '0.02', '2024-01-25', '2024-01-25 11:10:39', 13, 'Daily_Earning_Sheet/2024/Jan/25', 'test', 'upload'),
+(23, 'Ccc', 'cmsr', 'Daily_Earning_Sheet', 'cmsr_2012-TK-MasterPrice-List_65b1f457537f6.xlsx', '0.55', '2024-01-25', '2024-01-25 11:10:39', 13, 'Daily_Earning_Sheet/2024/Jan/25', 'test', 'upload'),
+(24, 'dsd', 'cmsr', 'Penalty', 'cmsr_00_00_00_SAMPLE SUBMISSION FORM_PI_Lastname_First_Name1_65b1f47184346.xlsx', '0.87', '2024-01-25', '2024-01-25 11:11:05', 13, 'Penalty/2024/Jan/25', 'gfdg', 'upload'),
+(25, 'dasd', 'gkrd', 'Daily_Earning_Sheet', 'gkrd_sample2 (2)_65b1f4c88c8cf.xlsx', '0.03', '2024-01-25', '2024-01-25 11:12:32', 15, 'Daily_Earning_Sheet/2024/Jan/25', 'dfasfsd', 'upload'),
+(26, 'dasd', 'gkrd', 'Daily_Earning_Sheet', 'gkrd_sample2_65b1f4c88d369.xlsx', '0.03', '2024-01-25', '2024-01-25 11:12:32', 15, 'Daily_Earning_Sheet/2024/Jan/25', 'dfasfsd', 'upload'),
+(27, 'dasd', 'gkrd', 'Daily_Earning_Sheet', 'gkrd_sample3_65b1f4c88dbb6.xlsx', '0.01', '2024-01-25', '2024-01-25 11:12:32', 15, 'Daily_Earning_Sheet/2024/Jan/25', 'dfasfsd', 'upload'),
+(28, 'dadss', 'gkrd', 'URC', 'gkrd_sample2 (2)_65b1f4e554314.xlsx', '0.03', '2024-01-25', '2024-01-25 11:13:01', 15, 'URC/2024/Jan/25', 'fsdfsdf', 'upload'),
+(29, 'dadss', 'gkrd', 'URC', 'gkrd_sample2_65b1f4e5550e4.xlsx', '0.03', '2024-01-25', '2024-01-25 11:13:01', 15, 'URC/2024/Jan/25', 'fsdfsdf', 'upload'),
+(30, 'dadss', 'gkrd', 'URC', 'gkrd_sample3_65b1f4e555ac8.xlsx', '0.01', '2024-01-25', '2024-01-25 11:13:01', 15, 'URC/2024/Jan/25', 'fsdfsdf', 'upload'),
+(31, 'dfasdas', 'gkrd', 'Penalty', 'gkrd_sample1_65b1f4f5948c6.xlsx', '0.03', '2024-01-25', '2024-01-25 11:13:17', 15, 'Penalty/2024/Jan/25', 'fasf', 'upload'),
+(32, 'dfasdas', 'gkrd', 'Penalty', 'gkrd_sample2 (1)_65b1f4f5953ad.xlsx', '0.03', '2024-01-25', '2024-01-25 11:13:17', 15, 'Penalty/2024/Jan/25', 'fasf', 'upload'),
+(33, 'dasdasd', 'gkrd', 'URC', 'gkrd_sample2 (1)_65b1f50b706b2.xlsx', '0.03', '2024-01-25', '2024-01-25 11:13:39', 15, 'URC/2024/Jan/25', 'fafasf', 'upload'),
+(34, 'dasdasd', 'gkrd', 'URC', 'gkrd_sample2 (2)_65b1f50b7103f.xlsx', '0.03', '2024-01-25', '2024-01-25 11:13:39', 15, 'URC/2024/Jan/25', 'fafasf', 'upload'),
+(35, 'dasdasd', 'gkrd', 'URC', 'gkrd_sample2_65b1f50b7182f.xlsx', '0.03', '2024-01-25', '2024-01-25 11:13:39', 15, 'URC/2024/Jan/25', 'fafasf', 'upload'),
+(36, 'dsa', 'gkrd', 'Manual_Collection', 'gkrd_2011_ghg_emissions_spreadsheet_65b1f7bc92c11.xlsx', '0.12', '2024-01-25', '2024-01-25 11:25:08', 15, 'Manual_Collection/2024/Jan/25', 'asdfaf', 'upload'),
+(37, 'dsa', 'gkrd', 'Manual_Collection', 'gkrd_2011+SEPA+Utility+Solar+Rankings+Data-Preview_65b1f7bc9432a.xlsx', '0.33', '2024-01-25', '2024-01-25 11:25:08', 15, 'Manual_Collection/2024/Jan/25', 'asdfaf', 'upload'),
+(38, NULL, 'revenuecell', NULL, 'download-all', NULL, '2024-01-25', '2024-01-25 11:32:06', NULL, NULL, NULL, 'download'),
+(39, NULL, 'revenuecell', NULL, 'download-all', NULL, '2024-01-25', '2024-01-25 11:42:08', NULL, NULL, NULL, 'download');
 
 -- --------------------------------------------------------
 
@@ -66,7 +91,7 @@ CREATE TABLE `tab_logs_lockunlock` (
   `date` date NOT NULL,
   `timestamp` datetime NOT NULL,
   `lock_status` varchar(10) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `tab_logs_lockunlock`
@@ -157,7 +182,12 @@ INSERT INTO `tab_logs_lockunlock` (`id`, `date`, `timestamp`, `lock_status`) VAL
 (82, '2024-01-04', '2024-01-05 08:16:11', 'Unlocked'),
 (83, '2024-01-05', '2024-01-05 13:15:19', 'Unlocked'),
 (84, '2024-01-15', '2024-01-15 09:26:33', 'Unlocked'),
-(85, '2024-01-23', '2024-01-23 12:41:38', 'Unlocked');
+(85, '2024-01-23', '2024-01-23 12:41:38', 'Unlocked'),
+(86, '2024-01-05', '2024-01-24 17:19:02', 'Locked'),
+(87, '2024-01-05', '2024-01-24 17:19:06', 'Unlocked'),
+(88, '2024-01-05', '2024-01-24 17:40:31', 'Locked'),
+(89, '2024-01-24', '2024-01-24 17:49:56', 'Unlocked'),
+(90, '2024-01-25', '2024-01-25 11:10:11', 'Unlocked');
 
 -- --------------------------------------------------------
 
@@ -178,7 +208,7 @@ CREATE TABLE `tab_revdailyreport_temp` (
   `deposit` float DEFAULT NULL,
   `handling_fee` float DEFAULT NULL,
   `total` float DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -190,7 +220,7 @@ CREATE TABLE `tab_status_lockupload` (
   `id` int(11) NOT NULL,
   `date` date NOT NULL,
   `lock_upload` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `tab_status_lockupload`
@@ -262,7 +292,7 @@ INSERT INTO `tab_status_lockupload` (`id`, `date`, `lock_upload`) VALUES
 (63, '2024-01-02', 1),
 (64, '2024-01-03', 1),
 (65, '2024-01-04', 0),
-(66, '2024-01-05', 0),
+(66, '2024-01-05', 1),
 (67, '2024-01-06', 1),
 (68, '2024-01-07', 1),
 (69, '2024-01-08', 1),
@@ -281,8 +311,8 @@ INSERT INTO `tab_status_lockupload` (`id`, `date`, `lock_upload`) VALUES
 (82, '2024-01-21', 1),
 (83, '2024-01-22', 1),
 (84, '2024-01-23', 0),
-(85, '2024-01-24', 1),
-(86, '2024-01-25', 1),
+(85, '2024-01-24', 0),
+(86, '2024-01-25', 0),
 (87, '2024-01-26', 1),
 (88, '2024-01-27', 1),
 (89, '2024-01-28', 1),
@@ -782,7 +812,7 @@ CREATE TABLE `tab_stmaster_temp` (
   `RIDERSHIP_EXIT` float DEFAULT NULL,
   `RIDERSHIP_NCMCEXIT` float DEFAULT NULL,
   `RIDERSHIP_TOT` float DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -797,7 +827,7 @@ CREATE TABLE `tab_user_details` (
   `stationname` varchar(128) NOT NULL,
   `account_type` varchar(50) NOT NULL,
   `stations_allotted` varchar(128) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `tab_user_details`
@@ -806,7 +836,7 @@ CREATE TABLE `tab_user_details` (
 INSERT INTO `tab_user_details` (`id`, `username`, `password`, `stationname`, `account_type`, `stations_allotted`) VALUES
 (1, 'revenuecell', 'revenuecell', 'rev', 'revenuecell', ''),
 (2, 'vtlg', 'vtlg', 'vtlg', 'station', ''),
-(3, 'aa', 'aa', 'ntcr', 'station', ''),
+(3, 'ntcr', 'ntcr', 'ntcr', 'station', ''),
 (4, 'vstl', 'vstl', 'vstl', 'station', ''),
 (5, 'rbcy', 'rbcy', 'rbcy', 'station', ''),
 (6, 'arvd', 'arvd', 'arvd', 'station', ''),
@@ -894,13 +924,13 @@ ALTER TABLE `tab_user_details`
 -- AUTO_INCREMENT for table `tab_logs_fileupload`
 --
 ALTER TABLE `tab_logs_fileupload`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `tab_logs_lockunlock`
 --
 ALTER TABLE `tab_logs_lockunlock`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=91;
 
 --
 -- AUTO_INCREMENT for table `tab_revdailyreport_temp`
