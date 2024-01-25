@@ -168,7 +168,7 @@
               <table class="table  table-responsive" id="myDataTable">
                 <thead>
                 <tr id="<?= $list['id']; ?>">
-                    <th> SC Name </th>
+                    <th>SC Name </th>
                     <th>Station Name</th>
                     <th>Filename</th>
                     <th>Category</th>
@@ -198,7 +198,7 @@
                 </tbody>
                 <tfoot>
                   <tr>
-                    <th> SC Name </th>
+                    <th>SC Name </th>
                     <th>Station Name</th>
                     <th>Filename</th>
                     <th>Category</th>
