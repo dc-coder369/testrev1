@@ -74,7 +74,7 @@
                     <th>Filename</th> 
                     <th>Category</th> 
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
-                    <th>Upload Date & Time</th>
+                    <th>Upload Time</th>
                     <th>Remark</th>
                   </tr>
                 </thead>
@@ -104,7 +104,7 @@
                     <th>Filename</th> 
                     <th>Category</th> 
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
-                    <th>Upload Date & Time</th>
+                    <th>Upload Time</th>
                     <th>Remark</th>
                   </tr>
                 </tfoot>
