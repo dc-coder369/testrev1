@@ -43,28 +43,18 @@ var table = new DataTable('.datatable', {
 // $('.datatable').removeClass('dataTable')
 
 $('#download-files-btn').on('click', function () {
-
     $(".temp-hide").remove(); 
-    // Get the data of the filtered rows
     let filteredData = table.rows({ search: 'applied' }).data();
- 
     // Extract the IDs from the filtered data
     let filteredIds = filteredData.map(rowData => rowData['DT_RowId'] );
     let idsArr =[]; 
     filteredIds.map(rowData => {
         idsArr.push(rowData)     
     }) 
-
     for(i=0; i<idsArr.length; i++){
         $("#download-all-files-form").append('<input type="hidden" name="ids[]" value="'+idsArr[i]+'" class="temp-hide">')
-       
     }
-    
- 
 });
-
-
-
 </script>
 
 </body>

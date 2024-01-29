@@ -119,6 +119,78 @@ if ($type == 'download-all-files') {
 
 }
 
+
+if($type == 'update-privilege'){
+    $httpRefer = basename($_SERVER['HTTP_REFERER']);  
+    $fileNamephp = parse_url($httpRefer, PHP_URL_PATH);
+    $selectedUserId = isset($_POST['select_s1']) ? $_POST['select_s1'] : '';
+    $selectedUsers = isset($_POST['checkbox_array']) ? $_POST['checkbox_array'] : [];
+    $chk = implode(",", $selectedUsers);
+    $condition = 'username="'.$selectedUserId.'"';
+    if ($database->update('tab_user_details', ['stations_allotted' => $chk ],  $condition )) { 
+        setSuccessMessage("Privilege updated successfully");  
+    }else{
+        setErrorMessage("Error");  
+    }
+    header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp);exit(); 
+
+}
+
+
+
+
+if ($type == 'add-new-user') { 
+   
+    $httpRefer = basename($_SERVER['HTTP_REFERER']);  
+    $fileNamephp = parse_url($httpRefer, PHP_URL_PATH);
+
+    $station_type = $_POST['station_type'];
+    $station_name = $_POST['station_name'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+    $result = $database->select('tab_user_details', "id", ['username' => $username], "AND", 'single');
+    if(!empty($result)){
+        setSuccessMessage("Error: Username already exists. Please choose a different username.");  
+    }else{
+        if (empty($_POST["station_name"]) && empty($_POST["username"]) && empty($_POST["password"])) {
+            setSuccessMessage("Fill all fields");  
+        }else{
+
+            $insert = [
+                'username' => $username,
+                'password' => $password,
+                'stationname' => $station_name,
+                'account_type' => $station_type, 
+            ];
+            $result = $database->insert('tab_user_details' , $insert ); 
+            if ($result) {
+                setSuccessMessage("User created successfully");
+            } else {
+                setErrorMessage("Error"); 
+            } 
+        } 
+            
+    }
+ 
+    header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp);exit(); 
+
+}
+
+
+if ($type == 'update-password') { 
+   
+    $httpRefer = basename($_SERVER['HTTP_REFERER']);  
+    $fileNamephp = parse_url($httpRefer, PHP_URL_PATH);
+    $condition = 'id="'.$_POST['user_id'].'"';
+    if ($database->update('tab_user_details', ['password' => $_POST['new_password'] ],  $condition )) { 
+        setSuccessMessage("Password has been successfully updated");  
+    }else{
+        setErrorMessage("There is some error"); 
+    }
+    header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp);exit(); 
+
+}
+
 if ($type == 'upload-files') {
 
     $recordDate = $_POST['recordDate']; 

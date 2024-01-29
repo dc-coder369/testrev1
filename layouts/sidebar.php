@@ -1,8 +1,8 @@
   <!-- ======= Sidebar ======= -->
 
-  <?php $current_page = basename($_SERVER['PHP_SELF']);?>
+  <?php $current_page = basename($_SERVER['PHP_SELF']); ?>
   <aside id="sidebar" class="sidebar">
-    
+
 
     <ul class="sidebar-nav" id="sidebar-nav">
 
@@ -12,6 +12,36 @@
           <span>Dashboard</span>
         </a>
       </li><!-- End Dashboard Nav -->
+      <?php if ($_SESSION['account_type'] == 'admin') : ?>
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-menu-button-wide"></i><span>Menus</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="components-nav" class="<?= ($current_page == 'change-password.php') ? 'nav-content collapse show' : 'nav-content collapse' ?>" data-bs-parent="#sidebar-nav">
+          
+            <li>
+              <a href="change-password.php" class="<?= ($current_page == 'change-password.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>Change Password</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="add-new-user.php" class="<?= ($current_page == 'add-new-user.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>Create New User</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="priviledges.php" class="<?= ($current_page == 'priviledges.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>Change Privilege</span>
+              </a>
+            </li>
+
+          </ul>
+        </li>
+
+      <?php endif; ?>
 
       <?php if ($_SESSION['account_type'] == 'station') : ?>
 
@@ -19,20 +49,16 @@
           <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
             <i class="bi bi-menu-button-wide"></i><span>Stations</span><i class="bi bi-chevron-down ms-auto"></i>
           </a>
-          <ul id="components-nav" 
-
-          class="<?=($current_page == 'scdata-list.php' || $current_page == 'upload-files.php') ?'nav-content collapse show' : 'nav-content collapse'?>"
-           
-          data-bs-parent="#sidebar-nav">
+          <ul id="components-nav" class="<?= ($current_page == 'scdata-list.php' || $current_page == 'upload-files.php') ? 'nav-content collapse show' : 'nav-content collapse' ?>" data-bs-parent="#sidebar-nav">
             <!-- <li>
               <a href="upload-files.php" 
                
-              class="<?=($current_page == 'upload-files.php') ?'active' : ''?>" >
+              class="<?= ($current_page == 'upload-files.php') ? 'active' : '' ?>" >
                 <i class="bi bi-circle"></i><span>Upload</span>
               </a>
             </li> -->
             <li>
-              <a href="scdata-list.php" class="<?=($current_page == 'scdata-list.php') ?'active' : ''?>">
+              <a href="scdata-list.php" class="<?= ($current_page == 'scdata-list.php') ? 'active' : '' ?>">
                 <i class="bi bi-circle"></i><span>Upload Data</span>
               </a>
             </li>
@@ -48,19 +74,13 @@
           <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
             <i class="bi bi-menu-button-wide"></i><span>Revenue Cell</span><i class="bi bi-chevron-down ms-auto"></i>
           </a>
-          <ul id="components-nav" 
-
-          class="<?=($current_page == 'revenuecell-list.php' || $current_page == 'upload-files.php') ?'nav-content collapse show' : 'nav-content collapse'?>"
-           
-          data-bs-parent="#sidebar-nav">
+          <ul id="components-nav" class="<?= ($current_page == 'revenuecell-list.php' || $current_page == 'upload-files.php') ? 'nav-content collapse show' : 'nav-content collapse' ?>" data-bs-parent="#sidebar-nav">
             <li>
-              <a href="revenuecell-list.php" 
-               
-              class="<?=($current_page == 'revenuecell-list.php') ?'active' : ''?>" >
+              <a href="revenuecell-list.php" class="<?= ($current_page == 'revenuecell-list.php') ? 'active' : '' ?>">
                 <i class="bi bi-circle"></i><span>View Data</span>
               </a>
             </li>
-            
+
 
           </ul>
         </li>
