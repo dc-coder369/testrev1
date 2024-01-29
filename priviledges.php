@@ -59,6 +59,7 @@
                                     <label for="si_user" class="form-label">Select SI User:</label>
 
                                     <select name="select_s1" id="select_s1" class="form-select">
+                                        <option> Select</option>
                                         <?php foreach ($usersList as $user) : ?>
                                             <option 
                                                 <?php if($selectedUser == $user['username'] ) { ?> selected <?php } ?>
