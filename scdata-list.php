@@ -143,7 +143,7 @@
                 <h5 class="card-title">SC Data</h5>
               </div>
               <!-- Table with stripped rows -->
-              <table class="table datatable table-responsive">
+              <table class="table datatable table-responsive table-hover">
                 <thead>
                   <tr>
                    
