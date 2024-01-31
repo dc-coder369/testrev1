@@ -220,9 +220,9 @@ if ($type == 'upload-files') {
           
     } else {
           
-        if (empty($_FILES['files']['tmp_name'][0])  && empty($_FILES['files2']['tmp_name'][0])  ) {
+        if (empty($_FILES['files']['tmp_name'][0])) {
             
-            setErrorMessage("You must Select One file from Earning Data Or URC."); 
+            setErrorMessage("You must select a file to upload."); 
             header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
         } 
  
@@ -240,13 +240,13 @@ if ($type == 'upload-files') {
     
         }
         // Check if files are uploaded for "URC"
-        if (isset($_FILES['files2']['error'][0]) && $_FILES['files2']['error'][0] == 0) {
+        /* if (isset($_FILES['files2']['error'][0]) && $_FILES['files2']['error'][0] == 0) {
             $folderType = $fileType.'/'. $folderArr[0].'/'.$folderArr[1].'/'.$folderArr[2]; 
             // $folderType = "Data-scdata-URC-" . $recordDate; 
             handleFileUpload($database,$_FILES['files2'], $folderType, $recordDate, $station_name, $sc_name, $remark ,  $user_id , $fileType);
             header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
            
-        }
+        } */
       
     }
  
@@ -329,7 +329,7 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
             $filenameWithoutExtension = $fileInfo['filename'];
 
             $uniqueId = date('YMd');
-            $prefixedFileName = $station_name."_".$filenameWithoutExtension.'_'. $uniqueId. '.' . $fileExtension;
+            $prefixedFileName = $station_name."_".$fileType.'_'. $uniqueId. '.' . $fileExtension;
 
             $newFileName = getUniqueFileName($targetDir,$prefixedFileName);
  
@@ -502,7 +502,11 @@ function DownloadSelectedFiles($database,$recordDate, $baseFolderPath, $zipFileN
             }
 
             $filePath = $baseFolderPath . $fileInfo['folder_name'] . '/' . $fileInfo['filename'];
-            $relativePath = $recordDate . '/' . $fileInfo['folder_name'] . '/' . $fileInfo['filename'];
+
+            //Folder name contains multiple folders. So taking just main category folder in the zip.
+            $tempfolderParts = explode('/', $fileInfo['folder_name']); 
+
+            $relativePath = $tempfolderParts[0] . '/' . $fileInfo['filename'];
 
             if ($zip->addFile($filePath, $relativePath) !== true) {
                 setErrorMessage('Error adding file to the zip archive.');
