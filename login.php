@@ -6,10 +6,16 @@
           <div class="row justify-content-center">
             <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
 
+			<div class="d-flex justify-content-center py-4">
+                <a href="login.php" class="d-flex align-items-center w-auto">
+                  <img src="assets/img/g-logo.png" alt="" style="width: 100px; height: auto;">
+                </a>
+              </div>
+			  
               <div class="d-flex justify-content-center py-4">
                 <a href="login.php" class="logo d-flex align-items-center w-auto">
-                  <img src="assets/img/g-logo.png" alt="">
-                  <span class="d-none d-lg-block">GMRC</span>
+                  <!--<img src="assets/img/g-logo.png" alt="">-->
+                  <span class="d-none d-lg-block">GMRC Ops Connect</span>
                 </a>
               </div><!-- End Logo -->
 
