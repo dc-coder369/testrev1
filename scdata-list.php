@@ -149,7 +149,7 @@
                    
                     <th>SC Name </th>
                     <th>Station Name</th>
-                    <th>Filename</th>
+                    <th>Filename (System)</th>
                      <th>Category</th>
 
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>

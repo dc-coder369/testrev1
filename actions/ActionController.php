@@ -328,7 +328,8 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
             $fileInfo = pathinfo($originalFileName);
             $filenameWithoutExtension = $fileInfo['filename'];
 
-            $uniqueId = date('YMd');
+            $uniqueId = date('YMd', strtotime($recordDate));;
+           
             $prefixedFileName = $station_name."_".$fileType.'_'. $uniqueId. '.' . $fileExtension;
 
             $newFileName = getUniqueFileName($targetDir,$prefixedFileName);
