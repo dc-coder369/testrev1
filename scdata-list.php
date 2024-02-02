@@ -4,7 +4,7 @@
 
 
   <?php
-  // echo  $_SESSION['stationname']; die;
+  //  echo  $_SESSION['stationname']; die;
   $date = (isset($_GET['date'])) ? $_GET['date'] : '';
   $locked = (isset($_GET['i'])) ? $_GET['i'] : '';
   if ($date) {
@@ -12,10 +12,10 @@
   } else {
     $condition = [];
   }
-
+  // echo "<prE>"; print_r($condition); die; 
   $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', 'id DESC' ,[]);
 
-  //  echo "<prE>"; print_r($listArr); die; 
+  // echo "<prE>"; print_r($listArr); die; 
   ?>
   <div class="pagetitle">
 
@@ -51,7 +51,7 @@
 
                     <div class="col-md-6">
                       <label for="validationDefault04" class="form-label">Select File Type:</label>
-                      <select class="form-control" name="fileType" required>
+                      <select class="form-control" name="fileType" id="select-file-type" required>
                         <?php foreach ($checkBoxArr as $check) : ?>
                           <option><?= $check; ?> </option>
                         <?php endforeach;  ?>
@@ -63,7 +63,7 @@
 
                     <div class="col-md-6">
                       <label for="validationDefault03" class="form-label">Choose a File:</label>
-                      <input type="file" class="form-control" id="file1" name="files[]" multiple>
+                      <input type="file" class="form-control" id="file1" name="files[]">
                       <span class="form-text text-muted">Upload File of the Selected Category</span>
 
                     </div>
@@ -150,6 +150,7 @@
                     <th>SC Name </th>
                     <th>Station Name</th>
                     <th>Filename (System)</th>
+                    <th>Filename (Original)</th>
                      <th>Category</th>
 
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
@@ -167,6 +168,7 @@
                       <td><?= $list['Sc_Name']; ?></td>
                       <td><?= strtoupper($list['station_name']); ?></td>
                       <td><a href="<?= $path ?>" download target="_balnk"><?= $list['filename']; ?></a></td>
+                      <td><?= $list['original_filename']; ?></td>
                        <td><?= $list['file_type']; ?></td>
                       <td><?= $list['record_date']; ?></td>
                       <td><?= $list['current_time']; ?></td>
@@ -181,8 +183,9 @@
                   <tr>
                     <th>SC Name </th>
                     <th>Station Name</th>
-                    <th>Filename</th>
-                     <th>Category</th>
+                    <th>Filename (System)</th>
+                    <th>Filename (Original)</th>
+                    <th>Category</th>
 
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Upload Time</th>
@@ -248,4 +251,13 @@
     });
 
   }
+
+  $("#select-file-type").change(function(){
+    var vd = $(this).find(":selected").val(); 
+    if(vd == "URC Images"){
+      $("#file1").prop('multiple',true);
+    }else{
+      $("#file1").removeAttr('multiple');
+    }
+  })
 </script>

@@ -38,6 +38,21 @@
               </a>
             </li>
 
+            <li>
+              <a href="file-logs.php" class="<?= ($current_page == 'file-logs.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>Uploaded Files Logs</span>
+              </a>
+            </li>
+
+            <li>
+              <a href="logs_lock_unlock.php" class="<?= ($current_page == 'logs_lock_unlock.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>Logs Lock Unlock</span>
+              </a>
+            </li>
+            
+
+           
+
           </ul>
         </li>
 
@@ -80,6 +95,19 @@
                 <i class="bi bi-circle"></i><span>View Data</span>
               </a>
             </li>
+            <li>
+              <a href="file-logs.php" class="<?= ($current_page == 'file-logs.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>Uploaded Files Logs</span>
+              </a>
+            </li>
+            <li>
+              <a href="logs_status.php" class="<?= ($current_page == 'logs_status.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>Log Lock/unclock Status</span>
+              </a>
+            </li>
+
+
+            
 
 
           </ul>

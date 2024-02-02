@@ -43,16 +43,16 @@ if ($type == 'local_unlock_status') {
 if ($type == 'update_lock_status') {
 
     $table = "tab_status_lockupload";
-    $dataToUpdate = [  'lock_upload' => $reqeust['status'] ];
+    $dataToUpdate = [  'lock_upload' => $reqeust['status'], 'user_code' => $reqeust['user_code'] ];
     $condition = 'date="'.$reqeust['date'].'"';
 
     $insert = [ 
-        'date' => $reqeust['date'],
+        'date' => $reqeust['date'], 
         'lock_status' => ($reqeust['status'] == 1) ? 'Locked' : 'Unlocked', 
         'timestamp' =>date('Y-m-d H:i:s')
     ];  
     $database->insert('tab_logs_lockunlock' , $insert ); 
-    
+
     if ($database->update($table, $dataToUpdate, $condition)) { 
         $response = json_encode(['success' => true , 'lock_upload' => $reqeust['status'] ]);
     }else{
@@ -81,6 +81,38 @@ if ($type == 'logout') {
     header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) . "/login.php");
 }
 
+
+if ($type == 'download-all-latest') {
+
+    $result = $database->select('tab_logs_fileupload', "filename,id", ['log_type' => 'upload'], "AND", 'multiple');
+
+    $latestFilename = '';
+    $latestIds = [];
+    foreach ($result as $file) {
+        preg_match('/_[0-9]+\.csv/', $file['filename'], $matches);
+
+        if (isset($matches[0])) {
+            // Extract the version number and convert it to an integer
+            $versionNumber = (int)trim($matches[0], '_');
+    
+            // Compare and update if the current version is higher
+            if ($versionNumber > end($latestIds)) {
+                $latestIds = [$file['id']];
+                $latestFilename = $file['filename'];
+            } elseif ($versionNumber === end($latestIds)) {
+                // If the version number is the same, add the ID to the list
+                $latestIds[] = $file['id'];
+            }
+        }
+    }
+    $response = DownloadSelectedFiles($database,$recordDate, 'scdata/', $recordDate . '.zip', 'scdata/' . $recordDate . '.zip', $latestIds);
+
+    echo "Latest Filename: $latestFilename\n";
+    echo "Latest IDs: " . implode(', ', $latestIds) . "\n";die; 
+
+    echo "<pre>"; print_r( $result); die; 
+
+}
 if ($type == 'download-all-files') {
     $recordDate = $_POST['hiddenrecordDate2'];
     $date = new DateTime($recordDate);
@@ -148,6 +180,8 @@ if ($type == 'add-new-user') {
     $station_name = $_POST['station_name'];
     $username = $_POST['username'];
     $password = $_POST['password'];
+    $user_code = $_POST['user_code'];
+    
     $result = $database->select('tab_user_details', "id", ['username' => $username], "AND", 'single');
     if(!empty($result)){
         setSuccessMessage("Error: Username already exists. Please choose a different username.");  
@@ -158,6 +192,7 @@ if ($type == 'add-new-user') {
 
             $insert = [
                 'username' => $username,
+                'user_code' => $user_code,
                 'password' => $password,
                 'stationname' => $station_name,
                 'account_type' => $station_type, 
@@ -220,8 +255,9 @@ if ($type == 'upload-files') {
           
     } else {
           
+      
         if (empty($_FILES['files']['tmp_name'][0])) {
-            
+ 
             setErrorMessage("You must select a file to upload."); 
             header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
         } 
@@ -277,9 +313,10 @@ function setSession($user , $message)
 {
     $_SESSION['user_id'] = $user['id']; // Replace 'id' with the actual column name
     $_SESSION['username'] = $user['username'];
+    $_SESSION['user_code'] = $user['user_code'];
     $_SESSION['account_type'] = $user['account_type'];
     $_SESSION['stationname'] = $user['stationname'];
-    
+    $_SESSION['page_access'] =  AccessToPageAsPerLogin($user['account_type']); 
     $_SESSION['success'] = $message;
     session_commit();
 }
@@ -328,9 +365,10 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
             $fileInfo = pathinfo($originalFileName);
             $filenameWithoutExtension = $fileInfo['filename'];
 
-            $uniqueId = date('YMd', strtotime($recordDate));;
+            // $uniqueId = date('YMd', strtotime($recordDate));
+            $uniqueId = date('YMd', strtotime($recordDate));
            
-            $prefixedFileName = $station_name."_".$fileType.'_'. $uniqueId. '.' . $fileExtension;
+            $prefixedFileName = $_SESSION['user_code']."_".$fileType.'_.' . $fileExtension;
 
             $newFileName = getUniqueFileName($targetDir,$prefixedFileName);
  
@@ -343,13 +381,15 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
                     'Sc_Name' => $sc_name,
                     'station_name' => $station_name,
                     'filename' => $newFileName,
+                    'original_filename' => $originalFileName,
                     'size' => $filesize,
                     'record_date' => $recordDate,
                     'Remark' => $remark,
                     'upload_by' =>  $user_id,
                     'folder_name' => $folderType,
                     'log_type' => 'upload',
-                    'file_type' => $fileType
+                    'file_type' => $fileType,
+                    'hostname' => gethostname()
                 ];
 
  
@@ -535,6 +575,22 @@ function DownloadSelectedFiles($database,$recordDate, $baseFolderPath, $zipFileN
         return 'error';
    
     }
+}
+
+
+function AccessToPageAsPerLogin($type){
+    $pageArr = []; 
+
+    if($type == 'admin'){
+        $pageArr = ['admin.php' ,'file-logs.php' ,'add-new-user.php' , 'change-password.php' , 'priviledges.php','dashboard.php' ,'logs_lock_unlock.php']; 
+    }else if($type == 'revenuecell'){
+        $pageArr = ['revenuecell-list.php','file-logs.php','dashboard.php' ,'logs_status.php']; 
+    }else if($type == 'SI' || $type == 'si'){
+        $pageArr = ['si-list.php','dashboard.php']; 
+    }else if($type == 'station'){
+        $pageArr = ['scdata-list.php','dashboard.php']; 
+    } 
+    return $pageArr; 
 }
 
 

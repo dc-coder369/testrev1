@@ -1,6 +1,7 @@
 <?php include 'layouts/header.php'; ?>
 <main id="main" class="main">
 <?php include 'layouts/alert.php'; ?>
+  
 <div class="pagetitle">
 
 <section class="section dashboard">

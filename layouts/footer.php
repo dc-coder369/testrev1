@@ -18,7 +18,8 @@
 <script type="text/javascript">
  
 var table = new DataTable('.datatable', {
-    "lengthMenu": [ [10, 25, 50, 100, -1], [10, 25, 50, 100 ,  "All"] ],
+    "lengthMenu": [ [10,50, 100, 500, -1], [10,50, 100 , 500,  "All"] ],
+    "pageLength": "100",
     initComplete: function () {
         this.api().columns().every(function () {
             let column = this;

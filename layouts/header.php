@@ -1,5 +1,16 @@
 <?php 
 session_start(); 
+$pageArr = $_SESSION['page_access'];
+$page = basename($_SERVER['SCRIPT_FILENAME']); 
+// echo "<pre>"; print_r($pageArr); die; 
+
+if(!in_array($page,$pageArr)){
+
+  $_SESSION['error'] = "Page you try to access is not in your access list.";
+  session_commit(); 
+  header("Location: dashboard.php"); 
+}
+
 function isUserLoggedIn() {
     return isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
 } 

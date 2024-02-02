@@ -72,7 +72,7 @@ class DatabaseOperation {
         $sql .= " ORDER BY $orderBy";
     } 
 
-    // echo $sql;
+    // echo $sql;die; 
 
     $result = $this->query($sql);
 
