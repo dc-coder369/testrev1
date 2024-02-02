@@ -2,12 +2,9 @@
 <main id="main" class="main">
     <?php include 'layouts/alert.php'; ?>
     <div class="pagetitle">
-
-
         <?php
             $usersList = $database->select('tab_user_details', "*", [], "AND", 'multiple', 'id DESC', []);
-        ?>
-
+        ?> 
         <section class="section dashboard">
             <div class="row">
                 <div class="col-lg-12">
