@@ -30,8 +30,8 @@
 
               <div class="selctdatas col-6 mt-4 mb-2">
 
-              <div class="d-flex justify-content-around">
-              <!-- <select name="station_name" class="form-control" id="station_name">
+              <div class="d-flex justify-content-around col-sm-4">
+                <!-- <select name="station_name" class="form-control" id="station_name">
                 <option value="">Select Station </option>
                   <?php foreach ($userList as $user) :?>
                     <option value="<?=($user['user_code']) ? $user['user_code'] : $user['username']; ?>"
@@ -39,9 +39,7 @@
                     > <?=$user['username']; ?> </option>
                   <?php  endforeach; ?>
                 </select> -->
-                
-                <input type="date" class="form-control ml-2" style="margin-bottom:10px;" id="recordDate" value="<?= $date ?? date('Y-m-d'); ?>">
-
+                  <input type="date" class="form-control ml-2" style="margin-bottom:10px;" id="recordDate" value="<?= $date ?? date('Y-m-d'); ?>" max="<?= date('Y-m-d'); ?>">
               </div> 
                 <button class="btn btn-success mt-1" id="unlock" <?php if ($locked == 0) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>Unlock</button>
                 <button class="btn btn-danger mt-1" id="lock" <?php if ($locked == 0) : ?> style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>Lock</button>
@@ -63,7 +61,6 @@
           </div>
 
           <div class="card">
-
             <div class="card-body">
               <div class="action-buttons float-end mt-3 d-flex justify-content-around">
                 <form class="row g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-form">
@@ -78,7 +75,7 @@
               </div>
 
               <div class="d-flex justify-content-between">
-                <h5 class="card-title">RevenueCell Data</h5>
+                <h5 class="card-title">Revenue Cell Data</h5>
               </div>
 
 
@@ -88,7 +85,7 @@
                   <tr>
                     <th>SC Name </th>
                     <th>Station Name</th>
-                    <th>Filename</th>
+                    <th>Filename (System)</th>
                     <th>Category</th>
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Upload Time</th>

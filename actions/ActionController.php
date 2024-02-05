@@ -368,7 +368,7 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
             // $uniqueId = date('YMd', strtotime($recordDate));
             $uniqueId = date('YMd', strtotime($recordDate));
            
-            $prefixedFileName = $_SESSION['user_code']."_".$fileType.'_.' . $fileExtension;
+            $prefixedFileName = $_SESSION['user_code'] . "_" . $fileType . "_" . $uniqueId . "." . $fileExtension;
 
             $newFileName = getUniqueFileName($targetDir,$prefixedFileName);
  
