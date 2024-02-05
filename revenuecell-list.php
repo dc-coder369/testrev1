@@ -86,7 +86,6 @@
                     <th>SC Name </th>
                     <th>Station Name</th>
                     <th>Filename (System)</th>
-                    <th>Filename (Original) </th>
                     <th>Category</th>
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Upload Time</th>
@@ -101,7 +100,7 @@
                       <td><?= $list['Sc_Name']; ?></td>
                       <td><?= strtoupper($list['station_name']); ?></td>
                       <td><a href="<?= $path ?>" download target="_blank"><?= $list['filename']; ?></a></td>
-                      <td><?= $list['original_filename']; ?></td>
+
                       <td><?= $list['file_type']; ?></td>
                       <td><?= $list['record_date']; ?></td>
                       <td><?= $list['current_time']; ?></td>
