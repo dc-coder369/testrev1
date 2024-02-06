@@ -50,7 +50,11 @@
               </a>
             </li>
             
-
+            <li>
+              <a href="revenuecell-list.php" class="<?= ($current_page == 'revenuecell-list.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>View Data</span>
+              </a>
+            </li>
            
 
           </ul>

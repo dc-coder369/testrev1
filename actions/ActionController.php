@@ -151,6 +151,34 @@ if ($type == 'download-all-files') {
 
 }
 
+if($type == 'create log for single file')
+{
+
+    $recordDate = $reqeust['record_date'] ?? null;
+    $path = $reqeust['path'] ?? null;
+    $sc_name=$reqeust['Sc_Name'] ?? null;
+    $file_type = $reqeust['file_type'] ?? null;
+    $station_name = $reqeust['station_name'] ?? null;
+    $fileName = $reqeust['fileName'] ?? null;
+    $insert = [ 
+        'record_date' => $recordDate, 
+        'log_type' => 'download',
+        'station_name' =>$station_name,
+        'filename' => $fileName,
+        'Sc_Name' =>   $sc_name,
+    ]; 
+    $result = $database->insert('tab_logs_fileupload' , $insert ); 
+    if($result)
+    {
+        $response = json_encode(['success' => true , 'filepath' => $path ]);
+    }
+    else
+    {
+        $response = json_encode(['success' => false]);
+    }
+    echo $response;die; 
+   
+}
 
 if($type == 'update-privilege'){
     $httpRefer = basename($_SERVER['HTTP_REFERER']);  
@@ -582,7 +610,7 @@ function AccessToPageAsPerLogin($type){
     $pageArr = []; 
 
     if($type == 'admin'){
-        $pageArr = ['admin.php' ,'file-logs.php' ,'add-new-user.php' , 'change-password.php' , 'priviledges.php','dashboard.php' ,'logs_lock_unlock.php']; 
+        $pageArr = ['revenuecell-list.php','admin.php' ,'file-logs.php' ,'add-new-user.php' , 'change-password.php' , 'priviledges.php','dashboard.php' ,'logs_lock_unlock.php']; 
     }else if($type == 'revenuecell'){
         $pageArr = ['revenuecell-list.php','file-logs.php','dashboard.php' ,'logs_status.php']; 
     }else if($type == 'SI' || $type == 'si'){

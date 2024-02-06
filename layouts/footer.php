@@ -37,7 +37,7 @@ var table = new DataTable('.datatable', {
                 }
             });
         }); 
-        this.api().order([6, 'desc']).draw();
+        // this.api().order([6, 'desc']).draw();
     }
 });
 

@@ -13,7 +13,7 @@
   }
 
 
-  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', 'current_time desc');
+  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', '`current_time` desc');
  
   $userList = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
   ?>
