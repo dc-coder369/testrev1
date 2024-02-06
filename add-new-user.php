@@ -22,9 +22,9 @@
                                         var label = document.getElementById("label_station_name");
 
                                         if (userType == "Station") {
-                                            label.innerHTML = "Station Name:";
+                                            label.innerHTML = "Station Full Name:";
                                         } else if (userType == "SI") {
-                                            label.innerHTML = "Station Incharge Name:";
+                                            label.innerHTML = "Station Incharge Full Name:";
                                         }
                                     }
                                 </script>
@@ -38,7 +38,7 @@
                                         </select>
                                     </div>
                                     <div class="col-md-4">
-                                        <label id="label_station_name" for="station_name" class="form-label">Station Name:</label>
+                                        <label id="label_station_name" for="station_name" class="form-label">User Full Name:</label>
                                         <input type="text" name="station_name" class="form-control" required>
                                     </div>
                                     <div class="col-md-4">
