@@ -13,8 +13,8 @@
     $condition = [];
   }
   // echo "<prE>"; print_r($condition); die; 
-  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', 'id DESC' ,[]);
-
+  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple','`current_time` desc');
+  
   // echo "<prE>"; print_r($listArr); die; 
   ?>
   <div class="pagetitle">
@@ -162,14 +162,15 @@
 
                   <?php foreach ($listArr as $list) :
                     $path = 'actions/scdata/' . $list['folder_name'] . '/' . $list['filename'];
+                    $list['path']=$path;
                   ?>
                     <tr id="<?= $list['id']; ?>">
                      
                       <td><?= $list['Sc_Name']; ?></td>
                       <td><?= strtoupper($list['station_name']); ?></td>
-                      <td><a href="<?= $path ?>" download target="_balnk"><?= $list['filename']; ?></a></td>
+                      <td><a href="#" onclick="SingleDownload(<?= htmlspecialchars(json_encode($list), ENT_QUOTES, 'UTF-8'); ?>)"><?= $list['filename']; ?></a></td>
                       <td><?= $list['original_filename']; ?></td>
-                       <td><?= $list['file_type']; ?></td>
+                      <td><?= $list['file_type']; ?></td>
                       <td><?= $list['record_date']; ?></td>
                       <td><?= $list['current_time']; ?></td>
                       <td><?= $list['Remark']; ?></td>
@@ -260,4 +261,38 @@
       $("#file1").removeAttr('multiple');
     }
   })
+
+  function SingleDownload(val) { 
+    $.ajax({ 
+      url: "actions/ActionController.php", // Replace with the actual API endpoint
+      method: "GET", // Use GET or POST depending on your API requirements
+      data: {
+        "type": "create log for single file",
+        "path": val.path,
+        "Sc_name": val.Sc_Name,
+        "file_type": val.file_type,
+        "station_name": val.station_name,
+        "record_date": val.record_date,
+        "fileName": val.filename,
+      }, // Pass any data you need to send to the server
+      dataType: "json", // Specify the expected data type
+      success: function(response) {
+        var path = response.filepath
+        var link = document.createElement('a');
+          link.href = path;
+          link.target = "_blank"; // Open in a new tab
+          link.download = path.split('/').pop(); // Set the filename to be downloaded
+
+          // Simulate a click event to trigger the download
+          document.body.appendChild(link);
+          link.click(); 
+          // Clean up
+          document.body.removeChild(link);
+      },
+      error: function(error) {
+        // Handle the error here
+        console.error("Error fetching data:", error);
+      }
+    }); 
+  }
 </script>

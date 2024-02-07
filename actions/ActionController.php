@@ -358,7 +358,10 @@ function getUniqueFileName($targetDir ,$fileName) {
     $newFileName = $baseName . '.' . $extension;
 
     // echo $targetDir.$newFileName; die; 
-
+    if(!file_exists($targetDir.$newFileName))
+    { 
+        $newFileName = $baseName .'_'. $counter . '.' . $extension; 
+    }
     while (file_exists($targetDir.$newFileName)) {
         $newFileName = $baseName .'_'. $counter . '.' . $extension;
         $counter++;
@@ -407,7 +410,7 @@ function resetSessionMessages()
 function handleFileUpload($database, $fileArray, $folderType, $recordDate, $station_name, $sc_name, $remark ,  $user_id, $fileType )
 {
     // Create the date-wise folder
-    $baseFolder = 'scdata/';
+    $baseFolder = 'scdata';
     $folderPath = createFolder($baseFolder,$folderType); 
 
     // Handle multiple file uploads
@@ -432,6 +435,7 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
             $newFileName = getUniqueFileName($targetDir,$prefixedFileName);
  
             $targetFile = $targetDir . handleDuplicateFile($newFileName, $targetDir);  
+           
             if (move_uploaded_file($fileArray['tmp_name'][$i], $targetFile)) {
                
                 $filesize = round($_FILES['files']['size'][$i] / 1024 / 1024, 2);
@@ -482,9 +486,10 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
 function handleDuplicateFile($prefixedFileName, $targetDir)
 {
     $targetFile = $targetDir . $prefixedFileName;
-
-    // Check if the file already exists
     $counter = 1;
+
+   
+    // Check if the file already exists
     while (file_exists($targetFile)) {
         // File already exists, add a number to the filename
         $prefixedFileName = pathinfo($prefixedFileName, PATHINFO_FILENAME) . "_$counter." . pathinfo($prefixedFileName, PATHINFO_EXTENSION);
@@ -641,7 +646,7 @@ function AccessToPageAsPerLogin($type){
     $pageArr = []; 
 
     if($type == 'admin'){
-        $pageArr = ['revenuecell-list.php','admin.php' ,'file-logs.php' ,'add-new-user.php' , 'change-password.php' , 'priviledges.php','dashboard.php' ,'logs_lock_unlock.php']; 
+        $pageArr = ['download-log.php','revenuecell-list.php','admin.php' ,'file-logs.php' ,'add-new-user.php' , 'change-password.php' , 'priviledges.php','dashboard.php' ,'logs_lock_unlock.php']; 
     }else if($type == 'revenuecell'){
         $pageArr = ['revenuecell-list.php','file-logs.php','dashboard.php' ,'logs_status.php']; 
     }else if($type == 'SI' || $type == 'si'){

@@ -23,6 +23,7 @@ var table = new DataTable('.datatable', {
     'scrollX': true,
     "scrollCollapse": true,
     "autoWidth": false,
+    "order": [] ,
     initComplete: function () {
         this.api().columns().every(function () {
             let column = this;
@@ -40,7 +41,7 @@ var table = new DataTable('.datatable', {
                 }
             });
         }); 
-        this.api().order([]).draw();
+       
     }
 });
 
