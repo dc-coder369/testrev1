@@ -254,6 +254,37 @@ if ($type == 'update-password') {
 
 }
 
+// Function to convert full name of file category to short code of file category
+function generateCategoryCodeFromCategoryName($categoryName) {
+    // Define an associative array mapping full names to short codes
+    $categoryMappings = array(
+        "Daily Earning Sheet" => "DER",
+        "SBI POS Transaction" => "SPOS",
+        "Paytm POS Transaction" => "PPOS",
+        "URC Images" => "URCI",
+        "URC" => "URC",
+        "Manual Collection" => "MC",
+        "Penalty" => "PR",
+        "Refund Memo" => "RM",
+        "Outstanding" => "OS",
+        "Forfeit Format" => "FOF",
+        "1st Periodical" => "1stP",
+        "2nd Periodical" => "2ndP",
+        "3rd Periodical" => "3rdP",
+        "Balance Sheet" => "BS",
+        "Ref. Def. CSC / Def. CST" => "DR-CSC-CST"
+    );
+
+    // Check if the category name exists in the mappings array
+    if (array_key_exists($categoryName, $categoryMappings)) {
+        // Return the corresponding short code
+        return $categoryMappings[$categoryName];
+    } else {
+        // If category name not found, return an error message or handle it as needed
+        return "OTH";
+    }
+}
+
 if ($type == 'upload-files') {
 
     $recordDate = $_POST['recordDate']; 
@@ -269,7 +300,7 @@ if ($type == 'upload-files') {
     $user_id = isset($_POST['user_id']) ? $_POST['user_id'] : '';
     // $station_name_si = isset($_POST['station_name_si']) ? $_POST['station_name_si'] : ''; 
     $station_name = $_SESSION['stationname']; 
-    $fileType = str_replace(" ","_",$_POST['fileType']) ; 
+    $fileType = generateCategoryCodeFromCategoryName($_POST['fileType']) ; 
     $httpRefer = basename($_SERVER['HTTP_REFERER']);  
     $fileNamephp = parse_url($httpRefer, PHP_URL_PATH);
 
@@ -394,7 +425,7 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
             $filenameWithoutExtension = $fileInfo['filename'];
 
             // $uniqueId = date('YMd', strtotime($recordDate));
-            $uniqueId = date('YMd', strtotime($recordDate));
+            $uniqueId = date('d-m-y', strtotime($recordDate));
            
             $prefixedFileName = $_SESSION['user_code'] . "_" . $fileType . "_" . $uniqueId . "." . $fileExtension;
 
