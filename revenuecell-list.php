@@ -80,7 +80,7 @@
 
 
               <!-- Table with stripped rows -->
-              <table class="table datatable table-responsive table-hover">
+              <table class="table datatable table-responsive table-hover display nowrap">
                 <thead>
                   <tr>
                     <th>SC Name </th>

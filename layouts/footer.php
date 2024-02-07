@@ -20,6 +20,9 @@
 var table = new DataTable('.datatable', {
     "lengthMenu": [ [10,50, 100, 500, -1], [10,50, 100 , 500,  "All"] ],
     "pageLength": "100",
+    'scrollX': true,
+    "scrollCollapse": true,
+    "autoWidth": false,
     initComplete: function () {
         this.api().columns().every(function () {
             let column = this;
@@ -37,7 +40,7 @@ var table = new DataTable('.datatable', {
                 }
             });
         }); 
-        // this.api().order([6, 'desc']).draw();
+        this.api().order([]).draw();
     }
 });
 
