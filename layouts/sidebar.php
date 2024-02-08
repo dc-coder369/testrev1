@@ -45,6 +45,12 @@
             </li>
 
             <li>
+              <a href="download-log.php" class="<?= ($current_page == 'download-log.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>Downloaded Files Logs</span>
+              </a>
+            </li>
+
+            <li>
               <a href="logs_lock_unlock.php" class="<?= ($current_page == 'logs_lock_unlock.php') ? 'active' : '' ?>">
                 <i class="bi bi-circle"></i><span>Logs Lock Unlock</span>
               </a>

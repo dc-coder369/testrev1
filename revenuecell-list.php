@@ -41,9 +41,10 @@
                 </select> -->
                   <input type="date" class="form-control ml-2" style="margin-bottom:10px;" id="recordDate" value="<?= $date ?? date('Y-m-d'); ?>" max="<?= date('Y-m-d'); ?>">
               </div> 
+              <?php if ($_SESSION['account_type'] != 'admin') :?>
                 <button class="btn btn-success mt-1" id="unlock" <?php if ($locked == 0) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>Unlock</button>
                 <button class="btn btn-danger mt-1" id="lock" <?php if ($locked == 0) : ?> style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>Lock</button>
-
+              <?php endif;?>
               </div>
               <div class="">
                 <?php foreach ($userList as $user) :
@@ -80,7 +81,7 @@
 
 
               <!-- Table with stripped rows -->
-              <table class="table datatable table-responsive table-hover display nowrap">
+              <table class="table datatable table-responsive table-hover">
                 <thead>
                   <tr>
                     <th>SC Name </th>
@@ -190,8 +191,9 @@
   }
 
 
-  function postAjax(date, user_code='' , lock_upload) {
+  function postAjax(date,lock_upload, user_code='') {
     var current = location.origin + location.pathname;
+    console.log(lock_upload);
     $.ajax({
       url: "actions/ActionController.php", // Replace with the actual API endpoint
       method: "post", // Use GET or POST depending on your API requirements
