@@ -61,7 +61,11 @@
                 <i class="bi bi-circle"></i><span>View Data</span>
               </a>
             </li>
-           
+            <li>
+              <a href="view-reports-uploaded-by-revenuecell.php" class="<?= ($current_page == 'view-reports-uploaded-by-revenuecell.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>Report Uploaded By Revenuecell</span>
+              </a>
+            </li>
 
           </ul>
         </li>
