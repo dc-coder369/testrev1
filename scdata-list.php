@@ -41,13 +41,7 @@
                       <input type="date" class="form-control" name="recordDate" id="recordDate" value="<?php echo htmlspecialchars($date ?? date('Y-m-d')); ?>" min="2023-11-01" max="<?php echo date('Y-m-d'); ?>" onkeydown="return false">
                     </div>
                   </div>
-                </div>
-                <?php if ($_SESSION['account_type'] != 'admin') :?>
-                  <button type="button" class="btn btn-success mt-1" id="unlock" <?php if ($locked == 0) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>Unlock</button>
-                  <button type="button" class="btn btn-danger mt-1" id="lock" <?php if ($locked == 0) : ?> style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>Lock</button>
-              <?php endif;?>
-
-
+                </div> 
 
                 <div id="file-upload-area" <?php if ($locked) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>
                   <div class="row mt-2">
@@ -299,53 +293,5 @@
       }
     }); 
   }
-  $("#lock").click(function() {
-    var date = $("#recordDate").val();
-    var station_name = $("#station_name").find(':selected').val();
-
-      console.log("station_name",station_name)
-      postAjax(date, 1)
-    // postAjax(date, station_name, 1);
-  })
-
-  $("#unlock").click(function() {
-    var date = $("#recordDate").val();
-    var station_name = $("#station_name").find(':selected').val();
-    // postAjax(date, station_name, 0);
-     postAjax(date, 0)
-  })
-
-  function postAjax(date,lock_upload, user_code='') {
-    var current = location.origin + location.pathname;
-    console.log(lock_upload);
-    $.ajax({
-      url: "actions/ActionController.php", // Replace with the actual API endpoint
-      method: "post", // Use GET or POST depending on your API requirements
-      data: {
-        "type": "update_lock_status",
-        date: date,
-        user_code :user_code,
-        'status': lock_upload
-      }, // Pass any data you need to send to the server
-      dataType: "json", // Specify the expected data type
-      success: function(response) {
-        if (response.lock_upload == "1" || response.lock_upload == 1) {
-          $("#unlock").show();
-          $("#lock").hide();
-          current += '?date=' + date + '&i=' + response.lock_upload;
-
-        } else {
-
-          $("#unlock").hide();
-          $("#lock").show();
-          current += '?date=' + date + '&i=' + response.lock_upload;
-        }
-        location.href = current;
-      },
-      error: function(error) {
-        // Handle the error here
-        console.error("Error fetching data:", error);
-      }
-    });
-  }
+  
 </script>

@@ -7,9 +7,9 @@
   $date = (isset($_GET['date'])) ? $_GET['date'] : '';
   $locked = (isset($_GET['i'])) ? $_GET['i'] : '';
   if ($date) {
-    $condition = ['record_date' => $date ,'log_type' => 'upload','upload_account_type'=>'revenuecell'];
+    $condition = ['record_date' => $date ,'log_type' => 'upload','uploaded_for'=>'revenuecell'];
   } else {
-    $condition = ['log_type' => 'upload','upload_account_type'=>'revenuecell'];
+    $condition = ['log_type' => 'upload','uploaded_for'=>'revenuecell'];
   }
 
 
