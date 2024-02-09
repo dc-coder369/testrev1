@@ -42,8 +42,11 @@
                   <input type="date" class="form-control ml-2" style="margin-bottom:10px;" id="recordDate" value="<?= $date ?? date('Y-m-d'); ?>" max="<?= date('Y-m-d'); ?>">
               </div> 
              
-                <button class="btn btn-success mt-1" id="unlock" <?php if ($locked == 0) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>Unlock</button>
-                <button class="btn btn-danger mt-1" id="lock" <?php if ($locked == 0) : ?> style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>Lock</button>
+                <?php if ($_SESSION['username'] == "revenuecell") : ?>
+					<button class="btn btn-success mt-1" id="unlock" <?php if ($locked == 0) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>Unlock</button>
+					<button class="btn btn-danger mt-1" id="lock" <?php if ($locked == 0) : ?> style="display: block;" <?php else : ?> style="display: none;" <?php endif; ?>>Lock</button>
+				<?php endif; ?>
+
  
               </div>
               <div class="">
