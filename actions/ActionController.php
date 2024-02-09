@@ -43,7 +43,7 @@ if ($type == 'local_unlock_status') {
 if ($type == 'update_lock_status') {
 
     $table = "tab_status_lockupload";
-    $dataToUpdate = [  'lock_upload' => $reqeust['status'], 'user_code' => $reqeust['user_code'] ];
+    $dataToUpdate = [  'lock_upload' => $reqeust['status'] ];
     $condition = 'date="'.$reqeust['date'].'"';
 
     $insert = [ 
