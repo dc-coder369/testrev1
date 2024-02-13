@@ -13,7 +13,7 @@
   }
 
 
-  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', '`current_time` desc');
+  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', '`upload_time` desc');
  
   $userList = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
   ?>
@@ -91,7 +91,7 @@
                       <td><?= $list['original_filename']; ?></td>
                       <td><?= $list['file_type']; ?></td>
                       <td><?= $list['record_date']; ?></td>
-                      <td><?= $list['current_time']; ?></td>
+                      <td><?= $list['upload_time']; ?></td>
                       <td><?= $list['Remark']; ?></td>
                       <?php if($_SESSION['account_type'] == 'admin'):?>   <td><?= $list['hostname']; ?></td> <?php endif; ?>
                     </tr>

@@ -119,11 +119,11 @@
                 <i class="bi bi-circle"></i><span>Log Lock/unclock Status</span>
               </a>
             </li>
-
-
-            
-
-
+            <li>
+              <a href="upload-data-for-higher-authority.php" class="<?= ($current_page == 'upload-data-for-higher-authority.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>upload data for higher authority</span>
+              </a>
+            </li>
           </ul>
         </li>
       <?php endif; ?>
