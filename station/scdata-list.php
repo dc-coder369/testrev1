@@ -169,7 +169,7 @@
                       <td><a href="<?= $path ?>" download target="_balnk"><?= $list['filename']; ?></a></td>
                        <td><?= $list['file_type']; ?></td>
                       <td><?= $list['record_date']; ?></td>
-                      <td><?= $list['upload_time']; ?></td>
+                      <td><?= $list['current_time']; ?></td>
                       <td><?= $list['Remark']; ?></td>
                     </tr>
 

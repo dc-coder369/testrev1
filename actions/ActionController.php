@@ -43,28 +43,21 @@ if ($type == 'local_unlock_status') {
 if ($type == 'update_lock_status') {
 
     $table = "tab_status_lockupload";
-    $dataToUpdate = [ 'lock_upload' => $reqeust['status'] ];
+    $dataToUpdate = [  'lock_upload' => $reqeust['status'] ];
     $condition = 'date="'.$reqeust['date'].'"';
-    $stations = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
-        $insert = [ 
-            'date' => $reqeust['date'], 
-            'lock_status' => ($reqeust['status'] == 1) ? 'Locked' : 'Unlocked', 
-            'timestamp' =>date('Y-m-d H:i:s')
-        ]; 
-        $database->insert('tab_logs_lockunlock' , $insert ); 
 
-        if ($database->update($table, $dataToUpdate, $condition)) { 
-            foreach($stations as $station)
-            {
-                $updating_all = [  
-                    $station['user_code'] => ($reqeust['status'] == 1) ? '1' : '0',  
-                ]; 
-                $database->update($table, $updating_all, $condition);
-            }
-            $response = json_encode(['success' => true , 'lock_upload' => $reqeust['status'] ]);
-        }else{
-            $response = json_encode(['success' => false]);
-        } 
+    $insert = [ 
+        'date' => $reqeust['date'], 
+        'lock_status' => ($reqeust['status'] == 1) ? 'Locked' : 'Unlocked', 
+        'timestamp' =>date('Y-m-d H:i:s')
+    ];  
+    $database->insert('tab_logs_lockunlock' , $insert ); 
+
+    if ($database->update($table, $dataToUpdate, $condition)) { 
+        $response = json_encode(['success' => true , 'lock_upload' => $reqeust['status'] ]);
+    }else{
+        $response = json_encode(['success' => false]);
+    }
     echo $response;die; 
 
 
@@ -90,24 +83,28 @@ if ($type == 'logout') {
 
 
 if ($type == 'download-all-latest') {
-    $recordDate = $_POST['hiddenrecordDate2'];
-    $date = new DateTime($recordDate);
-    $result = $database->query("SELECT filename, id 
-    FROM tab_logs_fileupload 
-    WHERE log_type = 'upload' 
-    AND (file_type, upload_by,record_date, upload_time) IN ( 
-        SELECT file_type, upload_by,record_date, MAX(upload_time) AS latest_uploaded_at 
-        FROM tab_logs_fileupload 
-        WHERE log_type = 'upload' 
-        GROUP BY file_type, upload_by, record_date);");
-    while ($row = $database->fetchAssoc($result)) {
-        $data[] = $row;
-    }  
+
+    $result = $database->select('tab_logs_fileupload', "filename,id", ['log_type' => 'upload'], "AND", 'multiple');
+
     $latestFilename = '';
     $latestIds = [];
-    foreach ($result as $file) { 
-         $latestIds[] = $file['id']; 
-    } 
+    foreach ($result as $file) {
+        preg_match('/_[0-9]+\.csv/', $file['filename'], $matches);
+
+        if (isset($matches[0])) {
+            // Extract the version number and convert it to an integer
+            $versionNumber = (int)trim($matches[0], '_');
+    
+            // Compare and update if the current version is higher
+            if ($versionNumber > end($latestIds)) {
+                $latestIds = [$file['id']];
+                $latestFilename = $file['filename'];
+            } elseif ($versionNumber === end($latestIds)) {
+                // If the version number is the same, add the ID to the list
+                $latestIds[] = $file['id'];
+            }
+        }
+    }
     $response = DownloadSelectedFiles($database,$recordDate, 'scdata/', $recordDate . '.zip', 'scdata/' . $recordDate . '.zip', $latestIds);
 
     echo "Latest Filename: $latestFilename\n";
@@ -303,7 +300,6 @@ if ($type == 'upload-files') {
     $user_id = isset($_POST['user_id']) ? $_POST['user_id'] : '';
     // $station_name_si = isset($_POST['station_name_si']) ? $_POST['station_name_si'] : ''; 
     $station_name = $_SESSION['stationname']; 
-    $uploaded_for = $_SESSION['user_code'];
     $fileType = generateCategoryCodeFromCategoryName($_POST['fileType']) ; 
     $httpRefer = basename($_SERVER['HTTP_REFERER']);  
     $fileNamephp = parse_url($httpRefer, PHP_URL_PATH);
@@ -331,7 +327,7 @@ if ($type == 'upload-files') {
 
             $folderType = $fileType.'/'. $folderArr[0].'/'.$folderArr[1].'/'.$folderArr[2]; 
             // $folderType = "Data-scdata-Earning-Data-". $recordDate; 
-            handleFileUpload($database,$_FILES['files'], $folderType, $recordDate, $station_name, $sc_name, $remark , $user_id, $fileType ,$uploaded_for );
+            handleFileUpload($database,$_FILES['files'], $folderType, $recordDate, $station_name, $sc_name, $remark , $user_id, $fileType );
 
             header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
             
@@ -411,7 +407,7 @@ function resetSessionMessages()
 
 
 
-function handleFileUpload($database, $fileArray, $folderType, $recordDate, $station_name, $sc_name, $remark ,  $user_id, $fileType,$uploaded_for)
+function handleFileUpload($database, $fileArray, $folderType, $recordDate, $station_name, $sc_name, $remark ,  $user_id, $fileType )
 {
     // Create the date-wise folder
     $baseFolder = 'scdata';
@@ -456,7 +452,6 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
                     'folder_name' => $folderType,
                     'log_type' => 'upload',
                     'file_type' => $fileType,
-                    'uploaded_for'=>$uploaded_for ?? NULL,
                     'hostname' => gethostname()
                 ];
 
@@ -651,9 +646,9 @@ function AccessToPageAsPerLogin($type){
     $pageArr = []; 
 
     if($type == 'admin'){
-        $pageArr = ['view-reports-uploaded-by-revenuecell.php','view-reports-uploaded-by-revenuecell.php','download-log.php','revenuecell-list.php','admin.php' ,'file-logs.php' ,'add-new-user.php' , 'change-password.php' , 'priviledges.php','dashboard.php' ,'logs_lock_unlock.php']; 
+        $pageArr = ['view-reports-uploaded-by-revenuecell.php','download-log.php','revenuecell-list.php','admin.php' ,'file-logs.php' ,'add-new-user.php' , 'change-password.php' , 'priviledges.php','dashboard.php' ,'logs_lock_unlock.php']; 
     }else if($type == 'revenuecell'){
-        $pageArr = ['upload-data-for-higher-authority.php','revenuecell-list.php','file-logs.php','dashboard.php' ,'logs_status.php']; 
+        $pageArr = ['revenuecell-list.php','file-logs.php','dashboard.php' ,'logs_status.php']; 
     }else if($type == 'SI' || $type == 'si'){
         $pageArr = ['si-list.php','dashboard.php']; 
     }else if($type == 'station'){

@@ -13,7 +13,7 @@
     $condition = [];
   }
   // echo "<prE>"; print_r($condition); die; 
-  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple','`upload_time` desc');
+  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple','`current_time` desc');
   
   // echo "<prE>"; print_r($listArr); die; 
   ?>
@@ -170,7 +170,7 @@
                       <td><?= $list['original_filename']; ?></td>
                       <td><?= $list['file_type']; ?></td>
                       <td><?= $list['record_date']; ?></td>
-                      <td><?= $list['upload_time']; ?></td>
+                      <td><?= $list['current_time']; ?></td>
                       <td><?= $list['Remark']; ?></td>
                     </tr>
 
