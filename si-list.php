@@ -21,7 +21,7 @@
     $condition = [];
   }
 
-  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', 'current_time desc');
+  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', 'upload_time desc');
   $UserList = $database->select('tab_user_details', "*", ['id' => $_SESSION['user_id']], "AND", 'single', 'id DESC');
   $SessionList = explode(',', $UserList['stations_allotted']);
 
@@ -184,7 +184,7 @@
                       <td><a href="<?= $path ?>" download target="_balnk"><?= $list['filename']; ?></a></td>
                       <td><?= $list['file_type']; ?></td>
                       <td><?= $list['record_date']; ?></td>
-                      <td><?= $list['current_time']; ?></td>
+                      <td><?= $list['upload_time']; ?></td>
                       <td><?= $list['Remark']; ?></td>
                     </tr>
 

@@ -4,18 +4,18 @@
 
 
   <?php
- 
+  //  echo  $_SESSION['stationname']; die;
   $date = (isset($_GET['date'])) ? $_GET['date'] : '';
   $locked = (isset($_GET['i'])) ? $_GET['i'] : '';
   if ($date) {
-   $condition = ['record_date' => $date ,'log_type' => 'upload','station_name' => $_SESSION['stationname']];
+   $condition = ['log_type' => 'upload','station_name' => $_SESSION['stationname']];
   } else {
     $condition = [];
   }
-
-  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', 'id DESC' ,[]);
-
-  //  echo "<prE>"; print_r($listArr); die; 
+  // echo "<prE>"; print_r($condition); die; 
+  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple','`upload_time` desc');
+  
+  // echo "<prE>"; print_r($listArr); die; 
   ?>
   <div class="pagetitle">
 
@@ -41,9 +41,7 @@
                       <input type="date" class="form-control" name="recordDate" id="recordDate" value="<?php echo htmlspecialchars($date ?? date('Y-m-d')); ?>" min="2023-11-01" max="<?php echo date('Y-m-d'); ?>" onkeydown="return false">
                     </div>
                   </div>
-                </div>
-
-
+                </div> 
 
                 <div id="file-upload-area" <?php if ($locked) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>
                   <div class="row mt-2">
@@ -51,7 +49,7 @@
 
                     <div class="col-md-6">
                       <label for="validationDefault04" class="form-label">Select File Type:</label>
-                      <select class="form-control" name="fileType" required>
+                      <select class="form-control" name="fileType" id="select-file-type" required>
                         <?php foreach ($checkBoxArr as $check) : ?>
                           <option><?= $check; ?> </option>
                         <?php endforeach;  ?>
@@ -63,7 +61,7 @@
 
                     <div class="col-md-6">
                       <label for="validationDefault03" class="form-label">Choose a File:</label>
-                      <input type="file" class="form-control" id="file1" name="files[]" multiple>
+                      <input type="file" class="form-control" id="file1" name="files[]">
                       <span class="form-text text-muted">Upload File of the Selected Category</span>
 
                     </div>
@@ -150,6 +148,7 @@
                     <th>SC Name </th>
                     <th>Station Name</th>
                     <th>Filename (System)</th>
+                    <th>Filename (Original)</th>
                      <th>Category</th>
 
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
@@ -161,13 +160,15 @@
 
                   <?php foreach ($listArr as $list) :
                     $path = 'actions/scdata/' . $list['folder_name'] . '/' . $list['filename'];
+                    $list['path']=$path;
                   ?>
                     <tr id="<?= $list['id']; ?>">
                      
                       <td><?= $list['Sc_Name']; ?></td>
                       <td><?= strtoupper($list['station_name']); ?></td>
-                      <td><a href="<?= $path ?>" download target="_balnk"><?= $list['filename']; ?></a></td>
-                       <td><?= $list['file_type']; ?></td>
+                      <td><a href="#" onclick="SingleDownload(<?= htmlspecialchars(json_encode($list), ENT_QUOTES, 'UTF-8'); ?>)"><?= $list['filename']; ?></a></td>
+                      <td><?= $list['original_filename']; ?></td>
+                      <td><?= $list['file_type']; ?></td>
                       <td><?= $list['record_date']; ?></td>
                       <td><?= $list['upload_time']; ?></td>
                       <td><?= $list['Remark']; ?></td>
@@ -181,8 +182,9 @@
                   <tr>
                     <th>SC Name </th>
                     <th>Station Name</th>
-                    <th>Filename</th>
-                     <th>Category</th>
+                    <th>Filename (System)</th>
+                    <th>Filename (Original)</th>
+                    <th>Category</th>
 
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Upload Time</th>
@@ -229,13 +231,13 @@
       success: function(response) {
         var current = location.origin + location.pathname;
       
-        if (response.lock_upload == "1" || response.lock_upload == 1) {
+        if (response == "1" || response == 1) {
           
           $("#file-upload-area").hide();
-          current += '?date=' + val + '&i=' + response.lock_upload;
+          current += '?date=' + val + '&i=' + response;
           // alert("You can't upload file Locked from Backend"); 
         } else {
-          current += '?date=' + val + '&i=' + response.lock_upload;
+          current += '?date=' + val + '&i=' + response;
           $("#file-upload-area").show();
         }
         location.href = current;
@@ -248,4 +250,48 @@
     });
 
   }
+
+  $("#select-file-type").change(function(){
+    var vd = $(this).find(":selected").val(); 
+    if(vd == "URC Images"){
+      $("#file1").prop('multiple',true);
+    }else{
+      $("#file1").removeAttr('multiple');
+    }
+  })
+
+  function SingleDownload(val) { 
+    $.ajax({ 
+      url: "actions/ActionController.php", // Replace with the actual API endpoint
+      method: "GET", // Use GET or POST depending on your API requirements
+      data: {
+        "type": "create log for single file",
+        "path": val.path,
+        "Sc_name": val.Sc_Name,
+        "file_type": val.file_type,
+        "station_name": val.station_name,
+        "record_date": val.record_date,
+        "fileName": val.filename,
+      }, // Pass any data you need to send to the server
+      dataType: "json", // Specify the expected data type
+      success: function(response) {
+        var path = response.filepath
+        var link = document.createElement('a');
+          link.href = path;
+          link.target = "_blank"; // Open in a new tab
+          link.download = path.split('/').pop(); // Set the filename to be downloaded
+
+          // Simulate a click event to trigger the download
+          document.body.appendChild(link);
+          link.click(); 
+          // Clean up
+          document.body.removeChild(link);
+      },
+      error: function(error) {
+        // Handle the error here
+        console.error("Error fetching data:", error);
+      }
+    }); 
+  }
+  
 </script>

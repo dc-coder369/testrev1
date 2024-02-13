@@ -13,7 +13,7 @@
   }
 
 
-  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', '`current_time` desc');
+  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', '`upload_time` desc');
 
   // $listArr = $database->select('tab_status_lockupload', "*", [], "AND", 'multiple');
   $userList = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
@@ -30,18 +30,19 @@
 
               <div class="selctdatas col-6 mt-4 mb-2">
 
-              <div class="d-flex justify-content-around col-sm-4">
-                <!-- <select name="station_name" class="form-control" id="station_name">
-                <option value="">Select Station </option>
+              <div class="d-flex justify-content-around col-sm-4"> 
+                  <input type="date" class="form-control ml-2" style="margin-bottom:10px;" id="recordDate" value="<?= $date ?? date('Y-m-d'); ?>" max="<?= date('Y-m-d'); ?>">
+              </div> 
+              <!-- <div class="d-flex justify-content-around col-sm-4">
+                <select name="station_name" class="form-control" id="station_name">
+                <option value="all" selected>All Station </option>
                   <?php foreach ($userList as $user) :?>
                     <option value="<?=($user['user_code']) ? $user['user_code'] : $user['username']; ?>"
                     
                     > <?=$user['username']; ?> </option>
                   <?php  endforeach; ?>
-                </select> -->
-                  <input type="date" class="form-control ml-2" style="margin-bottom:10px;" id="recordDate" value="<?= $date ?? date('Y-m-d'); ?>" max="<?= date('Y-m-d'); ?>">
-              </div> 
-             
+                </select>
+              </div>  -->
                 <button class="btn btn-success mt-1" id="unlock" <?php if ($locked == 0) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>Unlock</button>
                 <button class="btn btn-danger mt-1" id="lock" <?php if ($locked == 0) : ?> style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>Lock</button>
  
@@ -64,15 +65,16 @@
           <div class="card">
             <div class="card-body">
               <div class="action-buttons float-end mt-3 d-flex justify-content-around">
-                <form class="row g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-form">
+                <form class="g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-form">
                   <input type="hidden" name="type" value="download-all-files">
                   <input type="hidden" name="hiddenrecordDate2" value="<?= $date ?? date('Y-m-d'); ?>">
                   <button type="submit" class="btn btn-info" id="download-files-btn">Download All</button>
                 </form>
-                <!-- <form class="row g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-latest">
+                <form class="g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-latest">
                   <input type="hidden" name="type" value="download-all-latest"> 
-                  <button type="submit" class="btn btn-info" id="download-files-btn">Download All Latest</button>
-                </form> -->
+                  <input type="hidden" name="hiddenrecordDate2" value="<?= $date ?? date('Y-m-d'); ?>">
+                  <button type="submit" class="btn btn-secondary" id="download-files-btn">Download All Latest</button>
+                </form>
               </div>
 
               <div class="d-flex justify-content-between">
@@ -106,7 +108,7 @@
                       <td><?= $list['original_filename']; ?></td>
                       <td><?= $list['file_type']; ?></td>
                       <td><?= $list['record_date']; ?></td>
-                      <td><?= $list['current_time']; ?></td>
+                      <td><?= $list['upload_time']; ?></td>
                       <td><?= $list['Remark']; ?></td>
                     </tr>
 
@@ -230,7 +232,7 @@
     var station_name = $("#station_name").find(':selected').val();
 
       console.log("station_name",station_name)
-      postAjax(date, 1)
+      postAjax(date, 1,station_name)
     // postAjax(date, station_name, 1);
   })
 
@@ -238,7 +240,7 @@
     var date = $("#recordDate").val();
     var station_name = $("#station_name").find(':selected').val();
     // postAjax(date, station_name, 0);
-     postAjax(date, 0)
+     postAjax(date, 0,station_name)
   })
 
   function SingleDownload(val) { 
