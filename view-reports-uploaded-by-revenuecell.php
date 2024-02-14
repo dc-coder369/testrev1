@@ -68,14 +68,12 @@
               <table class="table datatable table-responsive table-hover">
                 <thead>
                   <tr>  
-                    <th>SC Name </th>
-                    <th>Station Name</th>
+                    <th>CRA Name </th> 
                     <th>Filename (System)</th>
                     <th>Filename (Original)</th>
-                    <th>Category</th> 
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Upload Time</th>
-                    <th>Remark</th>
+                    <th>Description</th>
                     <?php if($_SESSION['account_type'] == 'admin'):?>  <th>HostName</th><?php endif; ?>
                   </tr>
                 </thead>
@@ -85,11 +83,9 @@
                     $list['path']=$path;
                   ?>
                    <tr id="<?= $list['id']; ?>"> 
-                      <td><?= $list['Sc_Name']; ?></td>
-                      <td><?= strtoupper($list['station_name']); ?></td>
+                      <td><?= $list['Sc_Name']; ?></td> 
                       <td><a href="#" onclick="SingleDownload(<?= htmlspecialchars(json_encode($list), ENT_QUOTES, 'UTF-8'); ?>)"><?= $list['filename']; ?></a></td>
                       <td><?= $list['original_filename']; ?></td>
-                      <td><?= $list['file_type']; ?></td>
                       <td><?= $list['record_date']; ?></td>
                       <td><?= $list['upload_time']; ?></td>
                       <td><?= $list['Remark']; ?></td>
@@ -102,11 +98,9 @@
                 </tbody>
                 <tfoot>
                   <tr>  
-                    <th>SC Name </th>
-                    <th>Station Name</th>
+                    <th>CRA Name </th> 
                     <th>Filename (System)</th>
-                    <th>Filename (Original)</th>
-                    <th>Category</th> 
+                    <th>Filename (Original)</th> 
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Upload Time</th>
                     <th>Remark</th>
