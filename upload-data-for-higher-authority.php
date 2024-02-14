@@ -73,7 +73,7 @@
                     </div> -->
                     <div class="col-md-6">
                       <label for="inputDate" class="form-label">Uploaded By</label>
-                      <input type="text" class="form-control" name="sc_name" placeholder="Enter SC name" required>
+                      <input type="text" class="form-control" name="sc_name" placeholder="Enter your name" required>
                     </div>
                   </div>
                   <div class="row mt-2 d-none">
