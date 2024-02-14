@@ -27,7 +27,7 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Upload Files</h5>
-
+              <input type="hidden" name="user_code" id="user_code" value="<?= $_SESSION['user_code']; ?>">
               <!-- Browser Default Validation -->
               <form class="g-3" method="post" enctype="multipart/form-data" id="uploadForm" action="actions/ActionController.php">
 
@@ -230,14 +230,14 @@
       dataType: "json", // Specify the expected data type
       success: function(response) {
         var current = location.origin + location.pathname;
-      
-        if (response.lock_upload == "1" || response.lock_upload == 1) {
+        var user_code = document.getElementById("user_code").value;
+        if (response[user_code] == "1" || response[user_code] == 1) {
           
           $("#file-upload-area").hide();
-          current += '?date=' + val + '&i=' + response.lock_upload;
+          current += '?date=' + val + '&i=' + response[user_code];
           // alert("You can't upload file Locked from Backend"); 
         } else {
-          current += '?date=' + val + '&i=' + response.lock_upload;
+          current += '?date=' + val + '&i=' + response[user_code];
           $("#file-upload-area").show();
         }
         location.href = current;
