@@ -108,12 +108,21 @@ if ($type == 'download-all-latest') {
     foreach ($result as $file) { 
          $latestIds[] = $file['id']; 
     } 
-    $response = DownloadSelectedFiles($database,$recordDate, 'scdata/', $recordDate . '.zip', 'scdata/' . $recordDate . '.zip', $latestIds);
+    if(!empty($latestIds))
+    {
+        $response = DownloadSelectedFiles($database,$recordDate, 'scdata/', $recordDate . '.zip', 'scdata/' . $recordDate . '.zip', $latestIds);
 
-    echo "Latest Filename: $latestFilename\n";
-    echo "Latest IDs: " . implode(', ', $latestIds) . "\n";die; 
-
-    echo "<pre>"; print_r( $result); die; 
+        echo "Latest Filename: $latestFilename\n";
+        echo "Latest IDs: " . implode(', ', $latestIds) . "\n";die; 
+    
+        echo "<pre>"; print_r( $result); die; 
+    }
+    else
+    {
+        $response = 'error';
+        $message ="There is no file to download";  
+    }
+  
 
 }
 if ($type == 'download-all-files') {
@@ -132,10 +141,7 @@ if ($type == 'download-all-files') {
         $response = 'error';
         $message ="There is no file to download";  
          
-    } 
-  
-
-
+    }   
      
    if($response == 'error'){
         setErrorMessage($message); 
@@ -312,7 +318,7 @@ if ($type == 'upload-files') {
      
     $result = $database->select('tab_status_lockupload', "*", ['date' => $recordDate], "AND", 'single');
     // echo "<pre>"; print_r($_SERVER); die; 
-    if ($result['lock_upload'] == 1 || $result['lock_upload'] == '1' ){ 
+    if ($_SESSION['user_code'] != 'revenuecell' && ($result['lock_upload'] == 1 || $result['lock_upload'] == '1' )){ 
         setErrorMessage("You are not allowed to upload Images or Csv."); 
         header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) . "/scdata-list.php?date=".$recordDate."&i=".$result['lock_upload']);
           
@@ -653,7 +659,7 @@ function AccessToPageAsPerLogin($type){
     if($type == 'admin'){
         $pageArr = ['view-reports-uploaded-by-revenuecell.php','view-reports-uploaded-by-revenuecell.php','download-log.php','revenuecell-list.php','admin.php' ,'file-logs.php' ,'add-new-user.php' , 'change-password.php' , 'priviledges.php','dashboard.php' ,'logs_lock_unlock.php']; 
     }else if($type == 'revenuecell'){
-        $pageArr = ['upload-data-for-higher-authority.php','revenuecell-list.php','file-logs.php','dashboard.php' ,'logs_status.php']; 
+        $pageArr = ['lock_station.php','upload-data-for-higher-authority.php','revenuecell-list.php','file-logs.php','dashboard.php' ,'logs_status.php']; 
     }else if($type == 'SI' || $type == 'si'){
         $pageArr = ['si-list.php','dashboard.php']; 
     }else if($type == 'station'){

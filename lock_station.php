@@ -50,11 +50,12 @@
           </div>
           <div class="">
             <?php foreach ($userList as $user) :
-              $fileUpload = $database->select('tab_logs_fileupload', "*", ['station_name' => $user['stationname'], 'record_date' => $date], "AND", 'single');
-              if ($fileUpload) : ?>
-                <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i> <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></span>
-              <?php else : ?>
-                <span class="badge bg-secondary"><i class="bi bi-star me-1"></i>  <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></span>
+              $fileUpload = $database->select(' tab_status_lockupload', "*", [$user['user_code'] => 1, 'date' => 2024-02-10], "AND", 'single');
+              print_r($fileUpload);
+              if ($fileUpload) :?>
+                <!-- <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i> <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></span> -->
+              <?php else :?>
+                <!-- <span class="badge bg-secondary"><i class="bi bi-star me-1"></i>  <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></span> -->
             <?php endif;
             endforeach; ?>
           </div>

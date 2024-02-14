@@ -43,11 +43,11 @@
                   </div>
                 </div> 
 
-                <div id="file-upload-area" <?php if ($locked) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>
+                <div id="file-upload-area" style="display: block;">
                   <div class="row mt-2">
                      
 
-                    <div class="col-md-6">
+                    <!-- <div class="col-md-6">
                       <label for="validationDefault04" class="form-label">Select File Type:</label>
                       <select class="form-control" name="fileType" id="select-file-type" required>
                         <?php foreach ($checkBoxArr as $check) : ?>
@@ -56,7 +56,7 @@
                       </select>
 
                       <span class="form-text text-muted">Select a Category of the File</span>
-                    </div>
+                    </div> -->
 
 
                     <div class="col-md-6">
@@ -71,12 +71,13 @@
 
                       <span class="form-text text-muted">Upload Scanned Images or PDFs of URC Receipts</span>
                     </div> -->
+                    <div class="col-md-6">
+                      <label for="inputDate" class="col-sm-2 col-form-label">Uploaded By</label>
+                      <input type="text" class="form-control" name="sc_name" placeholder="Enter SC name" required>
+                    </div>
                   </div>
                   <div class="row mt-2 d-none">
-                    <?php
-
-                    
-
+                    <?php 
                     foreach ($checkBoxArr as $chekBox) { ?>
                       <div class="form-check">
                         <input class="form-check-input" name="fileType[<?= $chekBox; ?>]" type="checkbox" value="<?= $chekBox; ?>" id="flex<?= $chekBox; ?>">
@@ -88,14 +89,10 @@
                     <?php } ?>
                   </div>
                   <div class="row mt-2">
-                    <div class="col-md-6">
-                      <label for="validationDefault03" class="form-label">Remark (Optional):</label>
-                      <textarea class="form-control" name="remark" placeholder="Enter Remark"></textarea>
-                    </div>
-                    <div class="col-md-6">
-                      <label for="inputDate" class="col-sm-2 col-form-label">Name of SC:</label>
-                      <input type="text" class="form-control" name="sc_name" placeholder="Enter SC name" required>
-                    </div>
+                    <div class="col-md-12">
+                      <label for="validationDefault03" class="form-label">Description (Optional):</label>
+                      <textarea class="form-control" name="remark" placeholder="Enter Description"></textarea>
+                    </div> 
                   </div>
 
 
@@ -153,7 +150,7 @@
 
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Upload Time</th>
-                    <th>Remark</th>
+                    <th>Description</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -234,10 +231,10 @@
         if (response == "1" || response == 1) {
           
           $("#file-upload-area").hide();
-          current += '?date=' + val + '&i=' + response;
+          current += '?date=' + val ;
           // alert("You can't upload file Locked from Backend"); 
         } else {
-          current += '?date=' + val + '&i=' + response;
+          current += '?date=' + val ;
           $("#file-upload-area").show();
         }
         location.href = current;
