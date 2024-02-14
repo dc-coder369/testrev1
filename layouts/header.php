@@ -6,7 +6,7 @@ if (!isset($_SESSION['user_id'])) {
   exit; // Make sure to exit after redirecting
 }
 $pageArr = $_SESSION['page_access'];
-$page = basename($_SERVER['SCRIPT_FILENAME']);
+$page = basename($_SERVER['SCRIPT_FILENAME']); 
 // echo "<pre>"; print_r($pageArr); die; 
 
 if(!in_array($page,$pageArr)){

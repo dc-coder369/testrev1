@@ -116,6 +116,7 @@ if ($type == 'download-all-latest') {
     echo "<pre>"; print_r( $result); die; 
 
 }
+
 if ($type == 'download-all-files') {
     $recordDate = $_POST['hiddenrecordDate2'];
     $date = new DateTime($recordDate);

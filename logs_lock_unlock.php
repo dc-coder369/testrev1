@@ -61,25 +61,24 @@
               </div> -->
 
               <div class="d-flex justify-content-between">
-                <h5 class="card-title">Check Lock Unlock Logs</h5>  
+                <h5 class="card-title">Check LockUnlock Logs</h5>  
               </div>
 
                
               <!-- Table with stripped rows -->
-              <table class="table datatable table-responsive table-hover fixed-width-table">
+              <table class="table datatable table-responsive table-hover">
                 <thead>
                   <tr>   
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Lock Status</th>
-                    <th>Date & Time of Operation</th>
+              
                   </tr>
                 </thead>
                 <tbody>
                   <?php foreach ($listArr as $list) : ?>
                    <tr id="<?= $list['id']; ?>"> 
                       <td><?=$list['date'];?></td>
-                      <td><?= ($list['lock_status'] == '1' || $list['lock_status'] == 'Locked') ? 'Locked' : 'Unlocked'; ?></td>
-                      <td><?=$list['timestamp'];?></td>
+                      <td><?= ($list['lock_status'] == '1' || $list['lock_status'] == 'Locked') ? 'Locked' : 'Unlocked'; ?></td> 
                     </tr>
 
                   <?php endforeach; ?>
@@ -89,8 +88,7 @@
                 <tfoot>
                   <tr>   
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
-                    <th>Lock Status</th>
-                    <th>Date & Time of Operation</th>
+                    <th>Lock Status</th> 
                   </tr>
                 </tfoot>
               </table>
