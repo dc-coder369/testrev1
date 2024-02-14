@@ -705,7 +705,7 @@ function AccessToPageAsPerLogin($type){
     if($type == 'admin'){
         $pageArr = ['view-reports-uploaded-by-revenuecell.php','view-reports-uploaded-by-revenuecell.php','download-log.php','revenuecell-list.php','admin.php' ,'file-logs.php' ,'add-new-user.php' , 'change-password.php' , 'priviledges.php','dashboard.php' ,'logs_lock_unlock.php']; 
     }else if($type == 'revenuecell'){
-        $pageArr = ['lock_station.php','upload-data-for-higher-authority.php','revenuecell-list.php','file-logs.php','dashboard.php' ,'logs_status.php']; 
+        $pageArr = ['lock_station.php','upload-data-for-higher-authority.php','revenuecell-list.php','file-logs.php','dashboard.php' ,'lockunlock_status.php']; 
     }else if($type == 'SI' || $type == 'si'){
         $pageArr = ['si-list.php','dashboard.php']; 
     }else if($type == 'station'){

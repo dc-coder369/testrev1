@@ -114,19 +114,19 @@
                 <i class="bi bi-circle"></i><span>Uploaded Files Logs</span>
               </a>
             </li>
-            <li>
+            <!-- <li>
               <a href="lock_station.php" class="<?= ($current_page == 'lock_station.php') ? 'active' : '' ?>">
                 <i class="bi bi-circle"></i><span>Lock Station</span>
               </a>
-            </li>
+            </li> -->
             <li>
-              <a href="logs_status.php" class="<?= ($current_page == 'logs_status.php') ? 'active' : '' ?>">
-                <i class="bi bi-circle"></i><span>Log Lock/unclock Status</span>
+              <a href="lockunlock_status.php" class="<?= ($current_page == 'lockunlock_status.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>Lock Unlock Status</span>
               </a>
             </li>
             <li>
               <a href="upload-data-for-higher-authority.php" class="<?= ($current_page == 'upload-data-for-higher-authority.php') ? 'active' : '' ?>">
-                <i class="bi bi-circle"></i><span>upload data for higher authority</span>
+                <i class="bi bi-circle"></i><span>Upload Data for Higher Authority</span>
               </a>
             </li>
           </ul>

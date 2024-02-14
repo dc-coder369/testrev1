@@ -67,15 +67,16 @@
           <div class="card">
             <div class="card-body">
               <div class="action-buttons float-end mt-3 d-flex justify-content-around">
+                <!-- <form class="g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-latest">
+                  <input type="hidden" name="type" value="download-all-latest"> 
+                  <input type="hidden" name="hiddenrecordDate2" value="<?= $date ?? date('Y-m-d'); ?>">
+                  <button type="submit" class="btn btn-info" id="download-files-btn">Download Latest Files</button>
+                </form> -->
+                <div style="width: 20px"></div>
                 <form class="g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-form">
                   <input type="hidden" name="type" value="download-all-files">
                   <input type="hidden" name="hiddenrecordDate2" value="<?= $date ?? date('Y-m-d'); ?>">
                   <button type="submit" class="btn btn-info" id="download-files-btn">Download All</button>
-                </form>
-                <form class="g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-latest">
-                  <input type="hidden" name="type" value="download-all-latest"> 
-                  <input type="hidden" name="hiddenrecordDate2" value="<?= $date ?? date('Y-m-d'); ?>">
-                  <button type="submit" class="btn btn-secondary" id="download-files-btn">Download All Latest</button>
                 </form>
               </div>
 

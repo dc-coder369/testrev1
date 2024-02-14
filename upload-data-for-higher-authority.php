@@ -135,19 +135,17 @@
             </div> -->
 
               <div class="d-flex justify-content-between">
-                <h5 class="card-title">SC Data</h5>
+                <h5 class="card-title">File Upload Logs</h5>
               </div>
               <!-- Table with stripped rows -->
               <table class="table datatable table-responsive table-hover">
                 <thead>
                   <tr>
                    
-                    <th>SC Name </th>
-                    <th>Station Name</th>
+                    <th>CRA Name </th>
                     <th>Filename (System)</th>
                     <th>Filename (Original)</th>
-                     <th>Category</th>
-
+                    <th>Category</th>
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Upload Time</th>
                     <th>Description</th>
@@ -162,7 +160,6 @@
                     <tr id="<?= $list['id']; ?>">
                      
                       <td><?= $list['Sc_Name']; ?></td>
-                      <td><?= strtoupper($list['station_name']); ?></td>
                       <td><a href="#" onclick="SingleDownload(<?= htmlspecialchars(json_encode($list), ENT_QUOTES, 'UTF-8'); ?>)"><?= $list['filename']; ?></a></td>
                       <td><?= $list['original_filename']; ?></td>
                       <td><?= $list['file_type']; ?></td>
@@ -177,15 +174,13 @@
                 </tbody>
                 <tfoot>
                   <tr>
-                    <th>SC Name </th>
-                    <th>Station Name</th>
+                    <th>CRA Name </th>
                     <th>Filename (System)</th>
                     <th>Filename (Original)</th>
                     <th>Category</th>
-
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Upload Time</th>
-                    <th>Remark</th>
+                    <th>Description</th>
                   </tr>
                 </tfoot>
               </table>

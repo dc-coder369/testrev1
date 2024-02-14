@@ -103,7 +103,7 @@
                     <th>Filename (Original)</th> 
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Upload Time</th>
-                    <th>Remark</th>
+                    <th>Description</th>
                     <?php if($_SESSION['account_type'] == 'admin'):?>  <th>HostName</th><?php endif; ?>
                   </tr>
                 </tfoot>
