@@ -72,7 +72,7 @@
                       <span class="form-text text-muted">Upload Scanned Images or PDFs of URC Receipts</span>
                     </div> -->
                     <div class="col-md-6">
-                      <label for="inputDate" class="col-sm-2 col-form-label">Uploaded By</label>
+                      <label for="inputDate" class="form-label">Uploaded By</label>
                       <input type="text" class="form-control" name="sc_name" placeholder="Enter SC name" required>
                     </div>
                   </div>

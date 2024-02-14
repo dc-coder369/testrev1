@@ -44,18 +44,17 @@
               <?php  endforeach; ?>
             </select>
           </div>  -->
-            <button class="btn btn-success mt-1" id="unlock" <?php if ($locked == 0) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>Unlock</button>
-            <button class="btn btn-danger mt-1" id="lock" <?php if ($locked == 0) : ?> style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>Lock</button>
+            <!-- <button class="btn btn-success mt-1" id="unlock" <?php if ($locked == 0) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>Unlock</button>
+            <button class="btn btn-danger mt-1" id="lock" <?php if ($locked == 0) : ?> style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>Lock</button> -->
 
           </div>
           <div class="">
             <?php foreach ($userList as $user) :
-              $fileUpload = $database->select(' tab_status_lockupload', "*", [$user['user_code'] => 1, 'date' => 2024-02-10], "AND", 'single');
-              print_r($fileUpload);
+              $fileUpload = $database->select('tab_status_lockupload', "*", [$user['user_code'] => 1,'date' => $date], "AND", 'single');
               if ($fileUpload) :?>
-                <!-- <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i> <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></span> -->
+                <button id="unlock" onclick="lockAjax('<?= $date ?>', 0, '<?= $user['user_code'] ?>')" class="badge bg-success"><i class="bi bi-check-circle me-1"></i> <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></button>
               <?php else :?>
-                <!-- <span class="badge bg-secondary"><i class="bi bi-star me-1"></i>  <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></span> -->
+                <button id="lock" onclick="lockAjax('<?= $date ?>', 1, '<?= $user['user_code'] ?>')" class="badge bg-secondary"><i class="bi bi-star me-1"></i>  <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></span>
             <?php endif;
             endforeach; ?>
           </div>
@@ -74,3 +73,72 @@
 
 </main>
 <?php include 'layouts/footer.php'; ?>
+<script>
+  console.log("Asd")
+  var today = "<?= date('Y-m-d'); ?>";
+  var getDate = "<?= $date; ?>";
+  if (getDate == '') {
+    getAjax(today);
+  }
+  //
+  $("#recordDate").on("change", function() {
+    var val = $(this).val();
+    getAjax(val);
+  });
+
+  function getAjax(val) {
+
+    $.ajax({
+      url: "actions/ActionController.php", // Replace with the actual API endpoint
+      method: "GET", // Use GET or POST depending on your API requirements
+      data: {
+        "type": "local_unlock_status",
+        date: val
+      }, // Pass any data you need to send to the server
+      dataType: "json", // Specify the expected data type
+      success: function(response) {
+        var current = location.origin + location.pathname;
+      
+        if (response == "1" || response == 1) {
+          
+          $("#file-upload-area").hide();
+          current += '?date=' + val ;
+          // alert("You can't upload file Locked from Backend"); 
+        } else {
+          current += '?date=' + val ;
+          $("#file-upload-area").show();
+        }
+        location.href = current;
+
+      },
+      error: function(error) {
+        // Handle the error here
+        console.error("Error fetching data:", error);
+      }
+    });
+
+  }
+  function lockAjax(date,lock_upload, user_code='') {
+    var current = location.origin + location.pathname;
+    console.log(lock_upload);
+    $.ajax({
+      url: "actions/ActionController.php", // Replace with the actual API endpoint
+      method: "post", // Use GET or POST depending on your API requirements
+      data: {
+        type: "update_lock_status_station",
+        date: date,
+        user_code :user_code,
+        'status': lock_upload
+      }, // Pass any data you need to send to the server
+      dataType: "json", // Specify the expected data type
+      success: function(response) {
+        current += '?date=' + date ;
+        location.href = current;
+      },
+      error: function(error) {
+        // Handle the error here
+        console.error("Error fetching data:", error);
+      }
+    });
+  }  
+</script>
