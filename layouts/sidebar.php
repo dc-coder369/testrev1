@@ -115,6 +115,11 @@
               </a>
             </li>
             <li>
+              <a href="lock_station.php" class="<?= ($current_page == 'lock_station.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>Lock Station</span>
+              </a>
+            </li>
+            <li>
               <a href="logs_status.php" class="<?= ($current_page == 'logs_status.php') ? 'active' : '' ?>">
                 <i class="bi bi-circle"></i><span>Log Lock/unclock Status</span>
               </a>
