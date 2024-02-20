@@ -71,14 +71,15 @@
                   <tr>   
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Lock Status</th>
-              
+                    <th>Timestamp</th>
                   </tr>
                 </thead>
                 <tbody>
                   <?php foreach ($listArr as $list) : ?>
                    <tr id="<?= $list['id']; ?>"> 
                       <td><?=$list['date'];?></td>
-                      <td><?= ($list['lock_status'] == '1' || $list['lock_status'] == 'Locked') ? 'Locked' : 'Unlocked'; ?></td> 
+                      <td><?= ($list['lock_status'] == '1' || $list['lock_status'] == 'Locked') ? 'Locked' : 'Unlocked'; ?></td>
+                      <td><?=$list['timestamp'];?></td>
                     </tr>
 
                   <?php endforeach; ?>

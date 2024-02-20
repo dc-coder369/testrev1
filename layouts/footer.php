@@ -18,8 +18,8 @@
 <script type="text/javascript">
  
 var table = new DataTable('.datatable', {
-    "lengthMenu": [ [10,50, 100, 500, -1], [10,50, 100 , 500,  "All"] ],
-    "pageLength": "100",
+    "lengthMenu": [ [10, 50, 100, 500, -1], [10, 50, 100, 500, "All"] ],
+    "pageLength": 100,
     'scrollX': true,
     "scrollCollapse": true,
     "autoWidth": false,
