@@ -33,7 +33,29 @@ class DatabaseOperation {
 
         return $result;
     }
-
+    
+    public function querydownload($sql, $params = []) {
+        // Prepare the statement
+        $stmt = $this->conn->prepare($sql);
+    
+        // Bind parameters if provided
+        if ($params) {
+            $types = str_repeat('s', count($params)); // Assuming all parameters are strings
+            $stmt->bind_param($types, ...$params);
+        }
+    
+        // Execute the statement
+        $stmt->execute();
+    
+        // Get the result set
+        $result = $stmt->get_result();
+    
+        if (!$result) {
+            die("Query failed: " . $this->conn->error);
+        }
+    
+        return $result;
+    }
     public function select($table, $columns = "*", $conditions = array(), $conditionType = "AND", $recordType = 'multiple', $orderBy = null, $whereInConditions = array()) {
     $sql = "SELECT $columns FROM $table";
 

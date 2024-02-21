@@ -27,7 +27,10 @@ if (!isset($_SESSION['user_id'])) {
 require_once 'actions/db.php';
 $checkBoxArr = [
   'Daily Earning Sheet', 'Paytm POS Transaction', 'SBI POS Transaction', 'Penalty', 'URC', 'Refund Memo', 'Manual Collection', 'Outstanding',
-  'Forfeit Format', 'Ref. Def. CSC / Def. CST',  '1st Periodical', '2nd Periodical', '3rd Periodical', 'Balance Sheet','URC Images' ,'Other'];
+  'Forfeit Format', 'Ref. Def. CSC / Def. CST','URC Images' ,'Other'];
+
+  $checkBoxArrPeriodicals = [
+    'Penalty', 'URC','URC Images','Refund Memo', 'Manual Collection', 'Outstanding','Forfeit Format', 'Ref. Def. CSC / Def. CST','1st Periodical', '2nd Periodical', '3rd Periodical', 'Balance Sheet','Other'];
 ?>
 
 <!DOCTYPE html>

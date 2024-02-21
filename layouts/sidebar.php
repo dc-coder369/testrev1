@@ -91,6 +91,11 @@
                 <i class="bi bi-circle"></i><span>Upload Data</span>
               </a>
             </li>
+            <li>
+              <a href="upload-periodicals-balance-sheets.php" class="<?= ($current_page == 'upload-periodicals-balance-sheets.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>Upload Periodicals & Balance Sheets</span>
+              </a>
+            </li>
 
           </ul>
         </li>
@@ -152,7 +157,7 @@
                 <i class="bi bi-circle"></i><span>Upload Data</span>
               </a>
             </li>
-
+            
           </ul>
         </li>
       <?php endif; ?>

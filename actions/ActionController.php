@@ -137,17 +137,31 @@ if ($type == 'logout') {
 if ($type == 'download-all-latest') {
     $recordDate = $_POST['hiddenrecordDate2'];
     $date = new DateTime($recordDate);
-    $result = $database->query("SELECT filename, id 
-    FROM tab_logs_fileupload 
-    WHERE log_type = 'upload' 
-    AND (file_type, upload_by,record_date, upload_time) IN ( 
-        SELECT file_type, upload_by,record_date, MAX(upload_time) AS latest_uploaded_at 
+    // Prepare the SQL statement with placeholders
+    $sql = "
+        SELECT filename, id 
         FROM tab_logs_fileupload 
         WHERE log_type = 'upload' 
-        GROUP BY file_type, upload_by, record_date);");
+        AND record_date = ?
+        AND (file_type, upload_by, record_date, upload_time) IN ( 
+            SELECT file_type, upload_by, record_date, MAX(upload_time) AS latest_uploaded_at 
+            FROM tab_logs_fileupload 
+            WHERE log_type = 'upload' 
+            GROUP BY file_type, upload_by, record_date
+        )
+    ";
+
+    // Execute the query with the parameter binding
+    $result = $database->querydownload($sql, [$recordDate]);
+
+    // Initialize the data array
+    $data = [];
+
+    // Fetch the results
     while ($row = $database->fetchAssoc($result)) {
-        $data[] = $row;
-    }  
+    $data[] = $row;
+    }
+
     $latestFilename = '';
     $latestIds = [];
     foreach ($result as $file) { 
@@ -708,7 +722,7 @@ function AccessToPageAsPerLogin($type){
     }else if($type == 'SI' || $type == 'si'){
         $pageArr = ['si-list.php','dashboard.php']; 
     }else if($type == 'station'){
-        $pageArr = ['scdata-list.php','dashboard.php']; 
+        $pageArr = ['upload-periodicals-balance-sheets.php','scdata-list.php','dashboard.php']; 
     } 
     return $pageArr; 
 }
