@@ -50,7 +50,7 @@
                     <div class="col-md-6">
                       <label for="validationDefault04" class="form-label">Select File Type:</label>
                       <select class="form-control" name="fileType" id="select-file-type" required>
-                        <?php foreach ($checkBoxArr as $check) : ?>
+                        <?php foreach ($checkBoxdailyData as $check) : ?>
                           <option><?= $check; ?> </option>
                         <?php endforeach;  ?>
                       </select>
@@ -77,14 +77,13 @@
 
                     
 
-                    foreach ($checkBoxArr as $chekBox) { ?>
+                    foreach ($checkBoxdailyData as $chekBox) { ?>
                       <div class="form-check">
                         <input class="form-check-input" name="fileType[<?= $chekBox; ?>]" type="checkbox" value="<?= $chekBox; ?>" id="flex<?= $chekBox; ?>">
                         <label class="form-check-label" for="flex<?= $chekBox; ?>">
                           <?= $chekBox; ?>
                         </label>
                       </div>
-
                     <?php } ?>
                   </div>
                   <div class="row mt-2">
@@ -121,10 +120,7 @@
         <div class="col-lg-12">
           
         
-          <div class="card">
-
-         
-
+          <div class="card"> 
             <div class="card-body">
             <div class="action-buttons float-end mt-3 d-flex justify-content-around">
                 <form class="row g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-form">

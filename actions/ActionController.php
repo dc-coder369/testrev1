@@ -340,6 +340,7 @@ function generateCategoryCodeFromCategoryName($categoryName) {
         "2nd Periodical" => "2ndP",
         "3rd Periodical" => "3rdP",
         "Balance Sheet" => "BS",
+        "Cancelled Foil" => "CF",
         "Ref. Def. CSC / Def. CST" => "DR-CSC-CST"
     );
 
@@ -366,6 +367,7 @@ if ($type == 'upload-files') {
     $sc_name = isset($_POST['sc_name']) ? $_POST['sc_name'] : '';
     $remark = isset($_POST['remark']) ? $_POST['remark'] : '';
     $user_id = isset($_POST['user_id']) ? $_POST['user_id'] : '';
+    $upload_type = isset($_POST['upload_type']) ? $_POST['upload_type'] : '';
     // $station_name_si = isset($_POST['station_name_si']) ? $_POST['station_name_si'] : ''; 
     $station_name = $_SESSION['stationname']; 
     $uploaded_for = $_SESSION['user_code'];
@@ -396,7 +398,7 @@ if ($type == 'upload-files') {
 
             $folderType = $fileType.'/'. $folderArr[0].'/'.$folderArr[1].'/'.$folderArr[2]; 
             // $folderType = "Data-scdata-Earning-Data-". $recordDate; 
-            handleFileUpload($database,$_FILES['files'], $folderType, $recordDate, $station_name, $sc_name, $remark , $user_id, $fileType ,$uploaded_for );
+            handleFileUpload($database,$_FILES['files'], $folderType, $recordDate, $station_name, $sc_name, $remark , $user_id, $fileType ,$uploaded_for,$upload_type );
 
             header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
             
@@ -412,10 +414,7 @@ if ($type == 'upload-files') {
            
         } */
       
-    }
- 
-    
-    
+    }     
 }
 
 function getUniqueFileName($targetDir ,$fileName) {
@@ -476,10 +475,17 @@ function resetSessionMessages()
 
 
 
-function handleFileUpload($database, $fileArray, $folderType, $recordDate, $station_name, $sc_name, $remark ,  $user_id, $fileType,$uploaded_for)
+function handleFileUpload($database, $fileArray, $folderType, $recordDate, $station_name, $sc_name, $remark ,  $user_id, $fileType,$uploaded_for,$upload_type)
 {
     // Create the date-wise folder
-    $baseFolder = 'scdata';
+    if($upload_type == 'periodic')
+    {
+        $baseFolder = 'scdata/Periodicals/';
+    }
+    else
+    {
+        $baseFolder = 'scdata';
+    }
     $folderPath = createFolder($baseFolder,$folderType); 
 
     // Handle multiple file uploads
@@ -718,7 +724,7 @@ function AccessToPageAsPerLogin($type){
     if($type == 'admin'){
         $pageArr = ['view-reports-uploaded-by-revenuecell.php','view-reports-uploaded-by-revenuecell.php','download-log.php','revenuecell-list.php','admin.php' ,'file-logs.php' ,'add-new-user.php' , 'change-password.php' , 'priviledges.php','dashboard.php' ,'logs_lock_unlock.php']; 
     }else if($type == 'revenuecell'){
-        $pageArr = ['lock_station.php','upload-data-for-higher-authority.php','revenuecell-list.php','file-logs.php','dashboard.php' ,'logs_status.php']; 
+        $pageArr = ['view-periodicals-balance-sheets.php','lock_station.php','upload-data-for-higher-authority.php','revenuecell-list.php','file-logs.php','dashboard.php' ,'logs_status.php']; 
     }else if($type == 'SI' || $type == 'si'){
         $pageArr = ['si-list.php','dashboard.php']; 
     }else if($type == 'station'){

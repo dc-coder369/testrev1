@@ -7,8 +7,9 @@
  
   $date = (isset($_GET['date'])) ? $_GET['date'] : '';
   $locked = (isset($_GET['i'])) ? $_GET['i'] : '';
+  $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF','DR-CSC-CST'];
   if ($date) {
-   $condition = ['record_date' => $date ,'log_type' => 'upload','station_name' => $_SESSION['stationname']];
+   $condition = ['record_date' => $date ,'log_type' => 'upload','station_name' => $_SESSION['stationname'],'file_type' => $fileTypesArray];
   } else {
     $condition = [];
   }
@@ -32,6 +33,7 @@
               <form class="g-3" method="post" enctype="multipart/form-data" id="uploadForm" action="actions/ActionController.php">
 
                 <input type="hidden" name="type" value="upload-files">
+                <input type="hidden" name="upload_type" value="periodic">
                 <input type="hidden" name="user_id" value="<?= $_SESSION['user_id']; ?>">
 
                 <div class="row mt-2">

@@ -65,7 +65,15 @@ class DatabaseOperation {
         $conditionClauses = [];
 
         foreach ($conditions as $column => $value) {
-            $conditionClauses[] = "$column = '$value'";
+            if(is_array($value))
+            {
+              $conditionClauses[] = "$column IN ('" . implode("', '", $value) . "')";
+            }
+            else
+            {
+                $conditionClauses[] = "$column = '$value'";
+            }
+           
         }
 
         $conditionsString = implode(" $conditionType ", $conditionClauses);
