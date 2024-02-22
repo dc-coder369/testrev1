@@ -134,7 +134,7 @@
             </div> -->
 
               <div class="d-flex justify-content-between">
-                <h5 class="card-title">SC Data</h5>
+                <h5 class="card-title">Daily Data (SC Data)</h5>
               </div>
               <!-- Table with stripped rows -->
               <table class="table datatable table-responsive table-hover">
