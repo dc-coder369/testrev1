@@ -7,11 +7,25 @@
   //  echo  $_SESSION['stationname']; die;
   $date = (isset($_GET['date'])) ? $_GET['date'] : '';
   $locked = (isset($_GET['i'])) ? $_GET['i'] : '';
-  if ($date) {
-   $condition = ['record_date' => $date ,'log_type' => 'upload','station_name' => $_SESSION['stationname']];
-  } else {
-    $condition = [];
+  $functiondate = strtotime("23-02-2024");
+  
+  if (strtotime($date) > $functiondate) {
+    $fileTypesArray=['DER','SPOS','PPOS','URCI','URC','OS','OTH'];
+    if ($date) {
+      $condition = ['record_date' => $date ,'log_type' => 'upload','station_name' => $_SESSION['stationname'],'file_type' => $fileTypesArray];
+    } else {
+       $condition = [];
+    }
   }
+  else
+  {
+    if ($date) {
+      $condition = ['record_date' => $date ,'log_type' => 'upload','station_name' => $_SESSION['stationname']];
+    } else {
+       $condition = [];
+    }
+  }
+  
   // echo "<prE>"; print_r($condition); die; 
   $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple','`upload_time` desc');
   

@@ -6,12 +6,26 @@
 
   $date = (isset($_GET['date'])) ? $_GET['date'] : '';
   $locked = (isset($_GET['i'])) ? $_GET['i'] : '';
-  if ($date) {
-    $condition = ['record_date' => $date, 'log_type' => 'upload'];
-  } else {
-    $condition = [];
+  //check the condition for the date and get only files of selected category
+  $functiondate = strtotime("23-02-2024");
+  
+  if (strtotime($date) > $functiondate) {
+    $fileTypesArray=['DER','SPOS','PPOS','URCI','URC','OS','OTH'];
+    if ($date) {
+      $condition = ['record_date' => $date, 'log_type' => 'upload','file_type' => $fileTypesArray];
+    } else {
+       $condition = [];
+    }
   }
-
+  else
+  {
+    if ($date) {
+      $condition = ['record_date' => $date, 'log_type' => 'upload'];
+    } else {
+       $condition = [];
+    }
+  }
+  
 
   $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', '`upload_time` desc');
 

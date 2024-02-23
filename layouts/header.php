@@ -1,5 +1,6 @@
 <?php 
 session_start(); 
+ //check session and redirect
 if (!isset($_SESSION['user_id'])) {
   $_SESSION['error'] = "Please log in first.";
   header("Location: login.php");
