@@ -12,8 +12,11 @@
     $condition = ['log_type' => 'download'];
   }
 
-
-  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', '`upload_time` desc');
+  $whereInConditions = [];
+  if (!empty($fileTypesArray)) {
+      $whereInConditions['file_type'] = $fileTypesArray;
+  }
+  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', '`upload_time` desc', $whereInConditions);
  
   $userList = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
   ?>

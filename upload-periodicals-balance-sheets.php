@@ -4,32 +4,19 @@
 
 
   <?php
-  //  echo  $_SESSION['stationname']; die;
+ 
   $date = (isset($_GET['date'])) ? $_GET['date'] : '';
   $locked = (isset($_GET['i'])) ? $_GET['i'] : '';
-  $functiondate = strtotime("23-02-2024");
-  
-  if (strtotime($date) > $functiondate) {
-    $fileTypesArray=['DER','SPOS','PPOS','URCI','URC','OS','OTH'];
-    if ($date) {
-      $condition = ['record_date' => $date ,'log_type' => 'upload','station_name' => $_SESSION['stationname'],'file_type' => $fileTypesArray];
-    } else {
-       $condition = [];
-    }
+  $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF','DR-CSC-CST'];
+  if ($date) {
+   $condition = ['record_date' => $date ,'log_type' => 'upload','station_name' => $_SESSION['stationname'],'file_type' => $fileTypesArray];
+  } else {
+    $condition = [];
   }
-  else
-  {
-    if ($date) {
-      $condition = ['record_date' => $date ,'log_type' => 'upload','station_name' => $_SESSION['stationname']];
-    } else {
-       $condition = [];
-    }
-  }
-  
-  // echo "<prE>"; print_r($condition); die; 
-  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple','`upload_time` desc');
-  
-  // echo "<prE>"; print_r($listArr); die; 
+
+  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', 'id DESC' ,[]);
+
+  //  echo "<prE>"; print_r($listArr); die; 
   ?>
   <div class="pagetitle">
 
@@ -41,11 +28,12 @@
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Upload Files</h5>
-              <input type="hidden" name="user_code" id="user_code" value="<?= $_SESSION['user_code']; ?>">
+
               <!-- Browser Default Validation -->
               <form class="g-3" method="post" enctype="multipart/form-data" id="uploadForm" action="actions/ActionController.php">
 
                 <input type="hidden" name="type" value="upload-files">
+                <input type="hidden" name="upload_type" value="periodic">
                 <input type="hidden" name="user_id" value="<?= $_SESSION['user_id']; ?>">
 
                 <div class="row mt-2">
@@ -55,7 +43,9 @@
                       <input type="date" class="form-control" name="recordDate" id="recordDate" value="<?php echo htmlspecialchars($date ?? date('Y-m-d')); ?>" min="2023-11-01" max="<?php echo date('Y-m-d'); ?>" onkeydown="return false">
                     </div>
                   </div>
-                </div> 
+                </div>
+
+
 
                 <div id="file-upload-area" <?php if ($locked) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>
                   <div class="row mt-2">
@@ -63,8 +53,8 @@
 
                     <div class="col-md-6">
                       <label for="validationDefault04" class="form-label">Select File Type:</label>
-                      <select class="form-control" name="fileType" id="select-file-type" required>
-                        <?php foreach ($checkBoxdailyData as $check) : ?>
+                      <select class="form-control" name="fileType" required>
+                        <?php foreach ($checkBoxArrPeriodicals as $check) : ?>
                           <option><?= $check; ?> </option>
                         <?php endforeach;  ?>
                       </select>
@@ -75,7 +65,7 @@
 
                     <div class="col-md-6">
                       <label for="validationDefault03" class="form-label">Choose a File:</label>
-                      <input type="file" class="form-control" id="file1" name="files[]">
+                      <input type="file" class="form-control" id="file1" name="files[]" multiple>
                       <span class="form-text text-muted">Upload File of the Selected Category</span>
 
                     </div>
@@ -91,13 +81,14 @@
 
                     
 
-                    foreach ($checkBoxdailyData as $chekBox) { ?>
+                    foreach ($checkBoxArrPeriodicals as $chekBox) { ?>
                       <div class="form-check">
                         <input class="form-check-input" name="fileType[<?= $chekBox; ?>]" type="checkbox" value="<?= $chekBox; ?>" id="flex<?= $chekBox; ?>">
                         <label class="form-check-label" for="flex<?= $chekBox; ?>">
                           <?= $chekBox; ?>
                         </label>
                       </div>
+
                     <?php } ?>
                   </div>
                   <div class="row mt-2">
@@ -134,7 +125,10 @@
         <div class="col-lg-12">
           
         
-          <div class="card"> 
+          <div class="card">
+
+         
+
             <div class="card-body">
             <div class="action-buttons float-end mt-3 d-flex justify-content-around">
                 <form class="row g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-form">
@@ -148,7 +142,7 @@
             </div> -->
 
               <div class="d-flex justify-content-between">
-                <h5 class="card-title">Daily Data (SC Data)</h5>
+                <h5 class="card-title">Periodicals data (SC Data)</h5>
               </div>
               <!-- Table with stripped rows -->
               <table class="table datatable table-responsive table-hover">
@@ -158,7 +152,6 @@
                     <th>SC Name </th>
                     <th>Station Name</th>
                     <th>Filename (System)</th>
-                    <th>Filename (Original)</th>
                      <th>Category</th>
 
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
@@ -170,15 +163,13 @@
 
                   <?php foreach ($listArr as $list) :
                     $path = 'actions/scdata/' . $list['folder_name'] . '/' . $list['filename'];
-                    $list['path']=$path;
                   ?>
                     <tr id="<?= $list['id']; ?>">
                      
                       <td><?= $list['Sc_Name']; ?></td>
                       <td><?= strtoupper($list['station_name']); ?></td>
-                      <td><a href="#" onclick="SingleDownload(<?= htmlspecialchars(json_encode($list), ENT_QUOTES, 'UTF-8'); ?>)"><?= $list['filename']; ?></a></td>
-                      <td><?= $list['original_filename']; ?></td>
-                      <td><?= $list['file_type']; ?></td>
+                      <td><a href="<?= $path ?>" download target="_balnk"><?= $list['filename']; ?></a></td>
+                       <td><?= $list['file_type']; ?></td>
                       <td><?= $list['record_date']; ?></td>
                       <td><?= $list['upload_time']; ?></td>
                       <td><?= $list['Remark']; ?></td>
@@ -192,9 +183,8 @@
                   <tr>
                     <th>SC Name </th>
                     <th>Station Name</th>
-                    <th>Filename (System)</th>
-                    <th>Filename (Original)</th>
-                    <th>Category</th>
+                    <th>Filename</th>
+                     <th>Category</th>
 
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Upload Time</th>
@@ -240,14 +230,14 @@
       dataType: "json", // Specify the expected data type
       success: function(response) {
         var current = location.origin + location.pathname;
-        var user_code = document.getElementById("user_code").value;
-        if (response[user_code] == "1" || response[user_code] == 1) {
+      
+        if (response.lock_upload == "1" || response.lock_upload == 1) {
           
           $("#file-upload-area").hide();
-          current += '?date=' + val + '&i=' + response[user_code];
+          current += '?date=' + val + '&i=' + response.lock_upload;
           // alert("You can't upload file Locked from Backend"); 
         } else {
-          current += '?date=' + val + '&i=' + response[user_code];
+          current += '?date=' + val + '&i=' + response.lock_upload;
           $("#file-upload-area").show();
         }
         location.href = current;
@@ -260,48 +250,4 @@
     });
 
   }
-
-  $("#select-file-type").change(function(){
-    var vd = $(this).find(":selected").val(); 
-    if(vd == "URC Images"){
-      $("#file1").prop('multiple',true);
-    }else{
-      $("#file1").removeAttr('multiple');
-    }
-  })
-
-  function SingleDownload(val) { 
-    $.ajax({ 
-      url: "actions/ActionController.php", // Replace with the actual API endpoint
-      method: "GET", // Use GET or POST depending on your API requirements
-      data: {
-        "type": "create log for single file",
-        "path": val.path,
-        "Sc_name": val.Sc_Name,
-        "file_type": val.file_type,
-        "station_name": val.station_name,
-        "record_date": val.record_date,
-        "fileName": val.filename,
-      }, // Pass any data you need to send to the server
-      dataType: "json", // Specify the expected data type
-      success: function(response) {
-        var path = response.filepath
-        var link = document.createElement('a');
-          link.href = path;
-          link.target = "_blank"; // Open in a new tab
-          link.download = path.split('/').pop(); // Set the filename to be downloaded
-
-          // Simulate a click event to trigger the download
-          document.body.appendChild(link);
-          link.click(); 
-          // Clean up
-          document.body.removeChild(link);
-      },
-      error: function(error) {
-        // Handle the error here
-        console.error("Error fetching data:", error);
-      }
-    }); 
-  }
-  
 </script>

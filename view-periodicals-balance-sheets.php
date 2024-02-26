@@ -6,26 +6,13 @@
 
   $date = (isset($_GET['date'])) ? $_GET['date'] : '';
   $locked = (isset($_GET['i'])) ? $_GET['i'] : '';
-  //check the condition for the date and get only files of selected category
-  $functiondate = strtotime("23-02-2024");
-  
-  if (strtotime($date) > $functiondate) {
-    $fileTypesArray=['DER','SPOS','PPOS','URCI','URC','OS','OTH'];
-    if ($date) {
-      $condition = ['record_date' => $date, 'log_type' => 'upload','file_type' => $fileTypesArray];
-    } else {
-       $condition = [];
-    }
+  $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF','DR-CSC-CST'];
+  if ($date) {
+    $condition = ['record_date' => $date, 'log_type' => 'upload','file_type' => $fileTypesArray];
+  } else {
+    $condition = [];
   }
-  else
-  {
-    if ($date) {
-      $condition = ['record_date' => $date, 'log_type' => 'upload'];
-    } else {
-       $condition = [];
-    }
-  }
-  
+
 
   $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', '`upload_time` desc');
 
@@ -57,10 +44,6 @@
                   <?php  endforeach; ?>
                 </select>
               </div>  -->
-              <?php if($_SESSION['account_type'] != 'admin'):?>
-                <button class="btn btn-success mt-1" id="unlock" <?php if ($locked == 0) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>Unlock</button>
-                <button class="btn btn-danger mt-1" id="lock" <?php if ($locked == 0) : ?> style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>Lock</button>
-              <?php endif;?>
               
               </div>
               <div class="">
@@ -80,22 +63,21 @@
 
           <div class="card">
             <div class="card-body">
-              <div class="action-buttons float-end mt-3 d-flex justify-content-around">
-                <!-- <form class="g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-latest">
-                  <input type="hidden" name="type" value="download-all-latest"> 
-                  <input type="hidden" name="hiddenrecordDate2" value="<?= $date ?? date('Y-m-d'); ?>">
-                  <button type="submit" class="btn btn-info" id="download-files-btn">Download Latest Files</button>
-                </form> -->
-                <div style="width: 20px"></div>
+              <!-- <div class="action-buttons float-end mt-3 d-flex justify-content-around">
                 <form class="g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-form">
                   <input type="hidden" name="type" value="download-all-files">
                   <input type="hidden" name="hiddenrecordDate2" value="<?= $date ?? date('Y-m-d'); ?>">
                   <button type="submit" class="btn btn-info" id="download-files-btn">Download All</button>
                 </form>
-              </div>
+                <form class="g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-latest">
+                  <input type="hidden" name="type" value="download-all-latest"> 
+                  <input type="hidden" name="hiddenrecordDate2" value="<?= $date ?? date('Y-m-d'); ?>">
+                  <button type="submit" class="btn btn-secondary" id="download-files-btn">Download All Latest</button>
+                </form>
+              </div> -->
 
               <div class="d-flex justify-content-between">
-                <h5 class="card-title">Revenue Cell Data</h5>
+                <h5 class="card-title">Revenue Cell Data for Perodical files</h5>
               </div>
 
 

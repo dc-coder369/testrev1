@@ -137,17 +137,31 @@ if ($type == 'logout') {
 if ($type == 'download-all-latest') {
     $recordDate = $_POST['hiddenrecordDate2'];
     $date = new DateTime($recordDate);
-    $result = $database->query("SELECT filename, id 
-    FROM tab_logs_fileupload 
-    WHERE log_type = 'upload' 
-    AND (file_type, upload_by,record_date, upload_time) IN ( 
-        SELECT file_type, upload_by,record_date, MAX(upload_time) AS latest_uploaded_at 
+    // Prepare the SQL statement with placeholders
+    $sql = "
+        SELECT filename, id 
         FROM tab_logs_fileupload 
         WHERE log_type = 'upload' 
-        GROUP BY file_type, upload_by, record_date);");
+        AND record_date = ?
+        AND (file_type, upload_by, record_date, upload_time) IN ( 
+            SELECT file_type, upload_by, record_date, MAX(upload_time) AS latest_uploaded_at 
+            FROM tab_logs_fileupload 
+            WHERE log_type = 'upload' 
+            GROUP BY file_type, upload_by, record_date
+        )
+    ";
+
+    // Execute the query with the parameter binding
+    $result = $database->querydownload($sql, [$recordDate]);
+
+    // Initialize the data array
+    $data = [];
+
+    // Fetch the results
     while ($row = $database->fetchAssoc($result)) {
-        $data[] = $row;
-    }  
+    $data[] = $row;
+    }
+
     $latestFilename = '';
     $latestIds = [];
     foreach ($result as $file) { 
@@ -170,7 +184,6 @@ if ($type == 'download-all-latest') {
   
 
 }
-
 if ($type == 'download-all-files') {
     $recordDate = $_POST['hiddenrecordDate2'];
     $date = new DateTime($recordDate);
@@ -327,6 +340,7 @@ function generateCategoryCodeFromCategoryName($categoryName) {
         "2nd Periodical" => "2ndP",
         "3rd Periodical" => "3rdP",
         "Balance Sheet" => "BS",
+        "Cancelled Foil" => "CF",
         "Ref. Def. CSC / Def. CST" => "DR-CSC-CST"
     );
 
@@ -342,67 +356,73 @@ function generateCategoryCodeFromCategoryName($categoryName) {
 
 if ($type == 'upload-files') {
 
-    $recordDate = $_POST['recordDate']; 
-    $date = new DateTime($recordDate);
-    $formattedDate = $date->format('Y-M-d');
+    //check the seesion while uploading file.
+    if(isset($_SESSION['user_code'])) { 
 
-    $folderArr = explode('-',$formattedDate); 
+        $recordDate = $_POST['recordDate']; 
+        $date = new DateTime($recordDate);
+        $formattedDate = $date->format('Y-M-d');
+
+        $folderArr = explode('-',$formattedDate); 
 
 
 
-    $sc_name = isset($_POST['sc_name']) ? $_POST['sc_name'] : '';
-    $remark = isset($_POST['remark']) ? $_POST['remark'] : '';
-    $user_id = isset($_POST['user_id']) ? $_POST['user_id'] : '';
-    // $station_name_si = isset($_POST['station_name_si']) ? $_POST['station_name_si'] : ''; 
-    $station_name = $_SESSION['stationname']; 
-    $uploaded_for = $_SESSION['user_code'];
-    $fileType = generateCategoryCodeFromCategoryName($_POST['fileType']) ; 
-    $httpRefer = basename($_SERVER['HTTP_REFERER']);  
-    $fileNamephp = parse_url($httpRefer, PHP_URL_PATH);
+        $sc_name = isset($_POST['sc_name']) ? $_POST['sc_name'] : '';
+        $remark = isset($_POST['remark']) ? $_POST['remark'] : '';
+        $user_id = isset($_POST['user_id']) ? $_POST['user_id'] : '';
+        $upload_type = isset($_POST['upload_type']) ? $_POST['upload_type'] : '';
+        // $station_name_si = isset($_POST['station_name_si']) ? $_POST['station_name_si'] : ''; 
+        $station_name = $_SESSION['stationname']; 
+        $uploaded_for = $_SESSION['user_code'];
+        $fileType = generateCategoryCodeFromCategoryName($_POST['fileType']) ; 
+        $httpRefer = basename($_SERVER['HTTP_REFERER']);  
+        $fileNamephp = parse_url($httpRefer, PHP_URL_PATH);
 
- 
-     
-    $result = $database->select('tab_status_lockupload', "*", ['date' => $recordDate], "AND", 'single');
-    // echo "<pre>"; print_r($_SERVER); die; 
-    if ($_SESSION['user_code'] != 'revenuecell' && ($result['lock_upload'] == 1 || $result['lock_upload'] == '1' )){ 
-        setErrorMessage("You are not allowed to upload Images or Csv."); 
-        header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) . "/scdata-list.php?date=".$recordDate."&i=".$result['lock_upload']);
-          
-    } else {
-          
-      
-        if (empty($_FILES['files']['tmp_name'][0])) {
- 
-            setErrorMessage("You must select a file to upload."); 
-            header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
-        } 
- 
-        if (isset($_FILES['files']['error'][0]) && $_FILES['files']['error'][0] == 0) {
-
-           
-
-            $folderType = $fileType.'/'. $folderArr[0].'/'.$folderArr[1].'/'.$folderArr[2]; 
-            // $folderType = "Data-scdata-Earning-Data-". $recordDate; 
-            handleFileUpload($database,$_FILES['files'], $folderType, $recordDate, $station_name, $sc_name, $remark , $user_id, $fileType ,$uploaded_for );
-
-            header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
+    
+        
+        $result = $database->select('tab_status_lockupload', "*", ['date' => $recordDate], "AND", 'single');
+        // echo "<pre>"; print_r($_SERVER); die; 
+        if ($_SESSION['user_code'] != 'revenuecell' && ($result['lock_upload'] == 1 || $result['lock_upload'] == '1' )){ 
+            setErrorMessage("You are not allowed to upload Images or Csv."); 
+            header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) . "/scdata-list.php?date=".$recordDate."&i=".$result['lock_upload']);
             
-             
+        } else {
+            
+        
+            if (empty($_FILES['files']['tmp_name'][0])) {
     
+                setErrorMessage("You must select a file to upload."); 
+                header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
+            } 
+    
+            if (isset($_FILES['files']['error'][0]) && $_FILES['files']['error'][0] == 0) {
+
+            
+
+                $folderType = $fileType.'/'. $folderArr[0].'/'.$folderArr[1].'/'.$folderArr[2]; 
+                // $folderType = "Data-scdata-Earning-Data-". $recordDate; 
+                handleFileUpload($database,$_FILES['files'], $folderType, $recordDate, $station_name, $sc_name, $remark , $user_id, $fileType ,$uploaded_for,$upload_type );
+
+                header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
+                
+                
+        
+            }
+            // Check if files are uploaded for "URC"
+            /* if (isset($_FILES['files2']['error'][0]) && $_FILES['files2']['error'][0] == 0) {
+                $folderType = $fileType.'/'. $folderArr[0].'/'.$folderArr[1].'/'.$folderArr[2]; 
+                // $folderType = "Data-scdata-URC-" . $recordDate; 
+                handleFileUpload($database,$_FILES['files2'], $folderType, $recordDate, $station_name, $sc_name, $remark ,  $user_id , $fileType);
+                header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
+            
+            } */
+        
         }
-        // Check if files are uploaded for "URC"
-        /* if (isset($_FILES['files2']['error'][0]) && $_FILES['files2']['error'][0] == 0) {
-            $folderType = $fileType.'/'. $folderArr[0].'/'.$folderArr[1].'/'.$folderArr[2]; 
-            // $folderType = "Data-scdata-URC-" . $recordDate; 
-            handleFileUpload($database,$_FILES['files2'], $folderType, $recordDate, $station_name, $sc_name, $remark ,  $user_id , $fileType);
-            header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
-           
-        } */
-      
     }
- 
-    
-    
+    else
+    {
+        header("Location: ../login.php");
+    }
 }
 
 function getUniqueFileName($targetDir ,$fileName) {
@@ -463,10 +483,17 @@ function resetSessionMessages()
 
 
 
-function handleFileUpload($database, $fileArray, $folderType, $recordDate, $station_name, $sc_name, $remark ,  $user_id, $fileType,$uploaded_for)
+function handleFileUpload($database, $fileArray, $folderType, $recordDate, $station_name, $sc_name, $remark ,  $user_id, $fileType,$uploaded_for,$upload_type)
 {
     // Create the date-wise folder
-    $baseFolder = 'scdata';
+    if($upload_type == 'periodic')
+    {
+        $baseFolder = 'scdata/Periodicals/';
+    }
+    else
+    {
+        $baseFolder = 'scdata';
+    }
     $folderPath = createFolder($baseFolder,$folderType); 
 
     // Handle multiple file uploads
@@ -705,11 +732,11 @@ function AccessToPageAsPerLogin($type){
     if($type == 'admin'){
         $pageArr = ['view-reports-uploaded-by-revenuecell.php','view-reports-uploaded-by-revenuecell.php','download-log.php','revenuecell-list.php','admin.php' ,'file-logs.php' ,'add-new-user.php' , 'change-password.php' , 'priviledges.php','dashboard.php' ,'logs_lock_unlock.php']; 
     }else if($type == 'revenuecell'){
-        $pageArr = ['lock_station.php','upload-data-for-higher-authority.php','revenuecell-list.php','file-logs.php','dashboard.php' ,'lockunlock_status.php']; 
+        $pageArr = ['view-periodicals-balance-sheets.php','lock_station.php','upload-data-for-higher-authority.php','revenuecell-list.php','file-logs.php','dashboard.php' ,'logs_status.php']; 
     }else if($type == 'SI' || $type == 'si'){
         $pageArr = ['si-list.php','dashboard.php']; 
     }else if($type == 'station'){
-        $pageArr = ['scdata-list.php','dashboard.php']; 
+        $pageArr = ['upload-periodicals-balance-sheets.php','scdata-list.php','dashboard.php']; 
     } 
     return $pageArr; 
 }

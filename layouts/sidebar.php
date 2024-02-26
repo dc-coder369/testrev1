@@ -88,7 +88,12 @@
             </li> -->
             <li>
               <a href="scdata-list.php" class="<?= ($current_page == 'scdata-list.php') ? 'active' : '' ?>">
-                <i class="bi bi-circle"></i><span>Upload Data</span>
+                <i class="bi bi-circle"></i><span>Daily Data</span>
+              </a>
+            </li>
+            <li>
+              <a href="upload-periodicals-balance-sheets.php" class="<?= ($current_page == 'upload-periodicals-balance-sheets.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>Non-AFC Formats, Periodicals and Balance Sheet</span>
               </a>
             </li>
 
@@ -129,6 +134,11 @@
                 <i class="bi bi-circle"></i><span>Upload Data for Higher Authority</span>
               </a>
             </li>
+            <li>
+              <a href="view-periodicals-balance-sheets.php" class="<?= ($current_page == 'view-periodicals-balance-sheets.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>Non-AFC Formats, Periodicals and Balance Sheet</span>
+              </a>
+            </li>
           </ul>
         </li>
       <?php endif; ?>
@@ -152,7 +162,7 @@
                 <i class="bi bi-circle"></i><span>Upload Data</span>
               </a>
             </li>
-
+            
           </ul>
         </li>
       <?php endif; ?>

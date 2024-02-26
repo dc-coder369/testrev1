@@ -1,5 +1,6 @@
 <?php 
 session_start(); 
+ //check session and redirect
 if (!isset($_SESSION['user_id'])) {
   $_SESSION['error'] = "Please log in first.";
   header("Location: login.php");
@@ -25,10 +26,17 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");
 } 
 require_once 'actions/db.php';
-$checkBoxArr = [
+  $checkBoxArr = [
   'Daily Earning Sheet', 'Paytm POS Transaction', 'SBI POS Transaction', 'Penalty', 'URC', 'Refund Memo', 'Manual Collection', 'Outstanding',
   'Forfeit Format', 'Ref. Def. CSC / Def. CST',  '1st Periodical', '2nd Periodical', '3rd Periodical', 'Balance Sheet','URC Images' ,'Other'];
-?>
+
+  $checkBoxdailyData = [
+  'Daily Earning Sheet', 'Paytm POS Transaction', 'SBI POS Transaction','URC','Outstanding','URC Images' ,'Other'];
+
+  $checkBoxArrPeriodicals =[
+    'Penalty', 'URC', 'Refund Memo', 'Manual Collection', 'Outstanding',
+    'Forfeit Format', 'Ref. Def. CSC / Def. CST',  '1st Periodical', '2nd Periodical', '3rd Periodical', 'Balance Sheet','Cancelled Foil','Other'];
+  ?>
 
 <!DOCTYPE html>
 <html lang="en">

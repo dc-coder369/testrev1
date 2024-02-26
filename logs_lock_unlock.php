@@ -71,7 +71,7 @@
                   <tr>   
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Lock Status</th>
-                    <th>Time of Operation</th>
+                    <th>Timestamp</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -89,8 +89,7 @@
                 <tfoot>
                   <tr>   
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
-                    <th>Lock Status</th>
-                    <th>Time of Operation</th>
+                    <th>Lock Status</th> 
                   </tr>
                 </tfoot>
               </table>
