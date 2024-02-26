@@ -730,13 +730,31 @@ function AccessToPageAsPerLogin($type){
     $pageArr = []; 
 
     if($type == 'admin'){
-        $pageArr = ['view-reports-uploaded-by-revenuecell.php','view-reports-uploaded-by-revenuecell.php','download-log.php','revenuecell-list.php','admin.php' ,'file-logs.php' ,'add-new-user.php' , 'change-password.php' , 'priviledges.php','dashboard.php' ,'logs_lock_unlock.php']; 
+        $pageArr = ['admin.php',
+                    'dashboard.php',
+                    'view-reports-uploaded-by-revenuecell.php',
+                    'download-log.php',
+                    'revenuecell-list.php',
+                    'file-logs.php',
+                    'add-new-user.php',
+                    'change-password.php',
+                    'priviledges.php',
+                    'logs_lock_unlock.php']; 
     }else if($type == 'revenuecell'){
-        $pageArr = ['view-periodicals-balance-sheets.php','lock_station.php','upload-data-for-higher-authority.php','revenuecell-list.php','file-logs.php','dashboard.php' ,'logs_status.php']; 
+        $pageArr = ['revenuecell-list.php',
+                    'dashboard.php',
+                    'view-periodicals-balance-sheets.php',
+                    'lock_station.php',
+                    'upload-data-for-higher-authority.php',
+                    'file-logs.php',
+                    'lockunlock_status.php']; 
     }else if($type == 'SI' || $type == 'si'){
-        $pageArr = ['si-list.php','dashboard.php']; 
+        $pageArr = ['si-list.php',
+                    'dashboard.php']; 
     }else if($type == 'station'){
-        $pageArr = ['upload-periodicals-balance-sheets.php','scdata-list.php','dashboard.php']; 
+        $pageArr = ['scdata-list.php',
+                    'dashboard.php',
+                    'upload-periodicals-balance-sheets.php',]; 
     } 
     return $pageArr; 
 }

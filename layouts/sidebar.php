@@ -58,7 +58,7 @@
             
             <li>
               <a href="revenuecell-list.php" class="<?= ($current_page == 'revenuecell-list.php') ? 'active' : '' ?>">
-                <i class="bi bi-circle"></i><span>View Data</span>
+                <i class="bi bi-circle"></i><span>View Daily Data</span>
               </a>
             </li>
             <li>
@@ -111,7 +111,7 @@
           <ul id="components-nav" class="<?= ($current_page == 'revenuecell-list.php' || $current_page == 'upload-files.php') ? 'nav-content collapse show' : 'nav-content collapse' ?>" data-bs-parent="#sidebar-nav">
             <li>
               <a href="revenuecell-list.php" class="<?= ($current_page == 'revenuecell-list.php') ? 'active' : '' ?>">
-                <i class="bi bi-circle"></i><span>View Data</span>
+                <i class="bi bi-circle"></i><span>View Daily Data</span>
               </a>
             </li>
             <li>
@@ -119,11 +119,11 @@
                 <i class="bi bi-circle"></i><span>Uploaded Files Logs</span>
               </a>
             </li>
-            <!-- <li>
+            <li>
               <a href="lock_station.php" class="<?= ($current_page == 'lock_station.php') ? 'active' : '' ?>">
                 <i class="bi bi-circle"></i><span>Lock Station</span>
               </a>
-            </li> -->
+            </li>
             <li>
               <a href="lockunlock_status.php" class="<?= ($current_page == 'lockunlock_status.php') ? 'active' : '' ?>">
                 <i class="bi bi-circle"></i><span>Lock Unlock Status</span>
@@ -136,7 +136,7 @@
             </li>
             <li>
               <a href="view-periodicals-balance-sheets.php" class="<?= ($current_page == 'view-periodicals-balance-sheets.php') ? 'active' : '' ?>">
-                <i class="bi bi-circle"></i><span>Non-AFC Formats, Periodicals and Balance Sheet</span>
+                <i class="bi bi-circle"></i><span>View Non-AFC Formats, Periodicals and Balance Sheet</span>
               </a>
             </li>
           </ul>
