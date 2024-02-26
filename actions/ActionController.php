@@ -40,6 +40,18 @@ if ($type == 'local_unlock_status') {
     }
 }
 
+if ($type == 'local_unlock_status_periodicals') {
+    $result = $database->select('tab_status_lockunlock_periodicals', "*", ['date' => $reqeust['date']], "AND", 'single');
+    if ($result) { 
+        $response = json_encode($result);
+        header('Content-Type: application/json');
+        echo $response;die; 
+    } else {
+        // Handle the case where no data is found
+        echo json_encode(['error' => 'No data found for the specified date']); die; 
+    }
+}
+
 if ($type == 'update_lock_status') {
 
     $table = "tab_status_lockupload";
@@ -79,9 +91,90 @@ if ($type == 'update_lock_status') {
     // }
 }
 
+if ($type == 'update_lock_status_periodicals') {
+
+    $table = "tab_status_lockunlock_periodicals";
+    $dataToUpdate = [ 'lock_upload' => $reqeust['status'] ];
+    $condition = 'date="'.$reqeust['date'].'"';
+    $stations = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
+        $insert = [ 
+            'date' => $reqeust['date'], 
+            'lock_status' => ($reqeust['status'] == 1) ? 'Locked' : 'Unlocked', 
+            'timestamp' =>date('Y-m-d H:i:s')
+        ]; 
+        $database->insert('tab_logs_lockunlock' , $insert ); 
+
+        if ($database->update($table, $dataToUpdate, $condition)) { 
+            foreach($stations as $station)
+            {
+                $updating_all = [  
+                    $station['user_code'] => ($reqeust['status'] == 1) ? '1' : '0',  
+                ]; 
+                $database->update($table, $updating_all, $condition);
+            }
+            $response = json_encode(['success' => true , 'lock_upload' => $reqeust['status'] ]);
+        }else{
+            $response = json_encode(['success' => false]);
+        } 
+    echo $response;die; 
+}
+
 if($type == 'update_lock_status_station')
 {
-    $table = "tab_status_lockupload";
+   
+    $type  = $reqeust['file_type'];
+    if($type = 'daily')
+    {
+        $table = "tab_status_lockupload";
+    }
+    elseif($type = 'periodic')
+    {
+        $table = "tab_status_lockunlock_periodicals";
+    }
+    elseif($type = 'all-file-type')
+    {
+        $table1 = "tab_status_lockupload";
+        $condition = 'date="'.$reqeust['date'].'"';
+   
+        $insert = [  
+            $reqeust['user_code'] => ($reqeust['status'] == 1) ? '1' : '0',  
+        ];  
+        
+        if ($database->update($table1, $insert, $condition)) {
+            $stations = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
+            $filelog = $database->select('tab_status_lockupload', "*", ['date' => $reqeust['date']], "AND", 'single');
+            $zeroCount = 0;
+            $oneCount = 0;
+            foreach($stations as $station)
+            {
+                $userCode = $station['user_code'];
+                $codeStatus = $filelog[$userCode] ?? null; // Get the status of the user code from the filelog
+                
+                // Increment the count based on the status
+                if ($codeStatus == 0) {
+                    $zeroCount++;
+                } elseif ($codeStatus == 1) {
+                    $oneCount++;
+                }
+            }
+            if ($zeroCount > 0 || $oneCount === 0) {
+                $lock_upload = [  
+                    'lock_upload' =>'0',  
+                ];  
+                $database->update($table, $lock_upload, $condition);
+            } elseif ($zeroCount === 0 || $oneCount > 0) {
+                $lock_upload = [  
+                    'lock_upload' =>'1' , 
+                ];  
+                $database->update($table, $lock_upload, $condition);
+            }  
+          
+            $response = json_encode(['success' => true , 'lock_upload' => $reqeust['status'] ,$zeroCount,$oneCount]);
+        }else{
+            $response = json_encode(['success' => false]);
+        } 
+        $table = "tab_status_lockunlock_periodicals";
+    }
     $condition = 'date="'.$reqeust['date'].'"';
    
         $insert = [  

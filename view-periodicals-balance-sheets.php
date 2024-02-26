@@ -44,7 +44,10 @@
                   <?php  endforeach; ?>
                 </select>
               </div>  -->
-              
+              <?php if($_SESSION['account_type'] != 'admin'):?>
+                <button class="btn btn-success mt-1" id="unlock" <?php if ($locked == 0) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>Unlock</button>
+                <button class="btn btn-danger mt-1" id="lock" <?php if ($locked == 0) : ?> style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>Lock</button>
+              <?php endif;?>
               </div>
               <div class="">
                 <?php foreach ($userList as $user) :
@@ -161,7 +164,7 @@
       url: "actions/ActionController.php", // Replace with the actual API endpoint
       method: "GET", // Use GET or POST depending on your API requirements
       data: {
-        "type": "local_unlock_status",
+        "type": "local_unlock_status_periodicals",
         date: val
       }, // Pass any data you need to send to the server
       dataType: "json", // Specify the expected data type
@@ -199,7 +202,7 @@
       url: "actions/ActionController.php", // Replace with the actual API endpoint
       method: "post", // Use GET or POST depending on your API requirements
       data: {
-        "type": "update_lock_status",
+        "type": "update_lock_status_periodicals",
         date: date,
         user_code :user_code,
         'status': lock_upload
