@@ -21,20 +21,18 @@
 
     <section class="section">
 
+      <?php if($_SESSION['account_type'] == 'revenuecell'):?>
       <div class="row">
         <div class="col-lg-12">
-
           <div class="card">
             <div class="card-body">
               <h5 class="card-title">Upload Files</h5>
 
               <!-- Browser Default Validation -->
               <form class="g-3" method="post" enctype="multipart/form-data" id="uploadForm" action="actions/ActionController.php">
-
                 <input type="hidden" name="type" value="upload-files">
                 <input type="hidden" name="fileType" value="pos-failed">
                 <input type="hidden" name="user_id" value="<?= $_SESSION['user_id']; ?>">
-
                 <div class="row mt-2">
                   <div class="col-md-6">
                     <label for="inputDate" class="col-sm-4 col-form-label">Date</label>
@@ -43,14 +41,12 @@
                     </div>
                   </div>
                 </div> 
-
                 <div id="file-upload-area" style="display: block;">
                   <div class="row mt-2">
                     <div class="col-md-6">
                       <label for="validationDefault03" class="form-label">Choose a File:</label>
                       <input type="file" class="form-control" id="file1" name="files[]">
                       <span class="form-text text-muted">Upload File of the Selected Category</span>
-
                     </div>
                     <div class="col-md-6">
                       <label for="inputDate" class="form-label">Uploaded By</label>
@@ -63,8 +59,6 @@
                       <textarea class="form-control" name="remark" placeholder="Enter Description"></textarea>
                     </div> 
                   </div>
-
-
                   <div class="row mt-2">
                     <div class="col-12">
                       <button class="btn btn-primary float-end" type="submit">Upload</button>
@@ -73,36 +67,16 @@
                 </div>
               </form>
               <!-- End Browser Default Validation -->
-
             </div>
           </div>
-
         </div>
-
-
       </div>
-
+      <?php endif;?>
       <div class="row">
-        
         <div class="col-lg-12">
-          
-        
           <div class="card">
-
-         
-
             <div class="card-body">
-            <div class="action-buttons float-end mt-3 d-flex justify-content-around">
-                <form class="row g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-form">
-                  <input type="hidden" name="type" value="download-all-files">
-                  <input type="hidden" name="hiddenrecordDate2" value="<?= $date ?? date('Y-m-d'); ?>">
-                  <button type="submit" class="btn btn-info" id="download-files-btn">Download All</button>
-                </form>
-              </div>
-              <!-- <div class="action-buttons float-end mt-3">
-                <a href="upload-files.php" class="btn btn-success">Upload Csv</a>   
-            </div> -->
-
+           
               <div class="d-flex justify-content-between">
                 <h5 class="card-title">Failed POS Transaction</h5>
               </div>
@@ -136,7 +110,11 @@
                         <form method="post" action="actions/ActionController.php" id="view-data-form"> 
                           <input type="hidden" name="type" value="view-data-form">
                           <input type="hidden" name="record_id" value="<?= $list['id']; ?>">
+                          <?php if($_SESSION['account_type'] == 'revenuecell'): ?>
                           <button type="submit" class="btn btn-info" id="view-file-data">View</button>
+                          <?php else :?>
+                            <button type="submit" class="btn btn-info" id="view-file-data">Upload-file</button>
+                          <?php endif;?>
                         </form>
                       </td>
                     </tr>

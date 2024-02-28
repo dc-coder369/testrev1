@@ -468,7 +468,7 @@ if ($type == 'upload-files') {
         $fileNamephp = parse_url($httpRefer, PHP_URL_PATH);
         if($_POST['fileType'] == 'pos-failed')
         {
-            $fileType = generateCategoryCodeFromCategoryName(null) ; 
+            $fileType = 'FTX' ; 
             $table  = 'pos_failed_transaction';
         }
         else
@@ -489,7 +489,8 @@ if ($type == 'upload-files') {
             if (isset($_FILES['files']['error'][0]) && $_FILES['files']['error'][0] == 0) {
                 $folderType = $fileType.'/'. $folderArr[0].'/'.$folderArr[1].'/'.$folderArr[2]; 
                 // $folderType = "Data-scdata-Earning-Data-". $recordDate; 
-                handleFileUpload($database,$_FILES['files'], $folderType, $recordDate, $station_name, $sc_name, $remark , $user_id, $fileType ,$uploaded_for,$upload_type,$table);
+                $master_id=0;
+                handleFileUpload($database,$_FILES['files'], $folderType, $recordDate, $station_name, $sc_name, $remark , $user_id, $fileType ,$uploaded_for,$upload_type,$table,$master_id);
                 header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
             }
         }
@@ -500,13 +501,67 @@ if ($type == 'upload-files') {
     }
 }
 
+if ($type == 'upload-subfile') {
+
+    //check the seesion while uploading file.
+    if(isset($_SESSION['user_code'])) { 
+
+        $recordDate = $_POST['recordDate']; 
+        $date = new DateTime($recordDate);
+        $formattedDate = $date->format('Y-M-d');
+        $folderArr = explode('-',$formattedDate); 
+        $sc_name = isset($_POST['sc_name']) ? $_POST['sc_name'] : '';
+        $remark = isset($_POST['remark']) ? $_POST['remark'] : '';
+        $user_id = isset($_POST['user_id']) ? $_POST['user_id'] : '';
+        $upload_type = isset($_POST['upload_type']) ? $_POST['upload_type'] : '';
+        $master_id = isset($_POST['master_file_id']) ? $_POST['master_file_id'] : '';
+        // $station_name_si = isset($_POST['station_name_si']) ? $_POST['station_name_si'] : ''; 
+        $station_name = $_SESSION['stationname']; 
+        $uploaded_for = $_SESSION['user_code'];
+        
+        $httpRefer = basename($_SERVER['HTTP_REFERER']);  
+        $fileNamephp = parse_url($httpRefer, PHP_URL_PATH);
+        
+            $fileType = 'FTX' ; 
+            $table  = 'pos_failed_transaction_station';
+        
+       
+            if (empty($_FILES['files']['tmp_name'][0])) {
+                setErrorMessage("You must select a file to upload."); 
+                header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
+            }
+            if (isset($_FILES['files']['error'][0]) && $_FILES['files']['error'][0] == 0) {
+                $folderType = $fileType.'/'. $folderArr[0].'/'.$folderArr[1].'/'.$folderArr[2]; 
+                // $folderType = "Data-scdata-Earning-Data-". $recordDate; 
+                handleFileUpload($database,$_FILES['files'], $folderType, $recordDate, $station_name, $sc_name, $remark , $user_id, $fileType ,$uploaded_for,$upload_type,$table,$master_id);
+                header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
+            }
+    }
+    else
+    {
+        header("Location: ../login.php");
+    }
+}
+
 if($type == 'view-data-form')
 {
     $id=$_POST['record_id'];
-    $condition = ['master_file_id' => $id];
-    $data = $database->select('pos_failed_transaction_station', "*", $condition, "AND", 'multiple','`upload_time` desc');
-    $_SESSION['data'] = $data;
-    header("Location: ../view-station-files-pos-failed.php");
+    
+    if($_SESSION['account_type'] == 'revenuecell')
+    {
+        $condition = ['master_file_id' => $id];
+        $data = $database->select('pos_failed_transaction_station', "*", $condition, "AND", 'multiple','`upload_time` desc');
+        $_SESSION['data'] = $data;
+        header("Location: ../view-station-files-pos-failed.php");
+    }
+    else
+    {
+        $condition = ['id' => $id];
+        $data = $database->select('pos_failed_transaction', "*", $condition, "AND", 'multiple','`upload_time` desc');
+        $_SESSION['data'] = $data;
+        header("Location: ../upload-station-files-pos-failed.php");
+    }
+    
 }
 
 
@@ -568,7 +623,7 @@ function resetSessionMessages()
 
 
 
-function handleFileUpload($database, $fileArray, $folderType, $recordDate, $station_name, $sc_name, $remark ,  $user_id, $fileType,$uploaded_for,$upload_type,$table)
+function handleFileUpload($database, $fileArray, $folderType, $recordDate, $station_name, $sc_name, $remark ,  $user_id, $fileType,$uploaded_for,$upload_type,$table,$master_id)
 {
     // Create the date-wise folder
     if($upload_type == 'periodic')
@@ -624,6 +679,26 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
                         'hostname' => gethostname()
                     ];
                     $result = $database->insert('pos_failed_transaction' , $insert ); 
+                }
+                elseif($table == "pos_failed_transaction_station")
+                {
+                    $insert = [ 
+                        'Sc_Name' => $sc_name,
+                        'station_name' => $station_name,
+                        'filename' => $newFileName,
+                        'original_filename' => $originalFileName,
+                        'size' => $filesize,
+                        'record_date' => $recordDate,
+                        'Remark' => $remark,
+                        'upload_by' =>  $user_id,
+                        'folder_name' => $folderType,
+                        'log_type' => 'upload',
+                        'file_type' => $fileType,
+                        'uploaded_for'=>$uploaded_for ?? NULL,
+                        'hostname' => gethostname(),
+                        'master_file_id' => $master_id
+                    ];
+                    $result = $database->insert('pos_failed_transaction_station' , $insert ); 
                 }
                 else
                 {
@@ -838,7 +913,7 @@ function AccessToPageAsPerLogin($type){
     }else if($type == 'SI' || $type == 'si'){
         $pageArr = ['si-list.php','dashboard.php']; 
     }else if($type == 'station'){
-        $pageArr = ['upload-periodicals-balance-sheets.php','scdata-list.php','dashboard.php']; 
+        $pageArr = ['upload-periodicals-balance-sheets.php','scdata-list.php','dashboard.php','Failed-POS-Transactions.php','upload-station-files-pos-failed.php']; 
     } 
     return $pageArr; 
 }
