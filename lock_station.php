@@ -11,6 +11,7 @@
   } else {
     $condition = [];
   }
+  $type = (isset($_GET['type'])) ? $_GET['type'] : '';
 
 
   $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', '`upload_time` desc');
@@ -36,23 +37,23 @@
           </div> 
           <div class="d-flex justify-content-around col-sm-4">
             <select name="file_type" class="form-control" id="file_type"> 
-              <option value="periodic" selected>Periodic</option>
-              <option value="daily">Daily</option>
+              <option value="periodic"  <?php if ($type == 'periodic') : ?> selected <?php endif; ?>>Periodic</option>
+              <option value="daily"   <?php if ($type == 'daily') : ?> selected <?php endif; ?>>Daily</option>
             </select>
           </div>  
           </div>
-          <div class="periodic">
+          <div class="periodic" <?php if ($type == 'periodic') : ?> style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>
             <?php foreach ($userList as $user) :
               $fileUpload = $database->select('tab_status_lockunlock_periodicals', "*", [$user['user_code'] => 1,'date' => $date], "AND", 'single');
               if ($fileUpload) :?>
-                <button id="unlock" onclick="lockAjax('<?= $date ?>', 0, '<?= $user['user_code'] ?>')" class="badge bg-success"><i class="bi bi-check-circle me-1"></i> <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></button>
+                <button id="periodic_unlock" onclick="lockAjax('<?= $date ?>', 0, '<?= $user['user_code'] ?>')" class="badge bg-success"><i class="bi bi-check-circle me-1"></i> <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></button>
               <?php else :?>
-                <button id="lock" onclick="lockAjax('<?= $date ?>', 1, '<?= $user['user_code'] ?>')" class="badge bg-secondary"><i class="bi bi-star me-1"></i>  <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></span>
+                <button id="periodic_lock" onclick="lockAjax('<?= $date ?>', 1, '<?= $user['user_code'] ?>')" class="badge bg-secondary"><i class="bi bi-star me-1"></i>  <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></span>
             <?php endif;
             endforeach; ?>
           </div>
 
-          <div class="daily d-none">
+          <div class="daily" <?php if ($type == 'daily') : ?> style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>
             <?php foreach ($userList as $user) :
               $fileUpload = $database->select('tab_status_lockupload', "*", [$user['user_code'] => 1,'date' => $date], "AND", 'single');
               if ($fileUpload) :?>
@@ -91,13 +92,10 @@
   $("#file_type").on("change", function() {
     var file_type = $(this).val(); // You can directly use $(this).val() to get the selected value
     
-    if(file_type == 'daily') {
-      $(".daily").removeClass("d-none");
-      $(".periodic").addClass("d-none");
-    } else if(file_type == 'periodic') {
-      $(".daily").addClass("d-none");
-      $(".periodic").removeClass("d-none");
-    }
+    var current = location.origin + location.pathname;
+    var getDate = "<?= $date; ?>";
+    current += '?date=' + getDate + '&type=' + file_type ;
+    location.href = current;
   });
 
   function getAjax(val) {
@@ -134,7 +132,7 @@
   }
   function lockAjax(date,lock_upload, user_code='') {
     var current = location.origin + location.pathname;
-    file_type = document.getElementById("file_type").value;
+    var file_type = document.getElementById("file_type").value;
     console.log(lock_upload);
     $.ajax({
       url: "actions/ActionController.php", // Replace with the actual API endpoint
@@ -148,7 +146,7 @@
       }, // Pass any data you need to send to the server
       dataType: "json", // Specify the expected data type
       success: function(response) {
-        current += '?date=' + date ;
+        current += '?date=' + date + '&type=' + file_type ;
         location.href = current;
       },
       error: function(error) {
