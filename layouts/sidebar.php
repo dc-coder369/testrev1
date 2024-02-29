@@ -96,7 +96,11 @@
                 <i class="bi bi-circle"></i><span>Non-AFC Formats, Periodicals and Balance Sheet</span>
               </a>
             </li>
-
+            <li>
+              <a href="Failed-POS-Transactions.php" class="<?= ($current_page == 'Failed-POS-Transactions.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>Failed POS Transactions</span>
+              </a>
+            </li>
           </ul>
         </li>
 
@@ -137,6 +141,11 @@
             <li>
               <a href="view-periodicals-balance-sheets.php" class="<?= ($current_page == 'view-periodicals-balance-sheets.php') ? 'active' : '' ?>">
                 <i class="bi bi-circle"></i><span>View Non-AFC Formats, Periodicals and Balance Sheet</span>
+              </a>
+            </li>
+            <li>
+              <a href="Failed-POS-Transactions.php" class="<?= ($current_page == 'Failed-POS-Transactions.php') ? 'active' : '' ?>">
+                <i class="bi bi-circle"></i><span>Failed POS Transactions</span>
               </a>
             </li>
           </ul>

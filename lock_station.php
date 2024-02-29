@@ -34,21 +34,25 @@
           <div class="d-flex justify-content-around col-sm-4"> 
               <input type="date" class="form-control ml-2" style="margin-bottom:10px;" id="recordDate" value="<?= $date ?? date('Y-m-d'); ?>" max="<?= date('Y-m-d'); ?>">
           </div> 
-          <!-- <div class="d-flex justify-content-around col-sm-4">
-            <select name="station_name" class="form-control" id="station_name">
-            <option value="all" selected>All Station </option>
-              <?php foreach ($userList as $user) :?>
-                <option value="<?=($user['user_code']) ? $user['user_code'] : $user['username']; ?>"
-                
-                > <?=$user['username']; ?> </option>
-              <?php  endforeach; ?>
+          <div class="d-flex justify-content-around col-sm-4">
+            <select name="file_type" class="form-control" id="file_type"> 
+              <option value="periodic" selected>Periodic</option>
+              <option value="daily">Daily</option>
             </select>
-          </div>  -->
-            <!-- <button class="btn btn-success mt-1" id="unlock" <?php if ($locked == 0) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>Unlock</button>
-            <button class="btn btn-danger mt-1" id="lock" <?php if ($locked == 0) : ?> style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>Lock</button> -->
-
+          </div>  
           </div>
-          <div class="">
+          <div class="periodic">
+            <?php foreach ($userList as $user) :
+              $fileUpload = $database->select('tab_status_lockunlock_periodicals', "*", [$user['user_code'] => 1,'date' => $date], "AND", 'single');
+              if ($fileUpload) :?>
+                <button id="unlock" onclick="lockAjax('<?= $date ?>', 0, '<?= $user['user_code'] ?>')" class="badge bg-success"><i class="bi bi-check-circle me-1"></i> <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></button>
+              <?php else :?>
+                <button id="lock" onclick="lockAjax('<?= $date ?>', 1, '<?= $user['user_code'] ?>')" class="badge bg-secondary"><i class="bi bi-star me-1"></i>  <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></span>
+            <?php endif;
+            endforeach; ?>
+          </div>
+
+          <div class="daily d-none">
             <?php foreach ($userList as $user) :
               $fileUpload = $database->select('tab_status_lockupload', "*", [$user['user_code'] => 1,'date' => $date], "AND", 'single');
               if ($fileUpload) :?>
@@ -58,7 +62,6 @@
             <?php endif;
             endforeach; ?>
           </div>
-
 
         </div>
       </div>
@@ -84,6 +87,17 @@
   $("#recordDate").on("change", function() {
     var val = $(this).val();
     getAjax(val);
+  });
+  $("#file_type").on("change", function() {
+    var file_type = $(this).val(); // You can directly use $(this).val() to get the selected value
+    
+    if(file_type == 'daily') {
+      $(".daily").removeClass("d-none");
+      $(".periodic").addClass("d-none");
+    } else if(file_type == 'periodic') {
+      $(".daily").addClass("d-none");
+      $(".periodic").removeClass("d-none");
+    }
   });
 
   function getAjax(val) {
@@ -120,6 +134,7 @@
   }
   function lockAjax(date,lock_upload, user_code='') {
     var current = location.origin + location.pathname;
+    file_type = document.getElementById("file_type").value;
     console.log(lock_upload);
     $.ajax({
       url: "actions/ActionController.php", // Replace with the actual API endpoint
@@ -128,7 +143,8 @@
         type: "update_lock_status_station",
         date: date,
         user_code :user_code,
-        'status': lock_upload
+        'status': lock_upload,
+        'file_type':file_type,
       }, // Pass any data you need to send to the server
       dataType: "json", // Specify the expected data type
       success: function(response) {
