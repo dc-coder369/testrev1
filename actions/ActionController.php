@@ -123,58 +123,58 @@ if($type == 'update_lock_status_station')
 {
    
     $type  = $reqeust['file_type'];
-    if($type = 'daily')
+    if($type == 'daily')
     {
         $table = "tab_status_lockupload";
     }
-    elseif($type = 'periodic')
+    elseif($type == 'periodic')
     {
         $table = "tab_status_lockunlock_periodicals";
     }
-    elseif($type = 'all-file-type')
-    {
-        $table1 = "tab_status_lockupload";
-        $condition = 'date="'.$reqeust['date'].'"';
+    // elseif($type = 'all-file-type')
+    // {
+    //     $table1 = "tab_status_lockupload";
+    //     $condition = 'date="'.$reqeust['date'].'"';
    
-        $insert = [  
-            $reqeust['user_code'] => ($reqeust['status'] == 1) ? '1' : '0',  
-        ];  
+    //     $insert = [  
+    //         $reqeust['user_code'] => ($reqeust['status'] == 1) ? '1' : '0',  
+    //     ];  
         
-        if ($database->update($table1, $insert, $condition)) {
-            $stations = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
-            $filelog = $database->select('tab_status_lockupload', "*", ['date' => $reqeust['date']], "AND", 'single');
-            $zeroCount = 0;
-            $oneCount = 0;
-            foreach($stations as $station)
-            {
-                $userCode = $station['user_code'];
-                $codeStatus = $filelog[$userCode] ?? null; // Get the status of the user code from the filelog
+    //     if ($database->update($table1, $insert, $condition)) {
+    //         $stations = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
+    //         $filelog = $database->select('tab_status_lockupload', "*", ['date' => $reqeust['date']], "AND", 'single');
+    //         $zeroCount = 0;
+    //         $oneCount = 0;
+    //         foreach($stations as $station)
+    //         {
+    //             $userCode = $station['user_code'];
+    //             $codeStatus = $filelog[$userCode] ?? null; // Get the status of the user code from the filelog
                 
-                // Increment the count based on the status
-                if ($codeStatus == 0) {
-                    $zeroCount++;
-                } elseif ($codeStatus == 1) {
-                    $oneCount++;
-                }
-            }
-            if ($zeroCount > 0 || $oneCount === 0) {
-                $lock_upload = [  
-                    'lock_upload' =>'0',  
-                ];  
-                $database->update($table, $lock_upload, $condition);
-            } elseif ($zeroCount === 0 || $oneCount > 0) {
-                $lock_upload = [  
-                    'lock_upload' =>'1' , 
-                ];  
-                $database->update($table, $lock_upload, $condition);
-            }  
+    //             // Increment the count based on the status
+    //             if ($codeStatus == 0) {
+    //                 $zeroCount++;
+    //             } elseif ($codeStatus == 1) {
+    //                 $oneCount++;
+    //             }
+    //         }
+    //         if ($zeroCount > 0 || $oneCount === 0) {
+    //             $lock_upload = [  
+    //                 'lock_upload' =>'0',  
+    //             ];  
+    //             $database->update($table, $lock_upload, $condition);
+    //         } elseif ($zeroCount === 0 || $oneCount > 0) {
+    //             $lock_upload = [  
+    //                 'lock_upload' =>'1' , 
+    //             ];  
+    //             $database->update($table, $lock_upload, $condition);
+    //         }  
           
-            $response = json_encode(['success' => true , 'lock_upload' => $reqeust['status'] ,$zeroCount,$oneCount]);
-        }else{
-            $response = json_encode(['success' => false]);
-        } 
-        $table = "tab_status_lockunlock_periodicals";
-    }
+    //         $response = json_encode(['success' => true , 'lock_upload' => $reqeust['status'] ,$zeroCount,$oneCount]);
+    //     }else{
+    //         $response = json_encode(['success' => false]);
+    //     } 
+    //     $table = "tab_status_lockunlock_periodicals";
+    // }
     $condition = 'date="'.$reqeust['date'].'"';
    
         $insert = [  
@@ -653,8 +653,15 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
             // $uniqueId = date('YMd', strtotime($recordDate));
             $uniqueId = date('d-m-y', strtotime($recordDate));
            
-            $prefixedFileName = $_SESSION['user_code'] . "_" . $fileType . "_" . $uniqueId . "." . $fileExtension;
-
+            if($master_id == 0)
+            {
+                $prefixedFileName = $_SESSION['user_code'] . "_" . $fileType . "_" . $uniqueId . "." . $fileExtension;
+            }
+           
+            else
+            {
+                $prefixedFileName = $_SESSION['user_code'] . "_" . $fileType . "_" . $uniqueId . "_" . $master_id . "." . $fileExtension;
+            }
             $newFileName = getUniqueFileName($targetDir,$prefixedFileName);
  
             $targetFile = $targetDir . handleDuplicateFile($newFileName, $targetDir);  
@@ -675,7 +682,6 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
                         'folder_name' => $folderType,
                         'log_type' => 'upload',
                         'file_type' => $fileType,
-                        'uploaded_for'=>$uploaded_for ?? NULL,
                         'hostname' => gethostname()
                     ];
                     $result = $database->insert('pos_failed_transaction' , $insert ); 
@@ -684,7 +690,7 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
                 {
                     $insert = [ 
                         'Sc_Name' => $sc_name,
-                        'station_name' => $station_name,
+                        'station_code' => $uploaded_for,
                         'filename' => $newFileName,
                         'original_filename' => $originalFileName,
                         'size' => $filesize,
@@ -694,7 +700,6 @@ function handleFileUpload($database, $fileArray, $folderType, $recordDate, $stat
                         'folder_name' => $folderType,
                         'log_type' => 'upload',
                         'file_type' => $fileType,
-                        'uploaded_for'=>$uploaded_for ?? NULL,
                         'hostname' => gethostname(),
                         'master_file_id' => $master_id
                     ];
