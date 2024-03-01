@@ -8,7 +8,7 @@
   $locked = (isset($_GET['i'])) ? $_GET['i'] : '';
   $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF','DR-CSC-CST'];
   if ($date) {
-    $condition = ['record_date' => $date, 'log_type' => 'upload','file_type' => $fileTypesArray];
+    $condition = ['log_type' => 'upload','file_type' => $fileTypesArray];
   } else {
     $condition = [];
   }
@@ -30,10 +30,10 @@
             <div class="card-body">
 
               <div class="selctdatas col-6 mt-4 mb-2">
-
+<!-- 
               <div class="d-flex justify-content-around col-sm-4"> 
                   <input type="date" class="form-control ml-2" style="margin-bottom:10px;" id="recordDate" value="<?= $date ?? date('Y-m-d'); ?>" max="<?= date('Y-m-d'); ?>">
-              </div> 
+              </div>  -->
               <!-- <div class="d-flex justify-content-around col-sm-4">
                 <select name="station_name" class="form-control" id="station_name">
                 <option value="all" selected>All Station </option>
@@ -44,7 +44,7 @@
                   <?php  endforeach; ?>
                 </select>
               </div>  -->
-              <?php if($_SESSION['account_type'] != 'admin'):?>
+              <!-- <?php if($_SESSION['account_type'] != 'admin'):?>
                 <button class="btn btn-success mt-1" id="unlock" <?php if ($locked == 0) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>Unlock</button>
                 <button class="btn btn-danger mt-1" id="lock" <?php if ($locked == 0) : ?> style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>Lock</button>
               <?php endif;?>
@@ -58,7 +58,7 @@
                     <span class="badge bg-secondary"><i class="bi bi-star me-1"></i>  <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></span>
                 <?php endif;
                 endforeach; ?>
-              </div>
+              </div> -->
 
 
             </div>
