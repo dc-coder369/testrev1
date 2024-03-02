@@ -80,7 +80,7 @@
               </div> -->
 
               <div class="d-flex justify-content-between">
-                <h5 class="card-title">Revenue Cell Data for Perodical files</h5>
+                <h5 class="card-title">Periodical Data</h5>
               </div>
 
 

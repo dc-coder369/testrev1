@@ -280,9 +280,8 @@ if ($type == 'download-all-latest') {
         $response = 'error';
         $message ="There is no file to download";  
     }
-  
-
 }
+
 if ($type == 'download-all-files') {
     $recordDate = $_POST['hiddenrecordDate2'];
     $date = new DateTime($recordDate);
@@ -914,20 +913,67 @@ function DownloadSelectedFiles($database,$recordDate, $baseFolderPath, $zipFileN
 }
 
 
-function AccessToPageAsPerLogin($type){
-    $pageArr = []; 
+function AccessToPageAsPerLogin($userRole){
+    $pageArr = [];
 
-    if($type == 'admin'){
-        $pageArr = ['view-reports-uploaded-by-revenuecell.php','view-reports-uploaded-by-revenuecell.php','download-log.php','revenuecell-list.php','admin.php' ,'file-logs.php' ,'add-new-user.php' , 'change-password.php' , 'priviledges.php','dashboard.php' ,'logs_lock_unlock.php']; 
-    }else if($type == 'revenuecell'){
-        $pageArr = ['Failed-POS-Transactions.php','view-station-files-pos-failed.php','view-periodicals-balance-sheets.php','lock_station.php','upload-data-for-higher-authority.php','revenuecell-list.php','file-logs.php','dashboard.php' ,'logs_status.php']; 
-    }else if($type == 'SI' || $type == 'si'){
-        $pageArr = ['si-list.php','dashboard.php']; 
-    }else if($type == 'station'){
-        $pageArr = ['upload-periodicals-balance-sheets.php','scdata-list.php','dashboard.php','Failed-POS-Transactions.php','upload-station-files-pos-failed.php']; 
-    } 
-    return $pageArr; 
+    switch ($userRole) {
+        case 'admin':
+            $pageArr = [
+                'view-reports-uploaded-by-revenuecell.php',
+                'download-log.php',
+                'revenuecell-list.php',
+                'admin.php',
+                'file-logs.php',
+                'add-new-user.php',
+                'change-password.php',
+                'priviledges.php',
+                'dashboard.php',
+                'logs_lock_unlock.php',
+                'lockunlock_status.php'
+            ];
+            break;
+
+        case 'revenuecell':
+            $pageArr = [
+                'Failed-POS-Transactions.php',
+                'view-station-files-pos-failed.php',
+                'view-periodicals-balance-sheets.php',
+                'lock_station.php',
+                'upload-data-for-higher-authority.php',
+                'revenuecell-list.php',
+                'file-logs.php',
+                'dashboard.php',
+                'logs_status.php',
+                'lockunlock_status.php'
+            ];
+            break;
+
+        case 'SI':
+        case 'si':
+            $pageArr = [
+                'si-list.php',
+                'dashboard.php'
+            ];
+            break;
+
+        case 'station':
+            $pageArr = [
+                'upload-periodicals-balance-sheets.php',
+                'scdata-list.php',
+                'dashboard.php',
+                'Failed-POS-Transactions.php',
+                'upload-station-files-pos-failed.php'
+            ];
+            break;
+
+        default:
+            // Handle unknown user roles
+            break;
+    }
+
+    return $pageArr;
 }
+
 
 
 

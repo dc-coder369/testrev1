@@ -36,8 +36,8 @@
               <input type="date" class="form-control ml-2" style="margin-bottom:10px;" id="recordDate" value="<?= $date ?? date('Y-m-d'); ?>" max="<?= date('Y-m-d'); ?>">
           </div> 
           <div class="d-flex justify-content-around col-sm-4">
-            <select name="file_type" class="form-control" id="file_type"> 
-              <option value="periodic"  <?php if ($type == 'periodic') : ?> selected <?php endif; ?>>Periodic</option>
+            <select name="file_type" class="form-control" id="file_type">
+              <option value="periodic"  <?php if ($type == 'periodic') : ?> selected <?php endif; ?>>Periodicals</option>
               <option value="daily"   <?php if ($type == 'daily') : ?> selected <?php endif; ?>>Daily</option>
             </select>
           </div>  

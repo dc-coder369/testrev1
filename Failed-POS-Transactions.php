@@ -26,7 +26,7 @@
         <div class="col-lg-12">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Upload Files</h5>
+              <h5 class="card-title">Upload Failed POS Transactions Master File</h5>
 
               <!-- Browser Default Validation -->
               <form class="g-3" method="post" enctype="multipart/form-data" id="uploadForm" action="actions/ActionController.php">
@@ -46,11 +46,11 @@
                     <div class="col-md-6">
                       <label for="validationDefault03" class="form-label">Choose a File:</label>
                       <input type="file" class="form-control" id="file1" name="files[]">
-                      <span class="form-text text-muted">Upload File of the Selected Category</span>
+                      <span class="form-text text-muted">Upload Consolidated Transactions File</span>
                     </div>
                     <div class="col-md-6">
                       <label for="inputDate" class="form-label">Uploaded By</label>
-                      <input type="text" class="form-control" name="sc_name" placeholder="Enter SC name" required>
+                      <input type="text" class="form-control" name="sc_name" placeholder="Enter name" required>
                     </div>
                   </div>
                   <div class="row mt-2">
