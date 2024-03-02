@@ -110,15 +110,12 @@
       dataType: "json", // Specify the expected data type
       success: function(response) {
         var current = location.origin + location.pathname;
-      
+        var file_type = document.getElementById("file_type").value;
         if (response == "1" || response == 1) {
-          
-          $("#file-upload-area").hide();
-          current += '?date=' + val ;
+          current += '?date=' + val + '&type=' + file_type ;
           // alert("You can't upload file Locked from Backend"); 
         } else {
-          current += '?date=' + val ;
-          $("#file-upload-area").show();
+          current += '?date=' + val + '&type=' + file_type ;
         }
         location.href = current;
 

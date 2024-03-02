@@ -5,14 +5,34 @@
 
   <?php
  
-  $date = (isset($_GET['date'])) ? $_GET['date'] : '';
-  $locked = (isset($_GET['i'])) ? $_GET['i'] : '';
+  
+  
   $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF','DR-CSC-CST'];
-  if ($date) {
-   $condition = ['record_date' => $date ,'log_type' => 'upload','station_name' => $_SESSION['stationname'],'file_type' => $fileTypesArray];
-  } else {
-    $condition = [];
-  }
+  $periodical_number=['Periodical 1','Periodical 2','Periodical 3','Balance Sheet'];
+  $months = array(
+      "January", 
+      "February", 
+      "March", 
+      "April", 
+      "May", 
+      "June", 
+      "July", 
+      "August", 
+      "September", 
+      "October", 
+      "November", 
+      "December"
+  );
+  $currentYear = date("Y");
+
+  // Set the range of years you want to include in the dropdown
+  $startYear = $currentYear - 20; // 10 years ago
+  $currentYear = date("Y");
+  // Generate an array of years within the range
+  $years = range($startYear, $currentYear);
+ 
+   $condition = ['log_type' => 'upload','station_name' => $_SESSION['stationname'],'file_type' => $fileTypesArray];
+   
 
   $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', 'id DESC' ,[]);
 
@@ -37,20 +57,49 @@
                 <input type="hidden" name="user_id" value="<?= $_SESSION['user_id']; ?>">
 
                 <div class="row mt-2">
-                  <div class="col-md-6">
-                    <label for="inputDate" class="col-sm-4 col-form-label">Date</label>
+                  <div class="col-md-4">
+                    <label for="month" class="col-sm-4 col-form-label">Month</label>
                     <div class="col-sm-4">
-                      <input type="date" class="form-control" name="recordDate" id="recordDate" value="<?php echo htmlspecialchars($date ?? date('Y-m-d')); ?>" min="2023-11-01" max="<?php echo date('Y-m-d'); ?>" onkeydown="return false">
+                      <!-- <input type="date" class="form-control" name="recordDate" id="recordDate" value="<?php echo htmlspecialchars($date ?? date('Y-m-d')); ?>" min="2023-11-01" max="<?php echo date('Y-m-d'); ?>" onkeydown="return false"> -->
+                      <select class="form-control" name="month" id="month" required>
+                        <option>Select Month</option>
+                        <?php foreach ($months as $month) : ?>
+                          <option value="<?php echo $month; ?>"><?= $month; ?> </option>
+                        <?php endforeach;  ?>
+                      </select>
+                    </div>
+                    
+                  </div>
+                  <div class="col-md-4">
+                    <label for="year" class="col-sm-4 col-form-label">Year</label>
+                    <div class="col-sm-4">
+                      <!-- <input type="date" class="form-control" name="recordDate" id="recordDate" value="<?php echo htmlspecialchars($date ?? date('Y-m-d')); ?>" min="2023-11-01" max="<?php echo date('Y-m-d'); ?>" onkeydown="return false"> -->
+                      <select class="form-control" name="year" id="year" required>
+                        <option value="">Select Year</option>
+                        <?php foreach ($years as $year): ?>
+                          <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
+                        <?php endforeach; ?>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <label for="year" class="col-form-label">Periodical Number</label>
+                    <div class="col-sm-4">
+                      <!-- <input type="date" class="form-control" name="recordDate" id="recordDate" value="<?php echo htmlspecialchars($date ?? date('Y-m-d')); ?>" min="2023-11-01" max="<?php echo date('Y-m-d'); ?>" onkeydown="return false"> -->
+                      <select class="form-control" name="periodical_number" id="periodical_number" required>
+                        <option value="">Select Periodical</option>
+                        <?php foreach ($periodical_number as $number): ?>
+                          <option value="<?php echo $number; ?>"><?php echo $number; ?></option>
+                        <?php endforeach; ?>
+                      </select>
                     </div>
                   </div>
                 </div>
 
 
 
-                <div id="file-upload-area" <?php if ($locked) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>
+                <div id="file-upload-area" style="display:none;">
                   <div class="row mt-2">
-                     
-
                     <div class="col-md-6">
                       <label for="validationDefault04" class="form-label">Select File Type:</label>
                       <select class="form-control" name="fileType" required>
@@ -154,7 +203,7 @@
                     <th>Filename (System)</th>
                      <th>Category</th>
 
-                    <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
+                     
                     <th>Upload Time</th>
                     <th>Remark</th>
                   </tr>
@@ -170,7 +219,6 @@
                       <td><?= strtoupper($list['station_name']); ?></td>
                       <td><a href="<?= $path ?>" download target="_balnk"><?= $list['filename']; ?></a></td>
                        <td><?= $list['file_type']; ?></td>
-                      <td><?= $list['record_date']; ?></td>
                       <td><?= $list['upload_time']; ?></td>
                       <td><?= $list['Remark']; ?></td>
                     </tr>
@@ -185,8 +233,6 @@
                     <th>Station Name</th>
                     <th>Filename</th>
                      <th>Category</th>
-
-                    <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Upload Time</th>
                     <th>Remark</th>
                   </tr>
@@ -208,46 +254,53 @@
 <script>
   console.log("Asd")
   var today = "<?= date('Y-m-d'); ?>";
-  var getDate = "<?= $date; ?>";
-  if (getDate == '') {
-    getAjax(today);
-  }
+   
   //
   $("#recordDate").on("change", function() {
     var val = $(this).val();
     getAjax(val);
   });
 
-  function getAjax(val) {
-
-    $.ajax({
-      url: "actions/ActionController.php", // Replace with the actual API endpoint
-      method: "GET", // Use GET or POST depending on your API requirements
-      data: {
-        "type": "local_unlock_status_periodicals",
-        date: val
-      }, // Pass any data you need to send to the server
-      dataType: "json", // Specify the expected data type
-      success: function(response) {
-        var current = location.origin + location.pathname;
-        var user_code = document.getElementById("user_code").value;
-        if (response[user_code] == "1" || response[user_code] == 1) {
-          
-          $("#file-upload-area").hide();
-          current += '?date=' + val + '&i=' + response[user_code];
-          // alert("You can't upload file Locked from Backend"); 
-        } else {
-          current += '?date=' + val + '&i=' + response[user_code];
-          $("#file-upload-area").show();
-        }
-        location.href = current;
-
-      },
-      error: function(error) {
-        // Handle the error here
-        console.error("Error fetching data:", error);
-      }
-    });
-
-  }
+  $("#month").on("change", function() {
+    var month = document.getElementById("month").value;
+    var year = document.getElementById("year").value;
+    var periodical_number = document.getElementById("periodical_number").value;
+    if(month != '' && year != '' && periodical_number != '')
+    {
+      $("#file-upload-area").show();
+    }
+    else
+    {
+      $("#file-upload-area").hide();
+    }
+  });
+  $("#year").on("change", function() {
+    var month = document.getElementById("month").value;
+    var year = document.getElementById("year").value;
+    var periodical_number = document.getElementById("periodical_number").value;
+     
+    if(month != '' && year != '' && periodical_number != '')
+    {
+      $("#file-upload-area").show();
+      // console.log('hey')
+    }
+    else
+    {
+      $("#file-upload-area").hide();
+    }
+  });
+  $("#periodical_number").on("change", function() {
+    var month = document.getElementById("month").value;
+    var year = document.getElementById("year").value;
+    var periodical_number = document.getElementById("periodical_number").value;
+    if(month != '' && year != '' && periodical_number != '')
+    {
+      $("#file-upload-area").show();
+    }
+    else
+    {
+      $("#file-upload-area").hide();
+    }
+  });
+  
 </script>

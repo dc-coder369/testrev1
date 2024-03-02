@@ -260,6 +260,12 @@ if ($type == 'download-all-latest') {
     foreach ($result as $file) { 
          $latestIds[] = $file['id']; 
     } 
+    if(!$latestIds){
+        $response = 'error';
+        $message ="There is no file to download";
+        setErrorMessage($message); 
+        header("Location:".$_SERVER['HTTP_REFERER']);
+     }
     if(!empty($latestIds))
     {
         $response = DownloadSelectedFiles($database,$recordDate, 'scdata/', $recordDate . '.zip', 'scdata/' . $recordDate . '.zip', $latestIds);
