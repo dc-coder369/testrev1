@@ -16,7 +16,7 @@
 
   $listArr = $database->select('tab_status_lockupload', "*", $condition, "AND", 'multiple', 'date desc');
  
- //  $userList = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
+  $userList = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
   ?>
   <div class="pagetitle">
 
@@ -34,7 +34,7 @@
                 <button class="btn btn-danger mt-1" id="lock" <?php if ($locked == 0) : ?> style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>Lock</button>
 
               </div> -->
-              <!-- <div class="">
+              <!-- <div class=""> 
                 <?php foreach ($userList as $user) :
                   $fileUpload = $database->select('tab_logs_fileupload', "*", ['station_name' => $user['stationname'], 'record_date' => $date], "AND", 'single');
                   if ($fileUpload) : ?>
@@ -67,20 +67,47 @@
                
               <!-- Table with stripped rows -->
               <table class="table datatable table-responsive table-hover">
+              <colgroup>
+                 <col style="width: 250px;"> 
+                 <col style="width: 250px;">
+                 <col> 
+              </colgroup>
                 <thead>
                   <tr>   
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Lock Status</th>
-              
+                    <th>Station Lock/Unlock status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <?php foreach ($listArr as $list) : ?>
-                   <tr id="<?= $list['id']; ?>"> 
+                
+                  <?php foreach ($listArr as $list) : $count=0; $unlocked=[];?>
+                    <tr id="<?= $list['id']; ?>"> 
                       <td><?=$list['date'];?></td>
                       <td><?= ($list['lock_upload'] == '1' || $list['lock_upload'] == 'Locked') ? 'Locked' : 'Unlocked'; ?></td> 
-                    </tr>
-
+                      <td value="<?php echo $list['date'];?>">
+                        <?php 
+                          foreach ($userList as $user) :
+                            $fileUpload = $database->select('tab_status_lockupload', "*", [$user['user_code'] => 1,'date' =>$list['date']], "AND", 'single');
+                            $lock_upload = $database->select('tab_status_lockupload', "*", ['lock_upload' => 1,'date' =>$list['date']], "AND", 'single');
+                            if (!$fileUpload) :
+                              $count++;  
+                              $unlocked[]=$user['user_code'];
+                            endif;
+                          endforeach; 
+                          $user_count=count($userList); if($count == $user_count) :
+                        ?> 
+                        All station are un-locked 
+                        <?php elseif($count == 0): ?>
+                          All station are locked
+                        <?php else:
+                        foreach ($unlocked as $user) :
+                          ?>
+                            <button class="badge bg-secondary"><i class="bi bi-star me-1"></i>  <?= ($user) ? strtoupper($user) : strtoupper($user); ?></span>
+                          <?php endforeach;
+                        endif; ?>
+                      </td> 
+                    </tr> 
                   <?php endforeach; ?>
 
 
@@ -104,5 +131,13 @@
 </main>
 
 <?php include 'layouts/footer.php'; ?>
- 
- 
+<style>
+  .column1 {
+    width: 100px; /* Set width for the first column */
+}
+
+.column2 {
+    width: 150px; /* Set width for the second column */
+}
+
+</style>

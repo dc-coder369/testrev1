@@ -126,94 +126,53 @@ if($type == 'update_lock_status_station')
     if($type == 'daily')
     {
         $table = "tab_status_lockupload";
+        $condition = ['date' => $reqeust['date']];   
     }
     elseif($type == 'periodic')
     {
-        $table = "tab_status_lockunlock_periodicals";
-    }
-    // elseif($type = 'all-file-type')
-    // {
-    //     $table1 = "tab_status_lockupload";
-    //     $condition = 'date="'.$reqeust['date'].'"';
-   
-    //     $insert = [  
-    //         $reqeust['user_code'] => ($reqeust['status'] == 1) ? '1' : '0',  
-    //     ];  
-        
-    //     if ($database->update($table1, $insert, $condition)) {
-    //         $stations = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
-    //         $filelog = $database->select('tab_status_lockupload', "*", ['date' => $reqeust['date']], "AND", 'single');
-    //         $zeroCount = 0;
-    //         $oneCount = 0;
-    //         foreach($stations as $station)
-    //         {
-    //             $userCode = $station['user_code'];
-    //             $codeStatus = $filelog[$userCode] ?? null; // Get the status of the user code from the filelog
-                
-    //             // Increment the count based on the status
-    //             if ($codeStatus == 0) {
-    //                 $zeroCount++;
-    //             } elseif ($codeStatus == 1) {
-    //                 $oneCount++;
-    //             }
-    //         }
-    //         if ($zeroCount > 0 || $oneCount === 0) {
-    //             $lock_upload = [  
-    //                 'lock_upload' =>'0',  
-    //             ];  
-    //             $database->update($table, $lock_upload, $condition);
-    //         } elseif ($zeroCount === 0 || $oneCount > 0) {
-    //             $lock_upload = [  
-    //                 'lock_upload' =>'1' , 
-    //             ];  
-    //             $database->update($table, $lock_upload, $condition);
-    //         }  
-          
-    //         $response = json_encode(['success' => true , 'lock_upload' => $reqeust['status'] ,$zeroCount,$oneCount]);
-    //     }else{
-    //         $response = json_encode(['success' => false]);
-    //     } 
-    //     $table = "tab_status_lockunlock_periodicals";
-    // }
-    $condition = 'date="'.$reqeust['date'].'"';
-   
-        $insert = [  
-            $reqeust['user_code'] => ($reqeust['status'] == 1) ? '1' : '0',  
-        ];  
-        
-        if ($database->update($table, $insert, $condition)) {
-            $stations = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
-            $filelog = $database->select('tab_status_lockupload', "*", ['date' => $reqeust['date']], "AND", 'single');
-            $zeroCount = 0;
-            $oneCount = 0;
-            foreach($stations as $station)
-            {
-                $userCode = $station['user_code'];
-                $codeStatus = $filelog[$userCode] ?? null; // Get the status of the user code from the filelog
-                
-                // Increment the count based on the status
-                if ($codeStatus == 0) {
-                    $zeroCount++;
-                } elseif ($codeStatus == 1) {
-                    $oneCount++;
-                }
+        $table = "lock_unlock_periodicals_balance_sheet";
+        $month = $reqeust['month'];
+        $year  = $reqeust['year'];
+        $periodical_type = $reqeust['periodicals']; 
+        $condition = ['month' => $month, 'year' => $year,'periodicals' => $periodical_type];
+    } 
+    $insert = [  
+        $reqeust['user_code'] => ($reqeust['status'] == 1) ? '1' : '0',  
+    ]; 
+    if ($database->update($table, $insert, $condition)) {
+        $stations = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
+        $filelog = $database->select($table, "*", $condition, "AND", 'single');
+        $zeroCount = 0;
+        $oneCount = 0;
+        foreach($stations as $station)
+        {
+            $userCode = $station['user_code'];
+            $codeStatus = $filelog[$userCode] ?? null; // Get the status of the user code from the filelog
+            
+            // Increment the count based on the status
+            if ($codeStatus == 0) {
+                $zeroCount++;
+            } elseif ($codeStatus == 1) {
+                $oneCount++;
             }
-            if ($zeroCount > 0 || $oneCount === 0) {
-                $lock_upload = [  
-                    'lock_upload' =>'0',  
-                ];  
-                $database->update($table, $lock_upload, $condition);
-            } elseif ($zeroCount === 0 || $oneCount > 0) {
-                $lock_upload = [  
-                    'lock_upload' =>'1' , 
-                ];  
-                $database->update($table, $lock_upload, $condition);
-            }  
-          
-            $response = json_encode(['success' => true , 'lock_upload' => $reqeust['status'] ,$zeroCount,$oneCount]);
-        }else{
-            $response = json_encode(['success' => false]);
-        } 
+        }
+        if ($zeroCount > 0 || $oneCount === 0) {
+            $lock_upload = [  
+                'lock_upload' =>'0',  
+            ];  
+            $database->update($table, $lock_upload, $condition);
+        } elseif ($zeroCount === 0 || $oneCount > 0) {
+            $lock_upload = [  
+                'lock_upload' =>'1' , 
+            ];  
+            $database->update($table, $lock_upload, $condition);
+        }  
+      
+        $response = json_encode(['success' => true , 'lock_upload' => $reqeust['status'] ,$zeroCount,$oneCount]);
+    }else{
+        $response = json_encode(['success' => false]);
+    } 
+   
     echo $response;die; 
 }
 
@@ -630,7 +589,31 @@ if($type == 'view-data-form')
     
 }
 
+if ($type == 'value_of_NON_AFC_periodical') {
+    $userList = $database->select('tab_user_details', "user_code", ['account_type' => 'station'], "AND", 'multiple');
+    $userCodes = array_column($userList, 'user_code');
 
+    // Ensure uniqueness of values and re-index the array
+    $userCodes = array_values(array_unique($userCodes));
+    $list = implode(', ', $userCodes);
+
+    $status = $database->select('lock_unlock_periodicals_balance_sheet', '*', ['month' => $reqeust['month'], 'year' => $reqeust['year'], 'periodicals' => $reqeust['periodicals']], "AND", 'single');
+    $result = [];
+    foreach ($status as $key => $value) {
+        if (in_array($key, explode(', ', $list))) {
+            $result[$key] = $value;
+        }
+    }
+  
+    if ($result) { 
+      
+        // Encode the response as JSON
+        echo json_encode($result);
+    } else {
+        // Handle the case where no data is found
+        echo json_encode(['error' => 'No data found for the specified date']);
+    }
+}
 function getUniqueFileName($targetDir ,$fileName) {
     $fileInfo = pathinfo($fileName);
     $baseName = $fileInfo['filename'];

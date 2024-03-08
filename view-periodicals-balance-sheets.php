@@ -18,20 +18,7 @@
 
   $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF','DR-CSC-CST'];
   $periodical_number=['Periodical_1','Periodical_2','Periodical_3','Balance Sheet'];
-  $months = array(
-      "January", 
-      "February", 
-      "March", 
-      "April", 
-      "May", 
-      "June", 
-      "July", 
-      "August", 
-      "September", 
-      "October", 
-      "November", 
-      "December"
-  );
+  $months = array("January","February","March","April","May","June","July","August","September","October","November","December");
   $currentYear = date("Y");
 
   // Set the range of years you want to include in the dropdown
@@ -45,20 +32,15 @@
   // $listArr = $database->select('tab_status_lockupload', "*", [], "AND", 'multiple');
   $userList = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
   ?>
-    <div class="pagetitle">
-
+    <div class="pagetitle"> 
         <section class="section">
             <div class="row">
-                <div class="col-lg-12">
-
+                <div class="col-lg-12"> 
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Create lock-unlock</h5>
                             <input type="hidden" name="user_code" id="user_code" value="<?= $_SESSION['user_code']; ?>">
-                            <!-- Browser Default Validation -->
-                           
-                                <!-- <input type="hidden" name="type" value="lock unlock for NON AFC"> -->
-                                <!-- <input type="hidden" name="upload_type" value="periodic"> -->
+                            <!-- Browser Default Validation --> 
                                 <input type="hidden" name="user_id" value="<?= $_SESSION['user_id']; ?>">
                                 <div class="row mt-2">
                                     <div class="col-md-4">
@@ -106,82 +88,26 @@
                                             </select>
                                         </div>
                                     </div>
-                                </div><br>
-                                
-                                <div id="display-lock-unlock-button-area" class="btn_lock_unlock">
-
+                                </div><br> 
+                                <div id="display-lock-unlock-button-area" class="btn_lock_unlock"> 
                                 </div>
-                            <!-- End Browser Default Validation -->
-
+                            <!-- End Browser Default Validation --> 
                         </div>
-                    </div>
-
-                </div>
-
-
+                    </div> 
+                </div> 
             </div>
             <div class="row">
-                <div class="col-lg-12">
-
-                    <div class="card">
-
-                        <div class="card-body">
-
+                <div class="col-lg-12"> 
+                    <div class="card"> 
+                        <div class="card-body"> 
                             <div class="selctdatas col-6 mt-4 mb-2">
-                                <!-- 
-              <div class="d-flex justify-content-around col-sm-4"> 
-                  <input type="date" class="form-control ml-2" style="margin-bottom:10px;" id="recordDate" value="<?= $date ?? date('Y-m-d'); ?>" max="<?= date('Y-m-d'); ?>">
-              </div>  -->
-                                <!-- <div class="d-flex justify-content-around col-sm-4">
-                <select name="station_name" class="form-control" id="station_name">
-                <option value="all" selected>All Station </option>
-                  <?php foreach ($userList as $user) :?>
-                    <option value="<?=($user['user_code']) ? $user['user_code'] : $user['username']; ?>"
-                    
-                    > <?=$user['username']; ?> </option>
-                  <?php  endforeach; ?>
-                </select>
-              </div>  -->
-                                <!-- <?php if($_SESSION['account_type'] != 'admin'):?>
-                <button class="btn btn-success mt-1" id="unlock" <?php if ($locked == 0) : ?> style="display: none;" <?php else : ?> style="display: block;" <?php endif; ?>>Unlock</button>
-                <button class="btn btn-danger mt-1" id="lock" <?php if ($locked == 0) : ?> style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>Lock</button>
-              <?php endif;?>
-              </div>
-              <div class="">
-                <?php foreach ($userList as $user) :
-                  $fileUpload = $database->select('tab_logs_fileupload', "*", ['station_name' => $user['stationname'], 'record_date' => $date], "AND", 'single');
-                  if ($fileUpload) : ?>
-                    <span class="badge bg-success"><i class="bi bi-check-circle me-1"></i> <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></span>
-                  <?php else : ?>
-                    <span class="badge bg-secondary"><i class="bi bi-star me-1"></i>  <?= ($user['user_code']) ? strtoupper($user['user_code']) : strtoupper($user['stationname']); ?></span>
-                <?php endif;
-                endforeach; ?>
-              </div> -->
-
-
                             </div>
-                        </div>
-
+                        </div> 
                         <div class="card">
-                            <div class="card-body">
-                                <!-- <div class="action-buttons float-end mt-3 d-flex justify-content-around">
-                <form class="g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-form">
-                  <input type="hidden" name="type" value="download-all-files">
-                  <input type="hidden" name="hiddenrecordDate2" value="<?= $date ?? date('Y-m-d'); ?>">
-                  <button type="submit" class="btn btn-info" id="download-files-btn">Download All</button>
-                </form>
-                <form class="g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-latest">
-                  <input type="hidden" name="type" value="download-all-latest"> 
-                  <input type="hidden" name="hiddenrecordDate2" value="<?= $date ?? date('Y-m-d'); ?>">
-                  <button type="submit" class="btn btn-secondary" id="download-files-btn">Download All Latest</button>
-                </form>
-              </div> -->
-
+                            <div class="card-body"> 
                                 <div class="d-flex justify-content-between">
                                     <h5 class="card-title">Revenue Cell Data for Perodical files</h5>
-                                </div>
-
-
+                                </div> 
                                 <!-- Table with stripped rows -->
                                 <table class="table datatable table-responsive table-hover">
                                     <thead>

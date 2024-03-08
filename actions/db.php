@@ -138,8 +138,23 @@ class DatabaseOperation {
             $set .= "$column='$value', ";
         }
         $set = rtrim($set, ", ");
+        $sql = "UPDATE $table SET $set";
+        if (is_array($condition)) {
+            $where = "";
+            foreach ($condition as $column => $value) {
+                $where .= "$column='$value' AND ";
+            }
+            $where = rtrim($where, " AND ");
     
-        $sql = "UPDATE $table SET $set WHERE $condition";
+            $sql .= " WHERE $where";
+        } elseif (is_string($condition)) {
+            // If $condition is a string, append it to the SQL statement
+            $sql .= " WHERE $condition";
+        } else {
+            // Handle invalid condition type
+            return false;
+        }
+        
     
         return $this->query($sql);
     }
