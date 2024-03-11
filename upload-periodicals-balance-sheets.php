@@ -4,11 +4,11 @@
 
 
   <?php
- 
+
   
-  
-  $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF','DR-CSC-CST'];
-  $periodical_number=['Periodical 1','Periodical 2','Periodical 3','Balance Sheet'];
+
+$fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF','DR-CSC-CST'];
+  $periodical_number=['Periodical_1','Periodical_2','Periodical_3','Balance Sheet'];
   $months = array(
       "January", 
       "February", 
@@ -63,8 +63,9 @@
                       <!-- <input type="date" class="form-control" name="recordDate" id="recordDate" value="<?php echo htmlspecialchars($date ?? date('Y-m-d')); ?>" min="2023-11-01" max="<?php echo date('Y-m-d'); ?>" onkeydown="return false"> -->
                       <select class="form-control" name="month" id="month" required>
                         <option>Select Month</option>
-                        <?php foreach ($months as $month) : ?>
-                          <option value="<?php echo $month; ?>"><?= $month; ?> </option>
+                        <?php foreach ($months as $monthName) : ?>
+                          <?php $abbrMonth = substr($monthName, 0, 3); ?>
+                          <option value="<?= $abbrMonth; ?>"><?= $monthName; ?> </option>
                         <?php endforeach;  ?>
                       </select>
                     </div>
@@ -77,7 +78,8 @@
                       <select class="form-control" name="year" id="year" required>
                         <option value="">Select Year</option>
                         <?php foreach ($years as $year): ?>
-                          <option value="<?php echo $year; ?>"><?php echo $year; ?></option>
+                          <?php $lastTwoDigits = substr($year, -2); ?>
+                          <option value="<?php echo $lastTwoDigits; ?>"><?php echo $year; ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -89,7 +91,7 @@
                       <select class="form-control" name="periodical_number" id="periodical_number" required>
                         <option value="">Select Periodical</option>
                         <?php foreach ($periodical_number as $number): ?>
-                          <option value="<?php echo $number; ?>"><?php echo $number; ?></option>
+                          <option value="<?php if($number == "Periodical_1"){echo "Periodical1";}elseif($number == "Periodical_2"){echo "Periodical2";}elseif($number == "Periodical_3"){echo "Periodical3";} else{echo "Balance_Sheet";} ?>"><?php echo $number; ?></option>
                         <?php endforeach; ?>
                       </select>
                     </div>
@@ -102,16 +104,16 @@
                   <div class="row mt-2">
                     <div class="col-md-6">
                       <label for="validationDefault04" class="form-label">Select File Type:</label>
-                      <select class="form-control" name="fileType" required>
+                      <select class="form-control" name="fileType" value="" required>
                         <?php foreach ($checkBoxArrPeriodicals as $check) : ?>
-                          <option><?= $check; ?> </option>
+                          <option value="<?php echo $check; ?>"><?= $check; ?> </option>
                         <?php endforeach;  ?>
                       </select>
 
                       <span class="form-text text-muted">Select a Category of the File</span>
                     </div>
 
-
+                    
                     <div class="col-md-6">
                       <label for="validationDefault03" class="form-label">Choose a File:</label>
                       <input type="file" class="form-control" id="file1" name="files[]" multiple>
@@ -211,7 +213,7 @@
                 <tbody>
 
                   <?php foreach ($listArr as $list) :
-                    $path = 'actions/scdata/' . $list['folder_name'] . '/' . $list['filename'];
+                    $path = 'actions/scdata/Periodicals/' . $list['folder_name'] . '/' . $list['filename'];
                   ?>
                     <tr id="<?= $list['id']; ?>">
                      
@@ -265,42 +267,52 @@
     var month = document.getElementById("month").value;
     var year = document.getElementById("year").value;
     var periodical_number = document.getElementById("periodical_number").value;
-    if(month != '' && year != '' && periodical_number != '')
-    {
-      $("#file-upload-area").show();
-    }
-    else
-    {
-      $("#file-upload-area").hide();
+    if( year != '' && periodical_number != ''){
+       getAjaxlockunlock(month, year, periodical_number);
     }
   });
   $("#year").on("change", function() {
     var month = document.getElementById("month").value;
     var year = document.getElementById("year").value;
     var periodical_number = document.getElementById("periodical_number").value;
-     
-    if(month != '' && year != '' && periodical_number != '')
-    {
-      $("#file-upload-area").show();
-      // console.log('hey')
-    }
-    else
-    {
-      $("#file-upload-area").hide();
+    if( month != '' && periodical_number != ''){
+       getAjaxlockunlock(month, year, periodical_number);
     }
   });
   $("#periodical_number").on("change", function() {
     var month = document.getElementById("month").value;
     var year = document.getElementById("year").value;
     var periodical_number = document.getElementById("periodical_number").value;
-    if(month != '' && year != '' && periodical_number != '')
-    {
-      $("#file-upload-area").show();
-    }
-    else
-    {
-      $("#file-upload-area").hide();
+    if( year != '' && month != ''){
+       getAjaxlockunlock(month, year, periodical_number);
     }
   });
+
+function getAjaxlockunlock(monthVal, yearVal, periodicalsVal) {
+    
+    $.ajax({
+        url: "actions/ActionController.php", // Replace with the actual API endpoint
+        method: "GET", // Use GET or POST depending on your API requirements
+        data: {
+            "type": "local_unlock_status_NON_AFC",
+            month: monthVal,
+            year: yearVal,
+            periodicals: periodicalsVal
+        }, // Pass any data you need to send to the server
+        dataType: "json", // Specify the expected data type
+        success: function(response) {
+            var buttonArea = $("#display-lock-unlock-button-area");
+            if (response.lock_upload == "1" || response.lock_upload == 1) {
+              $("#file-upload-area").hide();
+            } else {
+              $("#file-upload-area").show();
+            }
+        },
+        error: function(error) {
+            // Handle the error here
+            console.error("Error fetching data:", error);
+        }
+    });
+}
   
 </script>

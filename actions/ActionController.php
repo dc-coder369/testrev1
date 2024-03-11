@@ -126,94 +126,53 @@ if($type == 'update_lock_status_station')
     if($type == 'daily')
     {
         $table = "tab_status_lockupload";
+        $condition = ['date' => $reqeust['date']];   
     }
     elseif($type == 'periodic')
     {
-        $table = "tab_status_lockunlock_periodicals";
-    }
-    // elseif($type = 'all-file-type')
-    // {
-    //     $table1 = "tab_status_lockupload";
-    //     $condition = 'date="'.$reqeust['date'].'"';
-   
-    //     $insert = [  
-    //         $reqeust['user_code'] => ($reqeust['status'] == 1) ? '1' : '0',  
-    //     ];  
-        
-    //     if ($database->update($table1, $insert, $condition)) {
-    //         $stations = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
-    //         $filelog = $database->select('tab_status_lockupload', "*", ['date' => $reqeust['date']], "AND", 'single');
-    //         $zeroCount = 0;
-    //         $oneCount = 0;
-    //         foreach($stations as $station)
-    //         {
-    //             $userCode = $station['user_code'];
-    //             $codeStatus = $filelog[$userCode] ?? null; // Get the status of the user code from the filelog
-                
-    //             // Increment the count based on the status
-    //             if ($codeStatus == 0) {
-    //                 $zeroCount++;
-    //             } elseif ($codeStatus == 1) {
-    //                 $oneCount++;
-    //             }
-    //         }
-    //         if ($zeroCount > 0 || $oneCount === 0) {
-    //             $lock_upload = [  
-    //                 'lock_upload' =>'0',  
-    //             ];  
-    //             $database->update($table, $lock_upload, $condition);
-    //         } elseif ($zeroCount === 0 || $oneCount > 0) {
-    //             $lock_upload = [  
-    //                 'lock_upload' =>'1' , 
-    //             ];  
-    //             $database->update($table, $lock_upload, $condition);
-    //         }  
-          
-    //         $response = json_encode(['success' => true , 'lock_upload' => $reqeust['status'] ,$zeroCount,$oneCount]);
-    //     }else{
-    //         $response = json_encode(['success' => false]);
-    //     } 
-    //     $table = "tab_status_lockunlock_periodicals";
-    // }
-    $condition = 'date="'.$reqeust['date'].'"';
-   
-        $insert = [  
-            $reqeust['user_code'] => ($reqeust['status'] == 1) ? '1' : '0',  
-        ];  
-        
-        if ($database->update($table, $insert, $condition)) {
-            $stations = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
-            $filelog = $database->select('tab_status_lockupload', "*", ['date' => $reqeust['date']], "AND", 'single');
-            $zeroCount = 0;
-            $oneCount = 0;
-            foreach($stations as $station)
-            {
-                $userCode = $station['user_code'];
-                $codeStatus = $filelog[$userCode] ?? null; // Get the status of the user code from the filelog
-                
-                // Increment the count based on the status
-                if ($codeStatus == 0) {
-                    $zeroCount++;
-                } elseif ($codeStatus == 1) {
-                    $oneCount++;
-                }
+        $table = "lock_unlock_periodicals_balance_sheet";
+        $month = $reqeust['month'];
+        $year  = $reqeust['year'];
+        $periodical_type = $reqeust['periodicals']; 
+        $condition = ['month' => $month, 'year' => $year,'periodicals' => $periodical_type];
+    } 
+    $insert = [  
+        $reqeust['user_code'] => ($reqeust['status'] == 1) ? '1' : '0',  
+    ]; 
+    if ($database->update($table, $insert, $condition)) {
+        $stations = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
+        $filelog = $database->select($table, "*", $condition, "AND", 'single');
+        $zeroCount = 0;
+        $oneCount = 0;
+        foreach($stations as $station)
+        {
+            $userCode = $station['user_code'];
+            $codeStatus = $filelog[$userCode] ?? null; // Get the status of the user code from the filelog
+            
+            // Increment the count based on the status
+            if ($codeStatus == 0) {
+                $zeroCount++;
+            } elseif ($codeStatus == 1) {
+                $oneCount++;
             }
-            if ($zeroCount > 0 || $oneCount === 0) {
-                $lock_upload = [  
-                    'lock_upload' =>'0',  
-                ];  
-                $database->update($table, $lock_upload, $condition);
-            } elseif ($zeroCount === 0 || $oneCount > 0) {
-                $lock_upload = [  
-                    'lock_upload' =>'1' , 
-                ];  
-                $database->update($table, $lock_upload, $condition);
-            }  
-          
-            $response = json_encode(['success' => true , 'lock_upload' => $reqeust['status'] ,$zeroCount,$oneCount]);
-        }else{
-            $response = json_encode(['success' => false]);
-        } 
+        }
+        if ($zeroCount > 0 || $oneCount === 0) {
+            $lock_upload = [  
+                'lock_upload' =>'0',  
+            ];  
+            $database->update($table, $lock_upload, $condition);
+        } elseif ($zeroCount === 0 || $oneCount > 0) {
+            $lock_upload = [  
+                'lock_upload' =>'1' , 
+            ];  
+            $database->update($table, $lock_upload, $condition);
+        }  
+      
+        $response = json_encode(['success' => true , 'lock_upload' => $reqeust['status'] ,$zeroCount,$oneCount]);
+    }else{
+        $response = json_encode(['success' => false]);
+    } 
+   
     echo $response;die; 
 }
 
@@ -452,11 +411,64 @@ function generateCategoryCodeFromCategoryName($categoryName) {
     }
 }
 
+if($type == 'local_unlock_status_NON_AFC'){
+    $result = $database->select('lock_unlock_periodicals_balance_sheet', 'lock_upload', ['month' => $reqeust['month'],'year' => $reqeust['year'],'periodicals' => $reqeust['periodicals']], "AND", 'single');
+    if ($result) { 
+        $response = json_encode($result);
+        // header('Content-Type: application/json');
+        echo $response;
+    } else {
+        // Handle the case where no data is found
+        echo json_encode(['error' => 'No data found for the specified date']);
+    }
+}
+
+if ($type == 'lock unlock for NON AFC') {
+    $status = $reqeust['status'];
+    $month = $reqeust['month'];
+    $year = $reqeust['year'];
+    $periodical_number = $reqeust['periodicals'];
+    $response_data = array($status, $month, $year, $periodical_number);
+    $stations = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
+    $result_select = $database->select('lock_unlock_periodicals_balance_sheet', "*", ['month' => $month, 'year' => $year, 'periodicals' => $periodical_number], "AND", 'single');
+    if($result_select){
+        $condition = 'month="' . $month . '" AND year="' . $year . '" AND periodicals="' . $periodical_number . '"';
+        foreach($stations as $station){
+            $result = $database->update('lock_unlock_periodicals_balance_sheet', ['lock_upload' => $status,$station['user_code'] => $status], $condition);
+        }
+    }else{
+            $insert = [
+                'month' => $month,
+                'year' => $year,
+                'periodicals' => $periodical_number,
+                'lock_upload' => $status,
+            ];
+            $result1 = $database->insert(' lock_unlock_periodicals_balance_sheet' , $insert ); 
+            $result_select = $database->select('lock_unlock_periodicals_balance_sheet', "*", ['month' => $month, 'year' => $year, 'periodicals' => $periodical_number], "AND", 'single');
+             $month = $result_select['month'];
+             $year = $result_select['year'];
+             $periodical_number = $result_select['periodicals'];
+            $condition = 'month="' . $month . '" AND year="' . $year . '" AND periodicals="' . $periodical_number . '"';
+            foreach($stations as $station){
+               $result = $database->update('lock_unlock_periodicals_balance_sheet', [$station['user_code'] => $status], $condition);
+            }
+    }
+    if ($result) { 
+        $response = json_encode($response_data);
+        echo $response; die;
+    } else {
+        // Handle the case where no data is found
+        echo json_encode(['error' => 'No data updated for the specified fields']);
+    }
+}
+
 if ($type == 'upload-files') {
 
     //check the seesion while uploading file.
     if(isset($_SESSION['user_code'])) { 
-
+        $monthName = $_POST['month'];
+        $year = $_POST['year'];
+        $periodical_number = $_POST['periodical_number'];
         $recordDate = $_POST['recordDate']; 
         $date = new DateTime($recordDate);
         $formattedDate = $date->format('Y-M-d');
@@ -492,10 +504,15 @@ if ($type == 'upload-files') {
                 header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
             }
             if (isset($_FILES['files']['error'][0]) && $_FILES['files']['error'][0] == 0) {
+                if(!$monthName && !$year){
                 $folderType = $fileType.'/'. $folderArr[0].'/'.$folderArr[1].'/'.$folderArr[2]; 
+                }
+                else{
+                    $folderType = "20".$year.'/'. $monthName.'/'.$periodical_number; 
+                }
                 // $folderType = "Data-scdata-Earning-Data-". $recordDate; 
                 $master_id=0;
-                handleFileUpload($database,$_FILES['files'], $folderType, $recordDate, $station_name, $sc_name, $remark , $user_id, $fileType ,$uploaded_for,$upload_type,$table,$master_id);
+                handleFileUpload($database,$_FILES['files'], $folderType, $recordDate, $station_name, $sc_name, $remark , $user_id, $fileType ,$uploaded_for,$upload_type,$table,$master_id,$year,$monthName,$periodical_number);
                 header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
             }
         }
@@ -529,7 +546,9 @@ if ($type == 'upload-subfile') {
         
             $fileType = 'FTX' ; 
             $table  = 'pos_failed_transaction_station';
-        
+            $year ="0";
+            $monthName ="0";
+            $periodical_number ="0";
        
             if (empty($_FILES['files']['tmp_name'][0])) {
                 setErrorMessage("You must select a file to upload."); 
@@ -538,7 +557,7 @@ if ($type == 'upload-subfile') {
             if (isset($_FILES['files']['error'][0]) && $_FILES['files']['error'][0] == 0) {
                 $folderType = $fileType.'/'. $folderArr[0].'/'.$folderArr[1].'/'.$folderArr[2]; 
                 // $folderType = "Data-scdata-Earning-Data-". $recordDate; 
-                handleFileUpload($database,$_FILES['files'], $folderType, $recordDate, $station_name, $sc_name, $remark , $user_id, $fileType ,$uploaded_for,$upload_type,$table,$master_id);
+                handleFileUpload($database,$_FILES['files'], $folderType, $recordDate, $station_name, $sc_name, $remark , $user_id, $fileType ,$uploaded_for,$upload_type,$table,$master_id,$year,$monthName,$periodical_number);
                 header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
             }
     }
@@ -569,7 +588,31 @@ if($type == 'view-data-form')
     
 }
 
+if ($type == 'value_of_NON_AFC_periodical') {
+    $userList = $database->select('tab_user_details', "user_code", ['account_type' => 'station'], "AND", 'multiple');
+    $userCodes = array_column($userList, 'user_code');
 
+    // Ensure uniqueness of values and re-index the array
+    $userCodes = array_values(array_unique($userCodes));
+    $list = implode(', ', $userCodes);
+
+    $status = $database->select('lock_unlock_periodicals_balance_sheet', '*', ['month' => $reqeust['month'], 'year' => $reqeust['year'], 'periodicals' => $reqeust['periodicals']], "AND", 'single');
+    $result = [];
+    foreach ($status as $key => $value) {
+        if (in_array($key, explode(', ', $list))) {
+            $result[$key] = $value;
+        }
+    }
+  
+    if ($result) { 
+      
+        // Encode the response as JSON
+        echo json_encode($result);
+    } else {
+        // Handle the case where no data is found
+        echo json_encode(['error' => 'No data found for the specified date']);
+    }
+}
 function getUniqueFileName($targetDir ,$fileName) {
     $fileInfo = pathinfo($fileName);
     $baseName = $fileInfo['filename'];
@@ -628,131 +671,137 @@ function resetSessionMessages()
 
 
 
-function handleFileUpload($database, $fileArray, $folderType, $recordDate, $station_name, $sc_name, $remark ,  $user_id, $fileType,$uploaded_for,$upload_type,$table,$master_id)
-{
-    // Create the date-wise folder
-    if($upload_type == 'periodic')
+    function handleFileUpload($database, $fileArray, $folderType, $recordDate, $station_name, $sc_name, $remark ,  $user_id, $fileType,$uploaded_for,$upload_type,$table,$master_id,$year,$monthName,$periodical_number,)
     {
-        $baseFolder = 'scdata/Periodicals/';
-    }
-    else
-    {
-        $baseFolder = 'scdata';
-    }
-    $folderPath = createFolder($baseFolder,$folderType); 
+        // Create the date-wise folder
+        if($upload_type == 'periodic')
+        {
+            $baseFolder = 'scdata/Periodicals/';
+        }
+        else
+        {
+            $baseFolder = 'scdata';
+        }
+        $folderPath = createFolder($baseFolder,$folderType);
 
-    // Handle multiple file uploads
-    if (!empty($fileArray['name'][0]) && is_array($fileArray['name'])) {
-        $numFiles = count($fileArray['name']);
+        // Handle multiple file uploads
+        if (!empty($fileArray['name'][0]) && is_array($fileArray['name'])) {
+            $numFiles = count($fileArray['name']);
 
-        for ($i = 0; $i < $numFiles; $i++) {
-            $targetDir = $folderPath . '/';
+            for ($i = 0; $i < $numFiles; $i++) {
+                $targetDir = $folderPath . '/';
 
-            $originalFileName = basename($fileArray['name'][$i]);
-            // $prefixedFileName = $station_name . "_" . $originalFileName;
+                $originalFileName = basename($fileArray['name'][$i]);
+                // $prefixedFileName = $station_name . "_" . $originalFileName;
 
-            $fileExtension = pathinfo($originalFileName, PATHINFO_EXTENSION);
-            $fileInfo = pathinfo($originalFileName);
-            $filenameWithoutExtension = $fileInfo['filename'];
+                $fileExtension = pathinfo($originalFileName, PATHINFO_EXTENSION);
+                $fileInfo = pathinfo($originalFileName);
+                $filenameWithoutExtension = $fileInfo['filename'];
 
-            // $uniqueId = date('YMd', strtotime($recordDate));
-            $uniqueId = date('d-m-y', strtotime($recordDate));
-           
-            if($master_id == 0)
-            {
-                $prefixedFileName = $_SESSION['user_code'] . "_" . $fileType . "_" . $uniqueId . "." . $fileExtension;
-            }
-           
-            else
-            {
-                $prefixedFileName = $_SESSION['user_code'] . "_" . $fileType . "_" . $uniqueId . "_" . $master_id . "." . $fileExtension;
-            }
-            $newFileName = getUniqueFileName($targetDir,$prefixedFileName);
- 
-            $targetFile = $targetDir . handleDuplicateFile($newFileName, $targetDir);  
-           
-            if (move_uploaded_file($fileArray['tmp_name'][$i], $targetFile)) {
-               
-                $filesize = round($_FILES['files']['size'][$i] / 1024 / 1024, 2);
-
-                if($table == 'pos_failed_transaction')
+                // $uniqueId = date('YMd', strtotime($recordDate));
+                $uniqueId = date('d-m-y', strtotime($recordDate));
+            
+                if($master_id == 0)
                 {
-                    $insert = [ 
-                        'filename' => $newFileName,
-                        'original_filename' => $originalFileName,
-                        'size' => $filesize,
-                        'record_date' => $recordDate,
-                        'Remark' => $remark,
-                        'upload_by' =>  $user_id,
-                        'folder_name' => $folderType,
-                        'log_type' => 'upload',
-                        'file_type' => $fileType,
-                        'hostname' => gethostname()
-                    ];
-                    $result = $database->insert('pos_failed_transaction' , $insert ); 
+                    // echo "hi";
+                    if(!$monthName && !$year){
+                    $prefixedFileName = $_SESSION['user_code'] . "_" . $fileType . "_" . $uniqueId . "." . $fileExtension;
+                    }
+                    else{
+                        $prefixedFileName = $_SESSION['user_code'] . "_" . "Periodicals" ."_". $monthName . "-" . $year .  "_" . $periodical_number ."_".$fileType . "." . $fileExtension;
+                    }
                 }
-                elseif($table == "pos_failed_transaction_station")
-                {
-                    $insert = [ 
-                        'Sc_Name' => $sc_name,
-                        'station_code' => $uploaded_for,
-                        'filename' => $newFileName,
-                        'original_filename' => $originalFileName,
-                        'size' => $filesize,
-                        'record_date' => $recordDate,
-                        'Remark' => $remark,
-                        'upload_by' =>  $user_id,
-                        'folder_name' => $folderType,
-                        'log_type' => 'upload',
-                        'file_type' => $fileType,
-                        'hostname' => gethostname(),
-                        'master_file_id' => $master_id
-                    ];
-                    $result = $database->insert('pos_failed_transaction_station' , $insert ); 
-                }
+            
                 else
                 {
-                    $insert = [
-                        'Sc_Name' => $sc_name,
-                        'station_name' => $station_name,
-                        'filename' => $newFileName,
-                        'original_filename' => $originalFileName,
-                        'size' => $filesize,
-                        'record_date' => $recordDate,
-                        'Remark' => $remark,
-                        'upload_by' =>  $user_id,
-                        'folder_name' => $folderType,
-                        'log_type' => 'upload',
-                        'file_type' => $fileType,
-                        'uploaded_for'=>$uploaded_for ?? NULL,
-                        'hostname' => gethostname()
-                    ];
-                    $result = $database->insert('tab_logs_fileupload' , $insert ); 
+                    $prefixedFileName = $_SESSION['user_code'] . "_" . $fileType . "_" . $uniqueId . "_" . $master_id . "." . $fileExtension;
                 }
-                 
+                $newFileName = getUniqueFileName($targetDir,$prefixedFileName);
 
-                if ($result) {
-                    setSuccessMessage("File uploaded successfully");
-                    // echo "Log Generated Successfully.";
+                $targetFile = $targetDir . handleDuplicateFile($newFileName, $targetDir);  
+                
+                if (move_uploaded_file($fileArray['tmp_name'][$i], $targetFile)) {
+                
+                    $filesize = round($_FILES['files']['size'][$i] / 1024 / 1024, 2);
+                    
+                    if($table == 'pos_failed_transaction')
+                    {
+                        $insert = [ 
+                            'filename' => $newFileName,
+                            'original_filename' => $originalFileName,
+                            'size' => $filesize,
+                            'record_date' => $recordDate,
+                            'Remark' => $remark,
+                            'upload_by' =>  $user_id,
+                            'folder_name' => $folderType,
+                            'log_type' => 'upload',
+                            'file_type' => $fileType,
+                            'hostname' => gethostname()
+                        ];
+                        $result = $database->insert('pos_failed_transaction' , $insert ); 
+                    }
+                    elseif($table == "pos_failed_transaction_station")
+                    {
+                        $insert = [ 
+                            'Sc_Name' => $sc_name,
+                            'station_code' => $uploaded_for,
+                            'filename' => $newFileName,
+                            'original_filename' => $originalFileName,
+                            'size' => $filesize,
+                            'record_date' => $recordDate,
+                            'Remark' => $remark,
+                            'upload_by' =>  $user_id,
+                            'folder_name' => $folderType,
+                            'log_type' => 'upload',
+                            'file_type' => $fileType,
+                            'hostname' => gethostname(),
+                            'master_file_id' => $master_id
+                        ];
+                        $result = $database->insert('pos_failed_transaction_station' , $insert ); 
+                    }
+                    else
+                    {
+                        $insert = [
+                            'Sc_Name' => $sc_name,
+                            'station_name' => $station_name,
+                            'filename' => $newFileName,
+                            'original_filename' => $originalFileName,
+                            'size' => $filesize,
+                            'record_date' => $recordDate,
+                            'Remark' => $remark,
+                            'upload_by' =>  $user_id,
+                            'folder_name' => $folderType,
+                            'log_type' => 'upload',
+                            'file_type' => $fileType,
+                            'uploaded_for'=>$uploaded_for ?? NULL,
+                            'hostname' => gethostname()
+                        ];
+                        $result = $database->insert('tab_logs_fileupload' , $insert ); 
+                    }
+                    
+
+                    if ($result) {
+                        setSuccessMessage("File uploaded successfully");
+                        // echo "Log Generated Successfully.";
+
+                    } else {
+                        setErrorMessage("Error Generating Log."); 
+                        // echo "Error Generating Log.";
+                    }
+
 
                 } else {
-                    setErrorMessage("Error Generating Log."); 
-                    // echo "Error Generating Log.";
+                    setErrorMessage("Error uploading file "); 
+                // echo "Error uploading file .<br>";
                 }
-
-
-            } else {
-                setErrorMessage("Error uploading file "); 
-               // echo "Error uploading file .<br>";
             }
+
+
+        } else {
+            setErrorMessage("No files were uploaded."); 
+            
         }
-
-
-    } else {
-        setErrorMessage("No files were uploaded."); 
-         
     }
-}
 
 function handleDuplicateFile($prefixedFileName, $targetDir)
 {
