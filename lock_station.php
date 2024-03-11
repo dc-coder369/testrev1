@@ -31,6 +31,17 @@ $years = range($startYear, $currentYear);
 
   // $listArr = $database->select('tab_status_lockupload', "*", [], "AND", 'multiple');
   $userList = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
+
+  function generateYearOptions() {
+    $currentYear = date('Y');
+    $options = '<option value="">Select Year</option>';
+    // print_r($year);
+    for ($year = 2023; $year <= $currentYear; $year++) {
+        $lastTwoDigits = substr($year, -2);
+        $options .= "<option value=\"$lastTwoDigits\">$year</option>";
+    }
+    return $options;
+}
   ?>
 
     <div class="pagetitle">
@@ -60,50 +71,34 @@ $years = range($startYear, $currentYear);
                                 </div>
                                 <div class="row mt-2 periodic" <?php if ($type == 'periodic') : ?>
                                     style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>
-                                    <div class="col-md-4 col-sm-4">
-                                        <label for="year" class="col-sm-4 col-form-label">Year</label>
-                                        <div class="col-sm-4">
-                                            <!-- <input type="date" class="form-control" name="recordDate" id="recordDate" value="<?php echo htmlspecialchars($date ?? date('Y-m-d')); ?>" min="2023-11-01" max="<?php echo date('Y-m-d'); ?>" onkeydown="return false"> -->
-                                            <select class="form-control" name="year" id="year" required>
-                                                <option value="">Select Year</option>
-                                                <?php foreach ($years as $year): ?>
-                                                <?php $lastTwoDigits = substr($year, -2); ?>
-                                                <option value="<?= $lastTwoDigits; ?>">
-                                                    <?php echo $year; ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
+                                        <div class="col-md-4">
+                                    <label for="year" class="col-sm-4 col-form-label">Year</label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control" name="year" id="year" required onchange="enableMonthDropdown()">
+                                            <?php echo generateYearOptions(); ?>
+                                        </select>
                                     </div>
-
-                                    <div class="col-md-4">
-                                        <label for="month" class="col-sm-4 col-form-label">Month</label>
-                                        <div class="col-sm-4">
-                                            <!-- <input type="date" class="form-control" name="recordDate" id="recordDate" value="<?php echo htmlspecialchars($date ?? date('Y-m-d')); ?>" min="2023-11-01" max="<?php echo date('Y-m-d'); ?>" onkeydown="return false"> -->
-                                            <select class="form-control" name="month" id="month" required>
-                                                <option>Select Month</option>
-                                                <?php foreach ($months as $monthName) : ?>
-                                                <?php $abbrMonth = substr($monthName, 0, 3); ?>
-                                                <option value="<?= $abbrMonth; ?>">
-                                                    <?= $monthName; ?> </option>
-                                                <?php endforeach;  ?>
-                                            </select>
-                                        </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="month" class="col-sm-4 col-form-label">Month</label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control" name="month" id="month" required disabled>
+                                            <option>Select Month</option>
+                                            
+                                        </select>
                                     </div>
-
-                                    <div class="col-md-4">
-                                        <label for="periodical_number" class="col-form-label">Periodical Number</label>
-                                        <div class="col-sm-4">
-                                            <select class="form-control" name="periodical_number" id="periodical_number"
-                                                required>
-                                                <option value="">Select Periodical</option>
-                                                <?php foreach ($periodical_number as $number): ?>
-                                                <?php $value = ($number == "Periodical_1") ? "Periodical1" : (($number == "Periodical_2") ? "Periodical2" : (($number == "Periodical_3") ? "Periodical3" : "Balance_Sheet")); ?>
-                                                <option value="<?php echo $value; ?>">
-                                                    <?php echo $number; ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="year" class="col-form-label">Periodical Number</label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control" name="periodical_number" id="periodical_number" required disabled>
+                                            <option value>Select Periodical</option>
+                                            <?php foreach ($periodical_number as $number): ?>
+                                                <option value="<?php if($number == "Periodical_1"){echo "Periodical1";}elseif($number == "Periodical_2"){echo "Periodical2";}elseif($number == "Periodical_3"){echo "Periodical3";} else{echo "Balance_Sheet";} ?>"><?php echo $number; ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     </div>
+                                </div>
                                 </div><br>
 
                             </div>
@@ -240,8 +235,10 @@ function getAjaxvalue(monthVal, yearVal, periodicalsVal) {
         dataType: "json", // Specify the expected data type
         success: function(response) {
             console.log(response);
-            // Iterate over the response to create and append buttons
-            $.each(response, function(key, value) {
+            $("#periodic").empty();
+            if(response != null)
+            {
+                $.each(response, function(key, value) {
                 var buttonId = "periodic_" + key.toLowerCase(); // Generate button ID
                 var buttonText = key.toUpperCase(); // Use key as button text
                 var buttonClass = (value === "0") ? "bg-secondary" :
@@ -263,6 +260,9 @@ function getAjaxvalue(monthVal, yearVal, periodicalsVal) {
                 $("#periodic").append(button);
 
             });
+            }
+            // Iterate over the response to create and append buttons
+           
         },
 
 
@@ -300,4 +300,79 @@ function postAjax(month, year, periodicals, status, station) {
         }
     });
 }
+$("#year").change(function () {
+    var date = new Date();
+    var selectedmonth = parseInt(document.getElementById("year").value); 
+    var year = parseInt($(this).val());
+    var currentMonth = date.getMonth() + 1; // Get current month
+    var months = ['Select Month','January', 'February', 'March', 'April','May', 'June', 'July', 'August','September', 'October', 'November', 'December'];
+    var valueofmonth = ['','Jan', 'Feb', 'Mar', 'Apr','May', 'Jun', 'Jul', 'Aug','Sep', 'Oct', 'Nov', 'Dec'];
+    $("#month").html("");
+    var d = new Date();
+    var n = d.getMonth()+2;
+    if (year === selectedmonth && year != '') {
+        if (year === 24) { 
+            for (var i = 1; i <= n; i++) { 
+                $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+            }
+        }
+        else if(year === 23) { 
+            for (var i = 1; i <= 12; i++) { 
+                $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+            }
+        }
+         else {
+            for (var i = currentMonth; i <= 12; i++) {
+                $("#month").append("<option value='" + i + "'>" + valueofmonth[i - 1] + "</option>");
+            }
+        }
+    }
+    else {
+        $("#month").html("<option value=''>Select Month</option>");
+        document.getElementById('periodical_number').value='';
+    }
+});
+
+function enablePeriodicalDropdown(month, year,periodicalDropdown) {
+    console.log("month"+month);
+    var yearDropdown = document.getElementById("year");
+        var monthDropdown = document.getElementById("month");
+        var periodicalDropdowns = document.getElementById("periodical_number");
+        if (year !== "") {
+            if(month !== ""){
+                periodicalDropdowns.disabled = false;
+            }
+            else {
+                periodicalDropdowns.disabled = true;
+            }
+        } else {
+            periodicalDropdowns.disabled = true;
+        }
+}
+ 
+
+function enableMonthDropdown() {
+        var yearDropdown = document.getElementById("year");
+        var monthDropdown = document.getElementById("month");
+        if (yearDropdown.value !== "") {
+            monthDropdown.disabled = false;
+        } else {
+            monthDropdown.disabled = true;
+        }
+}
+
+$("#month").on("change", function() {
+    var month = document.getElementById("month").value;
+    var year = document.getElementById("year").value;
+    var periodical_number = document.getElementById("periodical_number").value; 
+    if(year != ''){
+        var periodicalDropdown = document.getElementById("periodical_number");
+        enablePeriodicalDropdown(month, year, periodicalDropdown);
+    }
+    console.log(month);
+    if(month == ''){
+        document.getElementById('periodical_number').value='';
+    }
+});
+
 </script>

@@ -126,20 +126,36 @@ if($type == 'update_lock_status_station')
     if($type == 'daily')
     {
         $table = "tab_status_lockupload";
+        $log_table="tab_logs_lockunlock";
         $condition = ['date' => $reqeust['date']];   
+        $insert_log = [
+            'date'=>$reqeust['date'],
+            'type'=>$reqeust['user_code'],
+            'lock_status'=>($reqeust['status'] == 1) ? 'Locked' : 'Unlocked', 
+        ];
     }
     elseif($type == 'periodic')
     {
         $table = "lock_unlock_periodicals_balance_sheet";
+        $log_table="tab_logs_lockunlock_periodicals";
         $month = $reqeust['month'];
         $year  = $reqeust['year'];
         $periodical_type = $reqeust['periodicals']; 
         $condition = ['month' => $month, 'year' => $year,'periodicals' => $periodical_type];
+        $insert_log = [
+            'month' => $month, 
+            'year' => $year,
+            'periodicals' => $periodical_type,
+            'lock_status'=>($reqeust['status'] == 1) ? 'Locked' : 'Unlocked', 
+            'type' => $reqeust['user_code'],
+        ];
     } 
     $insert = [  
         $reqeust['user_code'] => ($reqeust['status'] == 1) ? '1' : '0',  
     ]; 
+   
     if ($database->update($table, $insert, $condition)) {
+        $database->insert($log_table, $insert_log ); 
         $stations = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
         $filelog = $database->select($table, "*", $condition, "AND", 'single');
         $zeroCount = 0;
@@ -455,6 +471,15 @@ if ($type == 'lock unlock for NON AFC') {
             }
     }
     if ($result) { 
+        
+        $insert_log = [
+            'month' => $month, 
+            'year' => $year,
+            'periodicals' => $periodical_number,
+            'lock_status'=>($reqeust['status'] == 1) ? 'Locked' : 'Unlocked', 
+            'type' => 'all',
+        ];
+        $database->insert('tab_logs_lockunlock_periodicals', $insert_log ); 
         $response = json_encode($response_data);
         echo $response; die;
     } else {
@@ -599,19 +624,20 @@ if ($type == 'value_of_NON_AFC_periodical') {
 
     $status = $database->select('lock_unlock_periodicals_balance_sheet', '*', ['month' => $reqeust['month'], 'year' => $reqeust['year'], 'periodicals' => $reqeust['periodicals']], "AND", 'single');
     $result = [];
-    foreach ($status as $key => $value) {
-        if (in_array($key, explode(', ', $list))) {
-            $result[$key] = $value;
+    if($status != null)
+    {
+        foreach ($status as $key => $value) {
+            if (in_array($key, explode(', ', $list))) {
+                $result[$key] = $value;
+            }
         }
-    }
-  
-    if ($result) { 
-      
+    } 
+    if ($result) {  
         // Encode the response as JSON
         echo json_encode($result);
     } else {
         // Handle the case where no data is found
-        echo json_encode(['error' => 'No data found for the specified date']);
+        echo json_encode(['No data found for the specified date' => 'No data found for the specified date']);
     }
 }
 function getUniqueFileName($targetDir ,$fileName) {

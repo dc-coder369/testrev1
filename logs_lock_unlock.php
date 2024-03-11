@@ -72,6 +72,7 @@
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Lock Status</th>
                     <th>Timestamp</th>
+                    <th>Type</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -80,8 +81,8 @@
                       <td><?=$list['date'];?></td>
                       <td><?= ($list['lock_status'] == '1' || $list['lock_status'] == 'Locked') ? 'Locked' : 'Unlocked'; ?></td>
                       <td><?=$list['timestamp'];?></td>
-                    </tr>
-
+                      <td><?=$list['type'];?></td>
+                    </tr> 
                   <?php endforeach; ?>
 
 
@@ -90,6 +91,8 @@
                   <tr>   
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Lock Status</th> 
+                    <th>Timestamp</th>
+                    <th>Type</th>
                   </tr>
                 </tfoot>
               </table>
