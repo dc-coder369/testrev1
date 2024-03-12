@@ -265,12 +265,16 @@ if ($type == 'download-all-files') {
     $folderArr = explode('-',$formattedDate); 
 
     $ids = (isset($_POST['ids'])) ? $_POST['ids'] : [];
-    // echo "<pre>"; print_r( $ids); die; 
+    $fileid = (isset($_POST['fileid'])) ? $_POST['fileid'] : [];
     // $baseFolderPath = 'scdata/' .$folderArr[0].'/'.$folderArr[1].'/'.$folderArr[2];
     $baseFolderPath = 'scdata/';
     if(!empty($ids)){ 
          $response = DownloadSelectedFiles($database,$recordDate, 'scdata/', $recordDate . '.zip', 'scdata/' . $recordDate . '.zip', $ids);
-    }else{
+    }
+    else if($fileid){
+        $response = DownloadSelectedFiles($database,$recordDate, 'scdata/Periodicals/', $recordDate . '.zip', 'scdata/' . $recordDate . '.zip', $fileid);
+    }
+    else{
         $response = 'error';
         $message ="There is no file to download";  
          
@@ -614,6 +618,52 @@ if($type == 'view-data-form')
     
 }
 
+if($type == 'value_of_NON_AFC'){
+    // $station_name = $_SESSION['stationname'];
+    $updated_year = "20".$reqeust['year'];
+    if($reqeust['year'] !== '' && $reqeust['month'] === '' && $reqeust['periodicals'] === ''){
+        $condition = ['year' => $updated_year];
+    }
+    else if($reqeust['year'] !== '' && $reqeust['month'] !== '' && $reqeust['periodicals'] === ''){
+        $condition = ['month' => $reqeust['month'],'year' => $updated_year];
+    }
+    else if($reqeust['year'] !== '' && $reqeust['month'] !== '' && $reqeust['periodicals'] !== ''){
+        $condition = ['month' => $reqeust['month'],'year' => $updated_year,'periodical_number' => $reqeust['periodicals']];
+    }
+    $result = $database->select('tab_logs_fileupload', '*', $condition , "AND", 'multiple', '`upload_time` desc');
+     if ($result) { 
+        $response = json_encode($result);
+        // Encode the response as JSON
+        echo $response;
+    } else {
+        // Handle the case where no data is found
+        echo json_encode(['error' => 'No data found for the specified date']);
+    }
+}
+
+if($type == 'value_of_NON_AFC_STATION'){
+    $station_name = $_SESSION['stationname'];
+    $updated_year = "20".$reqeust['year'];
+    if($reqeust['year'] !== '' && $reqeust['month'] === '' && $reqeust['periodicals'] === ''){
+        $condition = ['station_name'=> $_SESSION['stationname'],'year' => $updated_year];
+    }
+    else if($reqeust['year'] !== '' && $reqeust['month'] !== '' && $reqeust['periodicals'] === ''){
+        $condition = ['station_name'=> $_SESSION['stationname'], 'month' => $reqeust['month'],'year' => $updated_year];
+    }
+    else if($reqeust['year'] !== '' && $reqeust['month'] !== '' && $reqeust['periodicals'] !== ''){
+        $condition = ['station_name'=> $_SESSION['stationname'], 'month' => $reqeust['month'],'year' => $updated_year,'periodical_number' => $reqeust['periodicals']];
+    }
+    $result = $database->select('tab_logs_fileupload', '*', $condition , "AND", 'multiple', '`upload_time` desc');
+     if ($result) { 
+        $response = json_encode($result);
+        // Encode the response as JSON
+        echo $response;
+    } else {
+        // Handle the case where no data is found
+        echo json_encode(['error' => 'No data found for the specified date']);
+    }
+}
+
 if ($type == 'value_of_NON_AFC_periodical') {
     $userList = $database->select('tab_user_details', "user_code", ['account_type' => 'station'], "AND", 'multiple');
     $userCodes = array_column($userList, 'user_code');
@@ -637,7 +687,38 @@ if ($type == 'value_of_NON_AFC_periodical') {
         echo json_encode($result);
     } else {
         // Handle the case where no data is found
-        echo json_encode(['No data found for the specified date' => 'No data found for the specified date']);
+        // echo json_encode(['No data found for the specified date' => 'No data found for the specified date']);
+        $stations = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
+        $insert = [
+            'month' => $reqeust['month'],
+            'year' => $reqeust['year'],
+            'periodicals' =>  $reqeust['periodicals'],
+            'lock_upload' => 0,
+        ];
+        $result1 = $database->insert(' lock_unlock_periodicals_balance_sheet' , $insert ); 
+        $result_select = $database->select('lock_unlock_periodicals_balance_sheet', "*", ['month' => $reqeust['month'], 'year' => $reqeust['year'], 'periodicals' => $reqeust['periodicals']], "AND", 'single');
+         $month = $result_select['month'];
+         $year = $result_select['year'];
+         $periodical_number = $result_select['periodicals'];
+        $condition = 'month="' . $month . '" AND year="' . $year . '" AND periodicals="' . $periodical_number . '"';
+        foreach($stations as $station){
+           $resulta = $database->update('lock_unlock_periodicals_balance_sheet', [$station['user_code'] => '0'], $condition);
+        }
+        if($resulta){
+            $status = $database->select('lock_unlock_periodicals_balance_sheet', '*', ['month' => $reqeust['month'], 'year' => $reqeust['year'], 'periodicals' => $reqeust['periodicals']], "AND", 'single');
+                $result = [];
+                if($status != null)
+                {
+                    foreach ($status as $key => $value) {
+                        if (in_array($key, explode(', ', $list))) {
+                            $result[$key] = $value;
+                        }
+                    }
+                } 
+                if ($result) {
+                    echo json_encode($result);
+                }
+        }
     }
 }
 function getUniqueFileName($targetDir ,$fileName) {
@@ -750,7 +831,7 @@ function resetSessionMessages()
                 if (move_uploaded_file($fileArray['tmp_name'][$i], $targetFile)) {
                 
                     $filesize = round($_FILES['files']['size'][$i] / 1024 / 1024, 2);
-                    
+                    $updated_year = "20".$year;
                     if($table == 'pos_failed_transaction')
                     {
                         $insert = [ 
@@ -801,7 +882,10 @@ function resetSessionMessages()
                             'log_type' => 'upload',
                             'file_type' => $fileType,
                             'uploaded_for'=>$uploaded_for ?? NULL,
-                            'hostname' => gethostname()
+                            'hostname' => gethostname(),
+                            'month' => $monthName,
+                            'year'=> $updated_year,
+                            'periodical_number' => $periodical_number
                         ];
                         $result = $database->insert('tab_logs_fileupload' , $insert ); 
                     }
@@ -954,7 +1038,6 @@ function DownloadSelectedFiles($database,$recordDate, $baseFolderPath, $zipFileN
             }
 
             $filePath = $baseFolderPath . $fileInfo['folder_name'] . '/' . $fileInfo['filename'];
-
             //Folder name contains multiple folders. So taking just main category folder in the zip.
             $tempfolderParts = explode('/', $fileInfo['folder_name']); 
 

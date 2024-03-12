@@ -73,7 +73,7 @@ $years = range($startYear, $currentYear);
                                     style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>
                                         <div class="col-md-4">
                                     <label for="year" class="col-sm-4 col-form-label">Year</label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-11">
                                         <select class="form-control" name="year" id="year" required onchange="enableMonthDropdown()">
                                             <?php echo generateYearOptions(); ?>
                                         </select>
@@ -81,7 +81,7 @@ $years = range($startYear, $currentYear);
                                 </div>
                                 <div class="col-md-4">
                                     <label for="month" class="col-sm-4 col-form-label">Month</label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-11">
                                         <select class="form-control" name="month" id="month" required disabled>
                                             <option>Select Month</option>
                                             
@@ -90,7 +90,7 @@ $years = range($startYear, $currentYear);
                                 </div>
                                 <div class="col-md-4">
                                     <label for="year" class="col-form-label">Periodical Number</label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-11">
                                         <select class="form-control" name="periodical_number" id="periodical_number" required disabled>
                                             <option value>Select Periodical</option>
                                             <?php foreach ($periodical_number as $number): ?>
@@ -312,17 +312,17 @@ $("#year").change(function () {
     var n = d.getMonth()+2;
     if (year === selectedmonth && year != '') {
         if (year === 24) { 
-            for (var i = 1; i <= n; i++) { 
+            for (var i = 1; i <= 13; i++) { 
                 $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
             }
         }
         else if(year === 23) { 
-            for (var i = 1; i <= 12; i++) { 
+            for (var i = 1; i <= 13; i++) { 
                 $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
             }
         }
          else {
-            for (var i = currentMonth; i <= 12; i++) {
+            for (var i = currentMonth; i <= 13; i++) {
                 $("#month").append("<option value='" + i + "'>" + valueofmonth[i - 1] + "</option>");
             }
         }
@@ -334,7 +334,7 @@ $("#year").change(function () {
 });
 
 function enablePeriodicalDropdown(month, year,periodicalDropdown) {
-    console.log("month"+month);
+    // console.log("month: "+month);
     var yearDropdown = document.getElementById("year");
         var monthDropdown = document.getElementById("month");
         var periodicalDropdowns = document.getElementById("periodical_number");
@@ -369,10 +369,15 @@ $("#month").on("change", function() {
         var periodicalDropdown = document.getElementById("periodical_number");
         enablePeriodicalDropdown(month, year, periodicalDropdown);
     }
-    console.log(month);
     if(month == ''){
         document.getElementById('periodical_number').value='';
     }
 });
-
+$("#year").on("change", function() {
+    var month = document.getElementById("month").value;
+    var year = document.getElementById("year").value;
+    var periodical_number = document.getElementById("periodical_number").value;
+    var periodicalDropdown = document.getElementById("periodical_number");
+    enablePeriodicalDropdown(month, year, periodicalDropdown);
+});
 </script>

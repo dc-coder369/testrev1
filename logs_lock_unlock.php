@@ -12,11 +12,15 @@
   } else {
     $condition = [];
   }
-
-
+  $type = isset($_GET['type']) ? $_GET['type'] : '';
+  // echo $type;
+ if($type == "daily"){
   $listArr = $database->select('tab_logs_lockunlock', "*", $condition, "AND", 'multiple', 'date desc');
- 
+ }else{
+  $listArr = $database->select(' tab_logs_lockunlock_periodicals', "*", $condition, "AND", 'multiple');
+ }
  //  $userList = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
+
   ?>
   <div class="pagetitle">
 
@@ -45,7 +49,6 @@
                 endforeach; ?>
               </div> -->
 
-
             </div>
           </div>
 
@@ -59,7 +62,16 @@
                   <button type="submit" class="btn btn-info" id="download-files-btn">Download All</button>
                 </form>
               </div> -->
-
+              <br>
+              <div class="d-flex justify-content-between col-sm-2">
+              <select name="file_type" class="form-control" id="file_type" <?php if($_SESSION['account_type'] == 'admin'): ?>style="display: show;" <?php else : ?>style="display: none;" <?php endif ?> > 
+                 <option value="periodic"  <?php if ($type == 'periodic') : ?> selected <?php endif; ?>>Periodic</option>
+                 <option value="daily"   <?php if ($type == 'daily') : ?> selected <?php endif; ?>>Daily</option>
+              </select>
+              </div> <br>
+              <form id="hidden_form" style="display: none;" action="your_action_page.php" method="post">
+                  <input type="hidden" id="type_input" name="type">
+              </form>
               <div class="d-flex justify-content-between">
                 <h5 class="card-title">Check LockUnlock Logs</h5>  
               </div>
@@ -78,7 +90,14 @@
                 <tbody>
                   <?php foreach ($listArr as $list) : ?>
                    <tr id="<?= $list['id']; ?>"> 
-                      <td><?=$list['date'];?></td>
+                      <!-- <td><?=$list['date'];?></td> -->
+                      <td>
+                          <?php if (!empty($list['date'])): ?>
+                              <?= $list['date']; ?>
+                          <?php else: ?>
+                              <?= $list['year'] . ' ' . $list['month']; ?>
+                          <?php endif; ?>
+                      </td>
                       <td><?= ($list['lock_status'] == '1' || $list['lock_status'] == 'Locked') ? 'Locked' : 'Unlocked'; ?></td>
                       <td><?=$list['timestamp'];?></td>
                       <td><?=$list['type'];?></td>
@@ -108,5 +127,16 @@
 </main>
 
 <?php include 'layouts/footer.php'; ?>
- 
+ <script>
+
+$("#file_type").on("change", function() {
+    var file_type = $(this).val(); // You can directly use $(this).val() to get the selected value
+    
+    var current = location.origin + location.pathname;
+    var getDate = "";
+    current += '?type=' + file_type;
+
+    location.href = current;
+  });
+ </script>
  
