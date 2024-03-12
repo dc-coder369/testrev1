@@ -21,16 +21,24 @@
   $months = array("January","February","March","April","May","June","July","August","September","October","November","December");
   $currentYear = date("Y");
 
-  // Set the range of years you want to include in the dropdown
   $startYear = $currentYear - 20; // 10 years ago
   $currentYear = date("Y");
-  // Generate an array of years within the range
   $years = range($startYear, $currentYear);
  
   $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', '`upload_time` desc');
 
-  // $listArr = $database->select('tab_status_lockupload', "*", [], "AND", 'multiple');
   $userList = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
+  // code given by chintan sir.
+    function generateYearOptions() {
+        $currentYear = date('Y');
+        $options = '<option value="">Select Year</option>';
+        // print_r($year);
+        for ($year = 2023; $year <= $currentYear; $year++) {
+            $lastTwoDigits = substr($year, -2);
+            $options .= "<option value=\"$lastTwoDigits\">$year</option>";
+        }
+        return $options;
+    }
   ?>
     <div class="pagetitle"> 
         <section class="section">
@@ -42,56 +50,38 @@
                             <input type="hidden" name="user_code" id="user_code" value="<?= $_SESSION['user_code']; ?>">
                             <!-- Browser Default Validation --> 
                                 <input type="hidden" name="user_id" value="<?= $_SESSION['user_id']; ?>">
-                                <div class="row mt-2">
-                                    <div class="col-md-4">
-                                        <label for="month" class="col-sm-4 col-form-label">Month</label>
-                                        <div class="col-sm-4">
-                                            <!-- <input type="date" class="form-control" name="recordDate" id="recordDate" value="<?php echo htmlspecialchars($date ?? date('Y-m-d')); ?>" min="2023-11-01" max="<?php echo date('Y-m-d'); ?>" onkeydown="return false"> -->
-                                            <select class="form-control" name="month" id="month" required>
-                                                <option>Select Month</option>
-                                                <?php foreach ($months as $monthName) : ?>
-                                                <?php $abbrMonth = substr($monthName, 0, 3); ?>
-                                                <option value="<?= $abbrMonth; ?>"
-                                                    <?php echo ($abbrMonth == $month1) ? 'selected' : ''; ?>>
-                                                    <?= $monthName; ?> </option>
-                                                <?php endforeach;  ?>
-                                            </select>
-                                        </div>
+                            <div class="row mt-2">
+                                <div class="col-md-4">
+                                    <label for="year" class="col-sm-4 col-form-label">Year</label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control" name="year" id="year" required onchange="enableMonthDropdown()">
+                                            <?php echo generateYearOptions(); ?>
+                                        </select>
                                     </div>
-                                    <div class="col-md-4">
-                                        <label for="year" class="col-sm-4 col-form-label">Year</label>
-                                        <div class="col-sm-4">
-                                            <!-- <input type="date" class="form-control" name="recordDate" id="recordDate" value="<?php echo htmlspecialchars($date ?? date('Y-m-d')); ?>" min="2023-11-01" max="<?php echo date('Y-m-d'); ?>" onkeydown="return false"> -->
-                                            <select class="form-control" name="year" id="year" required>
-                                                <option value="">Select Year</option>
-                                                <?php foreach ($years as $year): ?>
-                                                <?php $lastTwoDigits = substr($year, -2); ?>
-                                                <option value="<?= $lastTwoDigits; ?>"
-                                                    <?php echo ($lastTwoDigits == $year1) ? 'selected' : ''; ?>>
-                                                    <?php echo $year; ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="month" class="col-sm-4 col-form-label">Month</label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control" name="month" id="month" required disabled>
+                                            <option>Select Month</option>
+                                            
+                                        </select>
                                     </div>
-                                    <div class="col-md-4">
-                                        <label for="periodical_number" class="col-form-label">Periodical Number</label>
-                                        <div class="col-sm-4">
-                                            <select class="form-control" name="periodical_number" id="periodical_number"
-                                                required>
-                                                <option value="">Select Periodical</option>
-                                                <?php foreach ($periodical_number as $number): ?>
-                                                <?php $value = ($number == "Periodical_1") ? "Periodical1" : (($number == "Periodical_2") ? "Periodical2" : (($number == "Periodical_3") ? "Periodical3" : "Balance_Sheet")); ?>
-                                                <option value="<?php echo $value; ?>"
-                                                    <?php echo ($value == $periodicals) ? 'selected' : ''; ?>>
-                                                    <?php echo $number; ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="year" class="col-form-label">Periodical Number</label>
+                                    <div class="col-sm-4">
+                                        <select class="form-control" name="periodical_number" id="periodical_number" required disabled>
+                                            <option value>Select Periodical</option>
+                                            <?php foreach ($periodical_number as $number): ?>
+                                                <option value="<?php if($number == "Periodical_1"){echo "Periodical1";}elseif($number == "Periodical_2"){echo "Periodical2";}elseif($number == "Periodical_3"){echo "Periodical3";} else{echo "Balance_Sheet";} ?>"><?php echo $number; ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
                                     </div>
-                                </div><br> 
+                                </div>
+                            </div>
                                 <div id="display-lock-unlock-button-area" class="btn_lock_unlock"> 
                                 </div>
-                            <!-- End Browser Default Validation --> 
                         </div>
                     </div> 
                 </div> 
@@ -124,9 +114,9 @@
                                     </thead>
                                     <tbody>
                                         <?php foreach ($listArr as $list) :
-                    $path = 'actions/scdata/' . $list['folder_name'] . '/' . $list['filename'];
-                    $list['path']=$path;
-                  ?>
+                                            $path = 'actions/scdata/' . $list['folder_name'] . '/' . $list['filename'];
+                                            $list['path']=$path;
+                                        ?>
                                         <tr id="<?= $list['id']; ?>">
                                             <td><?= $list['Sc_Name']; ?></td>
                                             <td><?= strtoupper($list['station_name']); ?></td>
@@ -139,10 +129,7 @@
                                             <td><?= $list['upload_time']; ?></td>
                                             <td><?= $list['Remark']; ?></td>
                                         </tr>
-
                                         <?php endforeach; ?>
-
-
                                     </tbody>
                                     <tfoot>
                                         <tr>
@@ -157,20 +144,88 @@
                                         </tr>
                                     </tfoot>
                                 </table>
-                                <!-- End Table with stripped rows -->
-
                             </div>
                         </div>
 
                     </div>
                 </div>
         </section>
-
 </main>
 
 <?php include 'layouts/footer.php'; ?>
 
 <script>
+$("#year").change(function () {
+    var date = new Date();
+    var selectedmonth = parseInt(document.getElementById("year").value); 
+    var year = parseInt($(this).val());
+    var currentMonth = date.getMonth() + 1; // Get current month
+    var months = ['Select Month','January', 'February', 'March', 'April','May', 'June', 'July', 'August','September', 'October', 'November', 'December'];
+    var valueofmonth = ['','Jan', 'Feb', 'Mar', 'Apr','May', 'Jun', 'Jul', 'Aug','Sep', 'Oct', 'Nov', 'Dec'];
+    $("#month").html("");
+    var d = new Date();
+    var n = d.getMonth()+2;
+    if (year === selectedmonth && year != '') {
+        if (year === 24) { 
+            for (var i = 1; i <= n; i++) { 
+                $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+            }
+        }
+        else if(year === 23) { 
+            for (var i = 1; i <= 12; i++) { 
+                $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+            }
+        }
+         else {
+            for (var i = currentMonth; i <= 12; i++) {
+                $("#month").append("<option value='" + i + "'>" + valueofmonth[i - 1] + "</option>");
+            }
+        }
+    }
+    else {
+        $("#month").html("<option value=''>Select Month</option>");
+        document.getElementById('periodical_number').value='';
+    }
+});
+
+function enablePeriodicalDropdown(month, year,periodicalDropdown) {
+    console.log("month"+month);
+    var yearDropdown = document.getElementById("year");
+        var monthDropdown = document.getElementById("month");
+        var periodicalDropdowns = document.getElementById("periodical_number");
+        if (year !== "") {
+            if(month !== ""){
+                periodicalDropdowns.disabled = false;
+            }
+            else {
+                periodicalDropdowns.disabled = true;
+            }
+        } else {
+            periodicalDropdowns.disabled = true;
+        }
+}
+
+    document.getElementById("year").addEventListener("change", function() {
+        var year = this.value;
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState == 4 && xhr.status == 200) {
+                document.getElementById("month").innerHTML = xhr.responseText;
+            }
+        };
+        xhr.open("GET", "generate-month-options.php?year=" + year, true);
+        xhr.send();
+    });
+
+    function enableMonthDropdown() {
+        var yearDropdown = document.getElementById("year");
+        var monthDropdown = document.getElementById("month");
+        if (yearDropdown.value !== "") {
+            monthDropdown.disabled = false;
+        } else {
+            monthDropdown.disabled = true;
+        }
+    }
 
 function SingleDownload(val) {
     $.ajax({
@@ -232,7 +287,6 @@ function postAjax(month, year, periodicals, status) {
               var lockButton = '<button class="btn btn-danger mt-1" name="status" value="1" id="lock">Lock</button>';
               buttonArea.empty(); // Clear existing content
               buttonArea.append(lockButton); // Append the lockButton
-             
           }
           buttonArea.show();
       },
@@ -249,8 +303,8 @@ $(document).on('click', '#lock', function() {
     var year = $("#year").val();
     var periodicals = $("#periodical_number").val();
     var status = $("#lock").val();
-    // alert(month);
     postAjax(month, year, periodicals, status);
+    
 });
 
 $(document).on('click', '#unlock', function() {
@@ -258,27 +312,8 @@ $(document).on('click', '#unlock', function() {
     var year = $("#year").val();
     var periodicals = $("#periodical_number").val();
     var status = $("#unlock").val();
-    // alert(month);
     postAjax(month, year, periodicals, status);
 });
-
-// var monthVal, yearVal, periodicalsVal;
-// $("#month, #year, #periodical_number").on("change", function() {
-//     // Update the corresponding variable with the selected value
-//     if ($(this).attr("id") === "month") {
-//         monthVal = $(this).val();
-//     } else if ($(this).attr("id") === "year") {
-//         yearVal = $(this).val();
-//     } else if ($(this).attr("id") === "periodical_number") {
-//         periodicalsVal = $(this).val();
-//     }
-
-//     // Check if all three options are selected
-//     if (monthVal !== undefined && yearVal !== undefined && periodicalsVal !== undefined) {
-//         // Call the function with the selected values
-//         getAjaxlockunlock(monthVal, yearVal, periodicalsVal);
-//     }
-// });
 
 $("#month").on("change", function() {
     var month = document.getElementById("month").value;
@@ -287,23 +322,33 @@ $("#month").on("change", function() {
     if( year != '' && periodical_number != ''){
        getAjaxlockunlock(month, year, periodical_number);
     }
-  });
-  $("#year").on("change", function() {
+    if(year != ''){
+        var periodicalDropdown = document.getElementById("periodical_number");
+        enablePeriodicalDropdown(month, year, periodicalDropdown);
+    }
+    console.log(month);
+    if(month === ""){
+        document.getElementById('periodical_number').value='';
+    }
+});
+$("#year").on("change", function() {
     var month = document.getElementById("month").value;
     var year = document.getElementById("year").value;
     var periodical_number = document.getElementById("periodical_number").value;
     if( month != '' && periodical_number != ''){
        getAjaxlockunlock(month, year, periodical_number);
     }
-  });
-  $("#periodical_number").on("change", function() {
+        var periodicalDropdown = document.getElementById("periodical_number");
+        enablePeriodicalDropdown(month, year, periodicalDropdown);
+});
+$("#periodical_number").on("change", function() {
     var month = document.getElementById("month").value;
     var year = document.getElementById("year").value;
     var periodical_number = document.getElementById("periodical_number").value;
     if( year != '' && month != ''){
        getAjaxlockunlock(month, year, periodical_number);
     }
-  });
+});
 
 function getAjaxlockunlock(monthVal, yearVal, periodicalsVal) {
     
