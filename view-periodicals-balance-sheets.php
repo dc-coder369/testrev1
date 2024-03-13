@@ -100,7 +100,7 @@
                                 </form>
                             </div>
                                 <div class="d-flex justify-content-between">
-                                    <h5 class="card-title">Revenue Cell Data for Perodical files</h5>
+                                    <h5 class="card-title">Revenue Cell Data for Periodical files</h5>
                                 </div> 
                                 <!-- Table with stripped rows -->
                                 <table class="table datatable table-responsive table-hover">
@@ -173,16 +173,19 @@ $("#year").change(function () {
         if (year === 24) { 
             for (var i = 1; i <= 13; i++) { 
                 $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+                document.getElementById('periodical_number').value='';
             }
         }
         else if(year === 23) { 
             for (var i = 1; i <= 13; i++) { 
                 $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+                document.getElementById('periodical_number').value='';
             }
         }
          else {
             for (var i = currentMonth; i <= 13; i++) {
-                $("#month").append("<option value='" + i + "'>" + valueofmonth[i - 1] + "</option>");
+                $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+                document.getElementById('periodical_number').value='';
             }
         }
     }
@@ -209,17 +212,6 @@ function enablePeriodicalDropdown(month, year,periodicalDropdown) {
         }
 }
 
-    document.getElementById("year").addEventListener("change", function() {
-        var year = this.value;
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                document.getElementById("month").innerHTML = xhr.responseText;
-            }
-        };
-        xhr.open("GET", "generate-month-options.php?year=" + year, true);
-        xhr.send();
-    });
 
     function enableMonthDropdown() {
         var yearDropdown = document.getElementById("year");
@@ -279,7 +271,6 @@ function postAjax(month, year, periodicals, status) {
         }, // Pass any data you need to send to the server
         dataType: "json", // Specify the expected data type
         success: function(response) {
-          console.log(result);
           var buttonArea = $("#display-lock-unlock-button-area");
           if (response[0] == 1) {
             
@@ -331,7 +322,6 @@ $("#month").on("change", function() {
         var periodicalDropdown = document.getElementById("periodical_number");
         enablePeriodicalDropdown(month, year, periodicalDropdown);
     }
-    console.log(month);
     if(month === ""){
         document.getElementById('periodical_number').value='';
     }
@@ -408,7 +398,7 @@ $.ajax({
         $("tbody").empty();
         if(response.error === "No data found for the specified date"){
             $("tbody").html("<tr><td colspan='8' style='text-align: center;'>No data available in table</td></tr>");
-        }
+        }else{
         // Iterate over each record in the response
         response.forEach(function(record) {
             var path = 'actions/scdata/Periodicals/' + record.folder_name + '/' + record.filename;
@@ -432,6 +422,7 @@ $.ajax({
             $("tbody").append(newRow);
             $("#download-all-files-form").append('<input type="hidden" name="fileid[]" value="'+ record.id +'">');
         });
+      }
     },
 
     error: function(error) {

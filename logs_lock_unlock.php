@@ -14,10 +14,12 @@
   }
   $type = isset($_GET['type']) ? $_GET['type'] : '';
   // echo $type;
+  $listArray = "";
  if($type == "daily"){
   $listArr = $database->select('tab_logs_lockunlock', "*", $condition, "AND", 'multiple', 'date desc');
  }else{
   $listArr = $database->select(' tab_logs_lockunlock_periodicals', "*", $condition, "AND", 'multiple');
+  $listArray = $database->select(' tab_logs_lockunlock_periodicals', "*", $condition, "AND", 'multiple');
  }
  //  $userList = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
 
@@ -81,7 +83,8 @@
               <table class="table datatable table-responsive table-hover">
                 <thead>
                   <tr>   
-                    <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
+                    <!-- <th data-type="date" data-format="YYYY/DD/MM">Record Date</th> -->
+                    <?php if($listArray) :?><th data-type="date" data-format="YYYY/DD/MM">Year</th><th data-type="date" data-format="YYYY/DD/MM">Month</th><th data-type="date" data-format="YYYY/DD/MM">periodicals</th><?php else : ?><th data-type="date" data-format="YYYY/DD/MM">Record Date</th> <?php endif ?>
                     <th>Lock Status</th>
                     <th>Timestamp</th>
                     <th>Type</th>
@@ -89,15 +92,15 @@
                 </thead>
                 <tbody>
                   <?php foreach ($listArr as $list) : ?>
-                   <tr id="<?= $list['id']; ?>"> 
-                      <!-- <td><?=$list['date'];?></td> -->
-                      <td>
+                   <tr id="<?= $list['id']; ?>">
                           <?php if (!empty($list['date'])): ?>
-                              <?= $list['date']; ?>
+                            <td><?= $list['date']; ?></td>
                           <?php else: ?>
-                              <?= $list['year'] . ' ' . $list['month']; ?>
+                            <td><?= $list['year'] ?></td>
+                            <td><?= $list['month']; ?></td>
+                            <td><?= $list['periodicals']; ?></td>
                           <?php endif; ?>
-                      </td>
+                          
                       <td><?= ($list['lock_status'] == '1' || $list['lock_status'] == 'Locked') ? 'Locked' : 'Unlocked'; ?></td>
                       <td><?=$list['timestamp'];?></td>
                       <td><?=$list['type'];?></td>
@@ -108,7 +111,8 @@
                 </tbody>
                 <tfoot>
                   <tr>   
-                    <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
+                    <!-- <th data-type="date" data-format="YYYY/DD/MM">Record Date</th> -->
+                    <?php if($listArray) :?><th data-type="date" data-format="YYYY/DD/MM">Year</th><th data-type="date" data-format="YYYY/DD/MM">Month</th><th data-type="date" data-format="YYYY/DD/MM">periodicals</th><?php else : ?><th data-type="date" data-format="YYYY/DD/MM">Record Date</th> <?php endif ?>
                     <th>Lock Status</th> 
                     <th>Timestamp</th>
                     <th>Type</th>

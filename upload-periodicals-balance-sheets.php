@@ -187,7 +187,7 @@ $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF',
                   <input type="hidden" name="hiddenrecordDate2" value="<?= $date ?? date('Y-m-d'); ?>">
                   <button type="submit" class="btn btn-info" id="download-files-btn">Download All</button>
                 </form>
-              </div>
+              </div><br>
               <!-- <div class="action-buttons float-end mt-3">
                 <a href="upload-files.php" class="btn btn-success">Upload Csv</a>   
             </div> -->
@@ -243,7 +243,7 @@ $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF',
   var today = "<?= date('Y-m-d'); ?>";
 
 function getAjaxlockunlock(monthVal, yearVal, periodicalsVal) {
-    
+  var user_code = "<?= $_SESSION['user_code'] ?>";
     $.ajax({
         url: "actions/ActionController.php", // Replace with the actual API endpoint
         method: "GET", // Use GET or POST depending on your API requirements
@@ -256,7 +256,7 @@ function getAjaxlockunlock(monthVal, yearVal, periodicalsVal) {
         dataType: "json", // Specify the expected data type
         success: function(response) {
             var buttonArea = $("#display-lock-unlock-button-area");
-            if (response.lock_upload == "1" || response.lock_upload == 1) {
+            if (response.lock_upload == "1" || response.lock_upload == 1 || response[user_code] == 1) {
               $("#file-upload-area").hide();
             } else {
               $("#file-upload-area").show();
@@ -283,20 +283,24 @@ $("#year").change(function () {
         if (year === 24) { 
             for (var i = 1; i <= 13; i++) { 
                 $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+                document.getElementById('periodical_number').value='';
             }
         }
         else if(year === 23) { 
             for (var i = 1; i <= 13; i++) { 
                 $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+                document.getElementById('periodical_number').value='';
             }
         }
          else {
-            for (var i = currentMonth; i <= 13; i++) {
-                $("#month").append("<option value='" + i + "'>" + valueofmonth[i - 1] + "</option>");
+            for (var i = 1; i <= 13; i++) {
+              $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+              document.getElementById('periodical_number').value='';
             }
         }
     }
     else {
+        $("#file-upload-area").hide();
         $("#month").html("<option value=''>Select Month</option>");
         document.getElementById('periodical_number').value='';
     }
@@ -312,9 +316,11 @@ function enablePeriodicalDropdown(month, year,periodicalDropdown) {
                 periodicalDropdowns.disabled = false;
             }
             else {
+                $("#file-upload-area").hide();
                 periodicalDropdowns.disabled = true;
             }
         } else {
+            $("#file-upload-area").hide();
             periodicalDropdowns.disabled = true;
         }
 }
@@ -387,7 +393,7 @@ $.ajax({
         $("tbody").empty();
         if(response.error === "No data found for the specified date"){
             $("tbody").html("<tr><td colspan='8' style='text-align: center;'>No data available in table</td></tr>");
-        }
+        }else{
         response.forEach(function(record) {
             var path = 'actions/scdata/Periodicals/' + record.folder_name + '/' + record.filename;
 
@@ -408,6 +414,7 @@ $.ajax({
             $("tbody").append(newRow);
             $("#fileids").append('<input type="hidden" name="fileid[]" value="'+ record.id +'">');
         });
+      }
     },
 
 

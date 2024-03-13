@@ -183,5 +183,5 @@ function SingleDownload(val) {
             console.error("Error fetching data:", error);
         }
     });
-} <
-script >
+} 
+</script>

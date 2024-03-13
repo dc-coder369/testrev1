@@ -133,7 +133,6 @@ $years = range($startYear, $currentYear);
 </main>
 <?php include 'layouts/footer.php'; ?>
 <script>
-console.log("Asd")
 var today = "<?= date('Y-m-d'); ?>";
 var getDate = "<?= $date; ?>";
 if (getDate == '') {
@@ -186,7 +185,6 @@ function getAjax(val) {
 function lockAjax(date, lock_upload, user_code = '') {
     var current = location.origin + location.pathname;
     var file_type = document.getElementById("file_type").value;
-    console.log(file_type);
     $.ajax({
         url: "actions/ActionController.php", // Replace with the actual API endpoint
         method: "post", // Use GET or POST depending on your API requirements
@@ -234,7 +232,6 @@ function getAjaxvalue(monthVal, yearVal, periodicalsVal) {
         }, // Pass any data you need to send to the server
         dataType: "json", // Specify the expected data type
         success: function(response) {
-            console.log(response);
             $("#periodic").empty();
             if(response != null)
             {
@@ -274,7 +271,6 @@ function getAjaxvalue(monthVal, yearVal, periodicalsVal) {
 }
 
 function postAjax(month, year, periodicals, status, station) {
-    console.log(status);
     $.ajax({
         url: "actions/ActionController.php", // Replace with the actual API endpoint
         method: "post", // Use GET or POST depending on your API requirements
@@ -289,7 +285,6 @@ function postAjax(month, year, periodicals, status, station) {
         }, // Pass any data you need to send to the server
         dataType: "json", // Specify the expected data type
         success: function(response) {
-            console.log(response);
             $("#periodic").empty();
             getAjaxvalue(month, year, periodicals);
         },
@@ -314,16 +309,19 @@ $("#year").change(function () {
         if (year === 24) { 
             for (var i = 1; i <= 13; i++) { 
                 $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+                document.getElementById('periodical_number').value='';
             }
         }
         else if(year === 23) { 
             for (var i = 1; i <= 13; i++) { 
                 $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+                document.getElementById('periodical_number').value='';
             }
         }
          else {
             for (var i = currentMonth; i <= 13; i++) {
-                $("#month").append("<option value='" + i + "'>" + valueofmonth[i - 1] + "</option>");
+                $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+                document.getElementById('periodical_number').value='';
             }
         }
     }

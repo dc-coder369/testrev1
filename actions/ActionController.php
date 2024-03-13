@@ -433,7 +433,8 @@ function generateCategoryCodeFromCategoryName($categoryName) {
 }
 
 if($type == 'local_unlock_status_NON_AFC'){
-    $result = $database->select('lock_unlock_periodicals_balance_sheet', 'lock_upload', ['month' => $reqeust['month'],'year' => $reqeust['year'],'periodicals' => $reqeust['periodicals']], "AND", 'single');
+    // $user_code = $reqeust['user_code'];
+    $result = $database->select('lock_unlock_periodicals_balance_sheet', '* ', ['month' => $reqeust['month'],'year' => $reqeust['year'],'periodicals' => $reqeust['periodicals']], "AND", 'single');
     if ($result) { 
         $response = json_encode($result);
         // header('Content-Type: application/json');
