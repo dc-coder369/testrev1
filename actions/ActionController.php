@@ -326,6 +326,42 @@ if($type == 'create log for single file')
    
 }
 
+if($type == 'create log for single file failed pos')
+{
+
+    $recordDate = $reqeust['record_date'] ?? null;
+    $path = $reqeust['path'] ?? null;
+    $sc_name=$reqeust['Sc_Name'] ?? null;
+    $file_type = $reqeust['file_type'] ?? null;
+    $station_name = $reqeust['station_name'] ?? null;
+    $fileName = $reqeust['fileName'] ?? null;
+    $insert = [ 
+        'record_date' => $recordDate, 
+        'log_type' => 'download',
+        'station_name' =>$station_name,
+        'filename' => $fileName,
+        'Sc_Name' =>   $sc_name,
+    ]; 
+    $result = $database->insert('tab_logs_fileupload' , $insert ); 
+    
+    
+    $newpath = str_replace('actions/', '', $path);
+   
+    $excel=filterAndSaveExcel($newpath,$_SESSION['user_code']);
+    $filteredfile='actions/'.$excel;
+ 
+    if($result)
+    {
+        $response = json_encode(['success' => true , 'filepath' => $filteredfile]);
+    }
+    else
+    {
+        $response = json_encode(['success' => false]);
+    }
+    echo $response;die; 
+   
+}
+
 if($type == 'update-privilege'){
     $httpRefer = basename($_SERVER['HTTP_REFERER']);  
     $fileNamephp = parse_url($httpRefer, PHP_URL_PATH);
@@ -1089,7 +1125,42 @@ function AccessToPageAsPerLogin($type){
 }
 
 
-
+function filterAndSaveExcel($inputFile, $stationCode) {
+    // Load the existing Excel file
+    $reader = IOFactory::createReaderForFile($inputFile);
+    $reader->setReadDataOnly(true);
+    $reader->setLoadSheetsOnly(['Sheet1']); // Adjust sheet name if necessary
+    $spreadsheet = $reader->load($inputFile);
+    $sheet = $spreadsheet->getActiveSheet();
+    
+    // Create a new Spreadsheet to store filtered data
+    $filteredSpreadsheet = new Spreadsheet();
+    $filteredSheet = $filteredSpreadsheet->getActiveSheet();
+    
+    // Copy the topmost row to the filtered sheet
+    $filteredSheet->fromArray($sheet->rangeToArray('A1:' . $sheet->getHighestColumn() . '1', NULL, TRUE, FALSE));
+    
+    // Process the spreadsheet in chunks
+    $highestRow = $sheet->getHighestRow();
+    $chunkSize = 1000; // Adjust the chunk size as needed
+    for ($startRow = 2; $startRow <= $highestRow; $startRow += $chunkSize) {
+        // Read a chunk of rows
+        $chunkData = $sheet->rangeToArray('A' . $startRow . ':' . $sheet->getHighestColumn() . min($startRow + $chunkSize - 1, $highestRow));
+        
+        // Filter and append rows to the filtered sheet
+        foreach ($chunkData as $rowData) {
+            if (!empty($rowData) && isset($rowData[12]) && $rowData[12] == $stationCode) {
+                $filteredSheet->fromArray([$rowData], null, 'A' . ($filteredSheet->getHighestRow() + 1));
+            }
+        }
+    }
+    
+    // Save the filtered spreadsheet to a new file
+    $writer = IOFactory::createWriter($filteredSpreadsheet, 'Xlsx');
+    $outputFile = dirname($inputFile) . '/generatedexcel.xlsx';
+    $writer->save($outputFile);
+    return $outputFile; 
+}
 
 // close connection when operation is done
 //  session_destroy(); 

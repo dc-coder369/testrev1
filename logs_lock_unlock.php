@@ -84,7 +84,7 @@
                 <thead>
                   <tr>   
                     <!-- <th data-type="date" data-format="YYYY/DD/MM">Record Date</th> -->
-                    <?php if($listArray) :?><th data-type="date" data-format="YYYY/DD/MM">Year</th><th data-type="date" data-format="YYYY/DD/MM">Month</th><th data-type="date" data-format="YYYY/DD/MM">periodicals</th><?php else : ?><th data-type="date" data-format="YYYY/DD/MM">Record Date</th> <?php endif ?>
+                    <?php if($listArray) :?><th data-type="date" data-format="YYYY/DD/MM">Year</th><th data-type="date" data-format="YYYY/DD/MM">Month</th><th data-type="date" data-format="YYYY/DD/MM">Periodicals</th><?php else : ?><th data-type="date" data-format="YYYY/DD/MM">Record Date</th> <?php endif ?>
                     <th>Lock Status</th>
                     <th>Timestamp</th>
                     <th>Type</th>
