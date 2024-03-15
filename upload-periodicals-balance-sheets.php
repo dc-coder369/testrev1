@@ -37,6 +37,17 @@ $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF',
   $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', 'id DESC' ,[]);
 
   //  echo "<prE>"; print_r($listArr); die; 
+   // code given by chintan sir.
+   function generateYearOptions() {
+    $currentYear = date('Y');
+    $options = '<option value="">Select Year</option>';
+    // print_r($year);
+    for ($year = 2023; $year <= $currentYear; $year++) {
+        $lastTwoDigits = substr($year, -2);
+        $options .= "<option value=\"$lastTwoDigits\">$year</option>";
+    }
+    return $options;
+}
   ?>
   <div class="pagetitle">
 
@@ -57,48 +68,35 @@ $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF',
                 <input type="hidden" name="user_id" value="<?= $_SESSION['user_id']; ?>">
 
                 <div class="row mt-2">
-                  <div class="col-md-4">
-                    <label for="month" class="col-sm-4 col-form-label">Month</label>
-                    <div class="col-sm-4">
-                      <!-- <input type="date" class="form-control" name="recordDate" id="recordDate" value="<?php echo htmlspecialchars($date ?? date('Y-m-d')); ?>" min="2023-11-01" max="<?php echo date('Y-m-d'); ?>" onkeydown="return false"> -->
-                      <select class="form-control" name="month" id="month" required>
-                        <option>Select Month</option>
-                        <?php foreach ($months as $monthName) : ?>
-                          <?php $abbrMonth = substr($monthName, 0, 3); ?>
-                          <option value="<?= $abbrMonth; ?>"><?= $monthName; ?> </option>
-                        <?php endforeach;  ?>
-                      </select>
-                    </div>
-                    
-                  </div>
-                  <div class="col-md-4">
-                    <label for="year" class="col-sm-4 col-form-label">Year</label>
-                    <div class="col-sm-4">
-                      <!-- <input type="date" class="form-control" name="recordDate" id="recordDate" value="<?php echo htmlspecialchars($date ?? date('Y-m-d')); ?>" min="2023-11-01" max="<?php echo date('Y-m-d'); ?>" onkeydown="return false"> -->
-                      <select class="form-control" name="year" id="year" required>
-                        <option value="">Select Year</option>
-                        <?php foreach ($years as $year): ?>
-                          <?php $lastTwoDigits = substr($year, -2); ?>
-                          <option value="<?php echo $lastTwoDigits; ?>"><?php echo $year; ?></option>
-                        <?php endforeach; ?>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="col-md-4">
-                    <label for="year" class="col-form-label">Periodical Number</label>
-                    <div class="col-sm-4">
-                      <!-- <input type="date" class="form-control" name="recordDate" id="recordDate" value="<?php echo htmlspecialchars($date ?? date('Y-m-d')); ?>" min="2023-11-01" max="<?php echo date('Y-m-d'); ?>" onkeydown="return false"> -->
-                      <select class="form-control" name="periodical_number" id="periodical_number" required>
-                        <option value="">Select Periodical</option>
-                        <?php foreach ($periodical_number as $number): ?>
-                          <option value="<?php if($number == "Periodical_1"){echo "Periodical1";}elseif($number == "Periodical_2"){echo "Periodical2";}elseif($number == "Periodical_3"){echo "Periodical3";} else{echo "Balance_Sheet";} ?>"><?php echo $number; ?></option>
-                        <?php endforeach; ?>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-
+                                <div class="col-md-4">
+                                    <label for="year" class="col-sm-4 col-form-label">Year</label>
+                                    <div class="col-sm-5">
+                                        <select class="form-control" name="year" id="year" required onchange="enableMonthDropdown()">
+                                            <?php echo generateYearOptions(); ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="month" class="col-sm-4 col-form-label">Month</label>
+                                    <div class="col-sm-5">
+                                        <select class="form-control" name="month" id="month" required disabled>
+                                            <option>Select Month</option>
+                                            
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="year" class="col-form-label">Periodical Number</label>
+                                    <div class="col-sm-5">
+                                        <select class="form-control" name="periodical_number" id="periodical_number" required disabled>
+                                            <option value>Select Periodical</option>
+                                            <?php foreach ($periodical_number as $number): ?>
+                                                <option value="<?php if($number == "Periodical_1"){echo "Periodical1";}elseif($number == "Periodical_2"){echo "Periodical2";}elseif($number == "Periodical_3"){echo "Periodical3";} else{echo "Balance_Sheet";} ?>"><?php echo $number; ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div><br>
 
                 <div id="file-upload-area" style="display:none;">
                   <div class="row mt-2">
@@ -183,11 +181,13 @@ $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF',
             <div class="card-body">
             <div class="action-buttons float-end mt-3 d-flex justify-content-around">
                 <form class="row g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-form">
-                  <input type="hidden" name="type" value="download-all-files">
+                <div id="fileids">
+                </div>  
+                <input type="hidden" name="type" value="download-all-files">
                   <input type="hidden" name="hiddenrecordDate2" value="<?= $date ?? date('Y-m-d'); ?>">
                   <button type="submit" class="btn btn-info" id="download-files-btn">Download All</button>
                 </form>
-              </div>
+              </div><br>
               <!-- <div class="action-buttons float-end mt-3">
                 <a href="upload-files.php" class="btn btn-success">Upload Csv</a>   
             </div> -->
@@ -203,29 +203,13 @@ $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF',
                     <th>SC Name </th>
                     <th>Station Name</th>
                     <th>Filename (System)</th>
-                     <th>Category</th>
-
-                     
+                    <th>Filename (Original)</th>
+                    <th>Category</th>
                     <th>Upload Time</th>
                     <th>Remark</th>
                   </tr>
                 </thead>
                 <tbody>
-
-                  <?php foreach ($listArr as $list) :
-                    $path = 'actions/scdata/Periodicals/' . $list['folder_name'] . '/' . $list['filename'];
-                  ?>
-                    <tr id="<?= $list['id']; ?>">
-                     
-                      <td><?= $list['Sc_Name']; ?></td>
-                      <td><?= strtoupper($list['station_name']); ?></td>
-                      <td><a href="<?= $path ?>" download target="_balnk"><?= $list['filename']; ?></a></td>
-                       <td><?= $list['file_type']; ?></td>
-                      <td><?= $list['upload_time']; ?></td>
-                      <td><?= $list['Remark']; ?></td>
-                    </tr>
-
-                  <?php endforeach; ?>
 
 
                 </tbody>
@@ -233,8 +217,9 @@ $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF',
                   <tr>
                     <th>SC Name </th>
                     <th>Station Name</th>
-                    <th>Filename</th>
-                     <th>Category</th>
+                    <th>Filename (System)</th>
+                    <th>Filename (Original)</th>
+                    <th>Category</th>
                     <th>Upload Time</th>
                     <th>Remark</th>
                   </tr>
@@ -256,40 +241,9 @@ $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF',
 <script>
   console.log("Asd")
   var today = "<?= date('Y-m-d'); ?>";
-   
-  //
-  $("#recordDate").on("change", function() {
-    var val = $(this).val();
-    getAjax(val);
-  });
-
-  $("#month").on("change", function() {
-    var month = document.getElementById("month").value;
-    var year = document.getElementById("year").value;
-    var periodical_number = document.getElementById("periodical_number").value;
-    if( year != '' && periodical_number != ''){
-       getAjaxlockunlock(month, year, periodical_number);
-    }
-  });
-  $("#year").on("change", function() {
-    var month = document.getElementById("month").value;
-    var year = document.getElementById("year").value;
-    var periodical_number = document.getElementById("periodical_number").value;
-    if( month != '' && periodical_number != ''){
-       getAjaxlockunlock(month, year, periodical_number);
-    }
-  });
-  $("#periodical_number").on("change", function() {
-    var month = document.getElementById("month").value;
-    var year = document.getElementById("year").value;
-    var periodical_number = document.getElementById("periodical_number").value;
-    if( year != '' && month != ''){
-       getAjaxlockunlock(month, year, periodical_number);
-    }
-  });
 
 function getAjaxlockunlock(monthVal, yearVal, periodicalsVal) {
-    
+  var user_code = "<?= $_SESSION['user_code'] ?>";
     $.ajax({
         url: "actions/ActionController.php", // Replace with the actual API endpoint
         method: "GET", // Use GET or POST depending on your API requirements
@@ -302,11 +256,205 @@ function getAjaxlockunlock(monthVal, yearVal, periodicalsVal) {
         dataType: "json", // Specify the expected data type
         success: function(response) {
             var buttonArea = $("#display-lock-unlock-button-area");
-            if (response.lock_upload == "1" || response.lock_upload == 1) {
+            if (response.lock_upload == "1" || response.lock_upload == 1 || response[user_code] == 1) {
               $("#file-upload-area").hide();
             } else {
               $("#file-upload-area").show();
             }
+        },
+        error: function(error) {
+            // Handle the error here
+            console.error("Error fetching data:", error);
+        }
+    });
+}
+
+$("#year").change(function () {
+    var date = new Date();
+    var selectedmonth = parseInt(document.getElementById("year").value); 
+    var year = parseInt($(this).val());
+    var currentMonth = date.getMonth() + 1; // Get current month
+    var months = ['Select Month','January', 'February', 'March', 'April','May', 'June', 'July', 'August','September', 'October', 'November', 'December'];
+    var valueofmonth = ['','Jan', 'Feb', 'Mar', 'Apr','May', 'Jun', 'Jul', 'Aug','Sep', 'Oct', 'Nov', 'Dec'];
+    $("#month").html("");
+    var d = new Date();
+    var n = d.getMonth()+2;
+    if (year === selectedmonth && year != '') {
+        if (year === 24) { 
+            for (var i = 1; i <= 13; i++) { 
+                $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+                document.getElementById('periodical_number').value='';
+            }
+        }
+        else if(year === 23) { 
+            for (var i = 1; i <= 13; i++) { 
+                $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+                document.getElementById('periodical_number').value='';
+            }
+        }
+         else {
+            for (var i = 1; i <= 13; i++) {
+              $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+              document.getElementById('periodical_number').value='';
+            }
+        }
+    }
+    else {
+        $("#file-upload-area").hide();
+        $("#month").html("<option value=''>Select Month</option>");
+        document.getElementById('periodical_number').value='';
+    }
+});
+
+function enablePeriodicalDropdown(month, year,periodicalDropdown) {
+    // console.log("month: "+month);
+    var yearDropdown = document.getElementById("year");
+        var monthDropdown = document.getElementById("month");
+        var periodicalDropdowns = document.getElementById("periodical_number");
+        if (year !== "") {
+            if(month !== ""){
+                periodicalDropdowns.disabled = false;
+            }
+            else {
+                $("#file-upload-area").hide();
+                periodicalDropdowns.disabled = true;
+            }
+        } else {
+            $("#file-upload-area").hide();
+            periodicalDropdowns.disabled = true;
+        }
+}
+ 
+
+function enableMonthDropdown() {
+        var yearDropdown = document.getElementById("year");
+        var monthDropdown = document.getElementById("month");
+        if (yearDropdown.value !== "") {
+            monthDropdown.disabled = false;
+        } else {
+            monthDropdown.disabled = true;
+        }
+}
+
+$("#periodical_number").on("change", function() {
+    var month = document.getElementById("month").value;
+    var year = document.getElementById("year").value;
+    var periodical_number = document.getElementById("periodical_number").value;
+    getAjaxvalue(month, year, periodical_number);
+    if( year != '' && month != ''){
+       getAjaxlockunlock(month, year, periodical_number);
+    }
+  });
+
+$("#month").on("change", function() {
+    var month = document.getElementById("month").value;
+    var year = document.getElementById("year").value;
+    var periodical_number = document.getElementById("periodical_number").value; 
+    getAjaxvalue(month, year, periodical_number);
+    if(year != ''){
+        var periodicalDropdown = document.getElementById("periodical_number");
+        enablePeriodicalDropdown(month, year, periodicalDropdown);
+    }
+    if(month == ''){
+        document.getElementById('periodical_number').value='';
+    }
+    if( year != '' && periodical_number != ''){
+       getAjaxlockunlock(month, year, periodical_number);
+    }
+});
+$("#year").on("change", function() {
+    var month = document.getElementById("month").value;
+    var year = document.getElementById("year").value;
+    var periodical_number = document.getElementById("periodical_number").value;
+    console.log(periodical_number);
+    var periodicalDropdown = document.getElementById("periodical_number");
+    getAjaxvalue(month, year, periodical_number);
+    if( month != '' && periodical_number != ''){
+       getAjaxlockunlock(month, year, periodical_number);
+    }
+    enablePeriodicalDropdown(month, year, periodicalDropdown);
+});
+
+function getAjaxvalue(month, year, periodicalsVal) {
+    // console.log("monthval: " month );
+$.ajax({
+    url: "actions/ActionController.php", // Replace with the actual API endpoint
+    method: "GET", // Use GET or POST depending on your API requirements
+    data: {
+        "type": "value_of_NON_AFC_STATION",
+        month: month,
+        year: year,
+        periodicals: periodicalsVal
+    }, // Pass any data you need to send to the server
+    dataType: "json", // Specify the expected data type
+    
+    success: function(response) {
+        // Clear existing table rows
+        $("tbody").empty();
+        if(response.error === "No data found for the specified date"){
+            $("tbody").html("<tr><td colspan='8' style='text-align: center;'>No data available in table</td></tr>");
+        }else{
+        response.forEach(function(record) {
+            var path = 'actions/scdata/Periodicals/' + record.folder_name + '/' + record.filename;
+
+            record.path = path;
+            var newRow = $("<tr id ="+ record.id + ">");
+
+            newRow.append("<td>" + record.Sc_Name + "</td>");
+            newRow.append("<td>" + record.uploaded_for + "</td>");
+            newRow.append("<td><a href='#' onclick='SingleDownload(" + JSON.stringify(record) +
+                ")'>" + record.filename + "</a></td>");
+            newRow.append("<td>" + record.original_filename + "</td>");
+            newRow.append("<td>" + record.file_type + "</td>");
+            // newRow.append("<td>" + record.record_date + "</td>");
+            newRow.append("<td>" + record.upload_time + "</td>");
+            newRow.append("<td>" + record.Remark + "</td>");
+
+            // Append the new row to the table body
+            $("tbody").append(newRow);
+            $("#fileids").append('<input type="hidden" name="fileid[]" value="'+ record.id +'">');
+        });
+      }
+    },
+
+
+    error: function(error) {
+// Clear existing table rows
+$("tbody").empty();
+// Display message indicating error
+$("tbody").html("<tr><td colspan='8' style='text-align: center;'>No data available in table</td></tr>");
+console.error("Error fetching data:", error);
+}
+});
+}
+
+
+function SingleDownload(val) {
+    $.ajax({
+        url: "actions/ActionController.php", // Replace with the actual API endpoint
+        method: "GET", // Use GET or POST depending on your API requirements
+        data: {
+            "type": "create log for single file",
+            "path": val.path,
+            "Sc_name": val.Sc_Name,
+            "file_type": val.file_type,
+            "station_name": val.station_name,
+            "record_date": val.record_date,
+            "fileName": val.filename,
+        }, // Pass any data you need to send to the server
+        dataType: "json", // Specify the expected data type
+        success: function(response) {
+            var path = response.filepath
+            var link = document.createElement('a');
+            link.href = path;
+            link.target = "_blank"; // Open in a new tab
+            link.download = path.split('/').pop(); // Set the filename to be downloaded
+
+            // Simulate a click event to trigger the download
+            document.body.appendChild(link);
+            link.click();
+            // Clean up
+            document.body.removeChild(link);
         },
         error: function(error) {
             // Handle the error here

@@ -3,12 +3,14 @@
     <?php include 'layouts/alert.php'; ?>
     
     <?php
+         $date = (isset($_GET['date'])) ? $_GET['date'] : '';
         $data = $_SESSION['data'];
         if($data):
         $condition = ['id' => $data[0]['master_file_id']];
         $listArr = $database->select('pos_failed_transaction', "*", $condition, "AND", 'multiple', '`upload_time` desc');
         endif;
     ?>
+
     <div class="pagetitle">
 
         <section class="section">
@@ -46,14 +48,14 @@
                                 <tbody>
 
                                     <?php foreach ($_SESSION['data']  as $list) :
-                    $path = 'actions/scdata/' . $list['folder_name'] . '/' . $list['filename'];
-                    $list['path']=$path;
-                  ?>
+                                        $path = 'actions/scdata/' . $list['folder_name'] . '/' . $list['filename'];
+                                        $list['path']=$path;
+                                    ?>
                                     <tr id="<?= $list['id']; ?>">
                                         <td><?= $list['Sc_Name']; ?></td>
                                         <td><?= strtoupper($list['station_code']); ?></td>
                                         <td><a href="#"
-                                                onclick="SingleDownload(<?= htmlspecialchars(json_encode($list), ENT_QUOTES, 'UTF-8'); ?>)"><?= $list['filename']; ?></a>
+                                               onclick="SingleDownload(<?= htmlspecialchars(json_encode($list), ENT_QUOTES, 'UTF-8'); ?>)"><?= $list['filename']; ?></a>
                                         </td>
                                         <td><?= $list['original_filename']; ?></td>
                                         <td><?= $list['file_type']; ?></td>
@@ -106,7 +108,6 @@ $("#recordDate").on("change", function() {
     var val = $(this).val();
     getAjax(val);
 });
-
 
 function getAjax(val) {
 

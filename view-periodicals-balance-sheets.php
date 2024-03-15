@@ -25,9 +25,9 @@
   $currentYear = date("Y");
   $years = range($startYear, $currentYear);
  
-  $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', '`upload_time` desc');
+//   $listArr = $database->select('tab_logs_fileupload', "*", $condition, "AND", 'multiple', '`upload_time` desc');
 
-  $userList = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
+//   $userList = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
   // code given by chintan sir.
     function generateYearOptions() {
         $currentYear = date('Y');
@@ -53,7 +53,7 @@
                             <div class="row mt-2">
                                 <div class="col-md-4">
                                     <label for="year" class="col-sm-4 col-form-label">Year</label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-5">
                                         <select class="form-control" name="year" id="year" required onchange="enableMonthDropdown()">
                                             <?php echo generateYearOptions(); ?>
                                         </select>
@@ -61,7 +61,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="month" class="col-sm-4 col-form-label">Month</label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-5">
                                         <select class="form-control" name="month" id="month" required disabled>
                                             <option>Select Month</option>
                                             
@@ -70,7 +70,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <label for="year" class="col-form-label">Periodical Number</label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-5">
                                         <select class="form-control" name="periodical_number" id="periodical_number" required disabled>
                                             <option value>Select Periodical</option>
                                             <?php foreach ($periodical_number as $number): ?>
@@ -79,7 +79,7 @@
                                         </select>
                                     </div>
                                 </div>
-                            </div>
+                            </div><br>
                                 <div id="display-lock-unlock-button-area" class="btn_lock_unlock"> 
                                 </div>
                         </div>
@@ -89,14 +89,18 @@
             <div class="row">
                 <div class="col-lg-12"> 
                     <div class="card"> 
-                        <div class="card-body"> 
-                            <div class="selctdatas col-6 mt-4 mb-2">
-                            </div>
-                        </div> 
+                        
                         <div class="card">
                             <div class="card-body"> 
+                             <div class="action-buttons float-end mt-3 d-flex justify-content-around">
+                                <form class="row g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-form">
+                                <input type="hidden" name="type" value="download-all-files">
+                                <input type="hidden" name="hiddenrecordDate2" value="<?=  date('Y-m-d'); ?>">
+                                <button type="submit" class="btn btn-info" id="download-files-btn">Download All</button>
+                                </form>
+                            </div>
                                 <div class="d-flex justify-content-between">
-                                    <h5 class="card-title">Revenue Cell Data for Perodical files</h5>
+                                    <h5 class="card-title">Revenue Cell Data for Periodical files</h5>
                                 </div> 
                                 <!-- Table with stripped rows -->
                                 <table class="table datatable table-responsive table-hover">
@@ -113,7 +117,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($listArr as $list) :
+                                        <!-- <?php foreach ($listArr as $list) :
                                             $path = 'actions/scdata/' . $list['folder_name'] . '/' . $list['filename'];
                                             $list['path']=$path;
                                         ?>
@@ -129,7 +133,7 @@
                                             <td><?= $list['upload_time']; ?></td>
                                             <td><?= $list['Remark']; ?></td>
                                         </tr>
-                                        <?php endforeach; ?>
+                                        <?php endforeach; ?> -->
                                     </tbody>
                                     <tfoot>
                                         <tr>
@@ -167,18 +171,21 @@ $("#year").change(function () {
     var n = d.getMonth()+2;
     if (year === selectedmonth && year != '') {
         if (year === 24) { 
-            for (var i = 1; i <= n; i++) { 
+            for (var i = 1; i <= 13; i++) { 
                 $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+                document.getElementById('periodical_number').value='';
             }
         }
         else if(year === 23) { 
-            for (var i = 1; i <= 12; i++) { 
+            for (var i = 1; i <= 13; i++) { 
                 $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+                document.getElementById('periodical_number').value='';
             }
         }
          else {
-            for (var i = currentMonth; i <= 12; i++) {
-                $("#month").append("<option value='" + i + "'>" + valueofmonth[i - 1] + "</option>");
+            for (var i = currentMonth; i <= 13; i++) {
+                $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+                document.getElementById('periodical_number').value='';
             }
         }
     }
@@ -189,7 +196,7 @@ $("#year").change(function () {
 });
 
 function enablePeriodicalDropdown(month, year,periodicalDropdown) {
-    console.log("month"+month);
+    // console.log("month: "+month);
     var yearDropdown = document.getElementById("year");
         var monthDropdown = document.getElementById("month");
         var periodicalDropdowns = document.getElementById("periodical_number");
@@ -205,17 +212,6 @@ function enablePeriodicalDropdown(month, year,periodicalDropdown) {
         }
 }
 
-    document.getElementById("year").addEventListener("change", function() {
-        var year = this.value;
-        var xhr = new XMLHttpRequest();
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-                document.getElementById("month").innerHTML = xhr.responseText;
-            }
-        };
-        xhr.open("GET", "generate-month-options.php?year=" + year, true);
-        xhr.send();
-    });
 
     function enableMonthDropdown() {
         var yearDropdown = document.getElementById("year");
@@ -275,7 +271,6 @@ function postAjax(month, year, periodicals, status) {
         }, // Pass any data you need to send to the server
         dataType: "json", // Specify the expected data type
         success: function(response) {
-          console.log(response);
           var buttonArea = $("#display-lock-unlock-button-area");
           if (response[0] == 1) {
             
@@ -319,6 +314,7 @@ $("#month").on("change", function() {
     var month = document.getElementById("month").value;
     var year = document.getElementById("year").value;
     var periodical_number = document.getElementById("periodical_number").value;
+    getAjaxvalue(month, year, periodical_number);
     if( year != '' && periodical_number != ''){
        getAjaxlockunlock(month, year, periodical_number);
     }
@@ -326,7 +322,6 @@ $("#month").on("change", function() {
         var periodicalDropdown = document.getElementById("periodical_number");
         enablePeriodicalDropdown(month, year, periodicalDropdown);
     }
-    console.log(month);
     if(month === ""){
         document.getElementById('periodical_number').value='';
     }
@@ -335,6 +330,7 @@ $("#year").on("change", function() {
     var month = document.getElementById("month").value;
     var year = document.getElementById("year").value;
     var periodical_number = document.getElementById("periodical_number").value;
+    getAjaxvalue(month, year, periodical_number);
     if( month != '' && periodical_number != ''){
        getAjaxlockunlock(month, year, periodical_number);
     }
@@ -345,6 +341,7 @@ $("#periodical_number").on("change", function() {
     var month = document.getElementById("month").value;
     var year = document.getElementById("year").value;
     var periodical_number = document.getElementById("periodical_number").value;
+    getAjaxvalue(month, year, periodical_number);
     if( year != '' && month != ''){
        getAjaxlockunlock(month, year, periodical_number);
     }
@@ -380,6 +377,62 @@ function getAjaxlockunlock(monthVal, yearVal, periodicalsVal) {
             console.error("Error fetching data:", error);
         }
     });
+}
+
+
+function getAjaxvalue(month, year, periodicalsVal) {
+    // console.log("monthval: " month );
+$.ajax({
+    url: "actions/ActionController.php", // Replace with the actual API endpoint
+    method: "GET", // Use GET or POST depending on your API requirements
+    data: {
+        "type": "value_of_NON_AFC",
+        month: month,
+        year: year,
+        periodicals: periodicalsVal
+    }, // Pass any data you need to send to the server
+    dataType: "json", // Specify the expected data type
+    
+    success: function(response) {
+        // Clear existing table rows
+        $("tbody").empty();
+        if(response.error === "No data found for the specified date"){
+            $("tbody").html("<tr><td colspan='8' style='text-align: center;'>No data available in table</td></tr>");
+        }else{
+        // Iterate over each record in the response
+        response.forEach(function(record) {
+            var path = 'actions/scdata/Periodicals/' + record.folder_name + '/' + record.filename;
+
+            record.path = path;
+            // Create a new table row
+            var newRow = $("<tr id ="+ record.id + ">");
+
+            // Populate table cells with record data
+            newRow.append("<td>" + record.Sc_Name + "</td>");
+            newRow.append("<td>" + record.uploaded_for + "</td>");
+            newRow.append("<td><a href='#' onclick='SingleDownload(" + JSON.stringify(record) +
+                ")'>" + record.filename + "</a></td>");
+            newRow.append("<td>" + record.original_filename + "</td>");
+            newRow.append("<td>" + record.file_type + "</td>");
+            newRow.append("<td>" + record.record_date + "</td>");
+            newRow.append("<td>" + record.upload_time + "</td>");
+            newRow.append("<td>" + record.Remark + "</td>");
+
+            // Append the new row to the table body
+            $("tbody").append(newRow);
+            $("#download-all-files-form").append('<input type="hidden" name="fileid[]" value="'+ record.id +'">');
+        });
+      }
+    },
+
+    error: function(error) {
+// Clear existing table rows
+$("tbody").empty();
+// Display message indicating error
+$("tbody").html("<tr><td colspan='8' style='text-align: center;'>No data available in table</td></tr>");
+console.error("Error fetching data:", error);
+}
+});
 }
 
 </script>

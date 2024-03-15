@@ -73,7 +73,7 @@ $years = range($startYear, $currentYear);
                                     style="display: show;" <?php else : ?> style="display: none;" <?php endif; ?>>
                                         <div class="col-md-4">
                                     <label for="year" class="col-sm-4 col-form-label">Year</label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-11">
                                         <select class="form-control" name="year" id="year" required onchange="enableMonthDropdown()">
                                             <?php echo generateYearOptions(); ?>
                                         </select>
@@ -81,7 +81,7 @@ $years = range($startYear, $currentYear);
                                 </div>
                                 <div class="col-md-4">
                                     <label for="month" class="col-sm-4 col-form-label">Month</label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-11">
                                         <select class="form-control" name="month" id="month" required disabled>
                                             <option>Select Month</option>
                                             
@@ -90,7 +90,7 @@ $years = range($startYear, $currentYear);
                                 </div>
                                 <div class="col-md-4">
                                     <label for="year" class="col-form-label">Periodical Number</label>
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-11">
                                         <select class="form-control" name="periodical_number" id="periodical_number" required disabled>
                                             <option value>Select Periodical</option>
                                             <?php foreach ($periodical_number as $number): ?>
@@ -133,7 +133,6 @@ $years = range($startYear, $currentYear);
 </main>
 <?php include 'layouts/footer.php'; ?>
 <script>
-console.log("Asd")
 var today = "<?= date('Y-m-d'); ?>";
 var getDate = "<?= $date; ?>";
 if (getDate == '') {
@@ -186,7 +185,6 @@ function getAjax(val) {
 function lockAjax(date, lock_upload, user_code = '') {
     var current = location.origin + location.pathname;
     var file_type = document.getElementById("file_type").value;
-    console.log(file_type);
     $.ajax({
         url: "actions/ActionController.php", // Replace with the actual API endpoint
         method: "post", // Use GET or POST depending on your API requirements
@@ -234,7 +232,6 @@ function getAjaxvalue(monthVal, yearVal, periodicalsVal) {
         }, // Pass any data you need to send to the server
         dataType: "json", // Specify the expected data type
         success: function(response) {
-            console.log(response);
             $("#periodic").empty();
             if(response != null)
             {
@@ -274,7 +271,6 @@ function getAjaxvalue(monthVal, yearVal, periodicalsVal) {
 }
 
 function postAjax(month, year, periodicals, status, station) {
-    console.log(status);
     $.ajax({
         url: "actions/ActionController.php", // Replace with the actual API endpoint
         method: "post", // Use GET or POST depending on your API requirements
@@ -289,7 +285,6 @@ function postAjax(month, year, periodicals, status, station) {
         }, // Pass any data you need to send to the server
         dataType: "json", // Specify the expected data type
         success: function(response) {
-            console.log(response);
             $("#periodic").empty();
             getAjaxvalue(month, year, periodicals);
         },
@@ -312,18 +307,21 @@ $("#year").change(function () {
     var n = d.getMonth()+2;
     if (year === selectedmonth && year != '') {
         if (year === 24) { 
-            for (var i = 1; i <= n; i++) { 
+            for (var i = 1; i <= 13; i++) { 
                 $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+                document.getElementById('periodical_number').value='';
             }
         }
         else if(year === 23) { 
-            for (var i = 1; i <= 12; i++) { 
+            for (var i = 1; i <= 13; i++) { 
                 $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+                document.getElementById('periodical_number').value='';
             }
         }
          else {
-            for (var i = currentMonth; i <= 12; i++) {
-                $("#month").append("<option value='" + i + "'>" + valueofmonth[i - 1] + "</option>");
+            for (var i = currentMonth; i <= 13; i++) {
+                $("#month").append("<option value='" + valueofmonth[i - 1] + "'>" + months[i - 1] + "</option>");
+                document.getElementById('periodical_number').value='';
             }
         }
     }
@@ -334,7 +332,7 @@ $("#year").change(function () {
 });
 
 function enablePeriodicalDropdown(month, year,periodicalDropdown) {
-    console.log("month"+month);
+    // console.log("month: "+month);
     var yearDropdown = document.getElementById("year");
         var monthDropdown = document.getElementById("month");
         var periodicalDropdowns = document.getElementById("periodical_number");
@@ -369,10 +367,15 @@ $("#month").on("change", function() {
         var periodicalDropdown = document.getElementById("periodical_number");
         enablePeriodicalDropdown(month, year, periodicalDropdown);
     }
-    console.log(month);
     if(month == ''){
         document.getElementById('periodical_number').value='';
     }
 });
-
+$("#year").on("change", function() {
+    var month = document.getElementById("month").value;
+    var year = document.getElementById("year").value;
+    var periodical_number = document.getElementById("periodical_number").value;
+    var periodicalDropdown = document.getElementById("periodical_number");
+    enablePeriodicalDropdown(month, year, periodicalDropdown);
+});
 </script>

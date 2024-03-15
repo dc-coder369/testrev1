@@ -116,6 +116,7 @@
                   <tr>   
                     <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
                     <th>Lock Status</th> 
+                    <th>Station Lock/Unlock status</th>
                   </tr>
                 </tfoot>
               </table>
