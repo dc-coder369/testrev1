@@ -210,6 +210,11 @@ function enablePeriodicalDropdown(month, year,periodicalDropdown) {
         } else {
             periodicalDropdowns.disabled = true;
         }
+
+        // if(year == '' || month == '' || periodicalDropdown == '')
+        // {
+        //       $("#display-lock-unlock-button-area").hide();
+        // }
 }
 
 
@@ -283,7 +288,7 @@ function postAjax(month, year, periodicals, status) {
               buttonArea.empty(); // Clear existing content
               buttonArea.append(lockButton); // Append the lockButton
           }
-          buttonArea.show();
+        //   buttonArea.show();
       },
         error: function(error) {
             // Handle the error here
@@ -315,7 +320,7 @@ $("#month").on("change", function() {
     var year = document.getElementById("year").value;
     var periodical_number = document.getElementById("periodical_number").value;
     getAjaxvalue(month, year, periodical_number);
-    if( year != '' && periodical_number != ''){
+    if( year != '' && periodical_number != '' && month != ''){
        getAjaxlockunlock(month, year, periodical_number);
     }
     if(year != ''){
@@ -325,28 +330,49 @@ $("#month").on("change", function() {
     if(month === ""){
         document.getElementById('periodical_number').value='';
     }
+    handleInputChange();
+    if (month == '' || year == '' || periodical_number == '') {
+        $("#display-lock-unlock-button-area").hide();
+    }
 });
 $("#year").on("change", function() {
     var month = document.getElementById("month").value;
     var year = document.getElementById("year").value;
     var periodical_number = document.getElementById("periodical_number").value;
+
     getAjaxvalue(month, year, periodical_number);
-    if( month != '' && periodical_number != ''){
+    if( month != '' && periodical_number != '' && year != ''){
        getAjaxlockunlock(month, year, periodical_number);
     }
         var periodicalDropdown = document.getElementById("periodical_number");
         enablePeriodicalDropdown(month, year, periodicalDropdown);
+        handleInputChange();
+        if (month == '' || year == '' || periodical_number == '') {
+        $("#display-lock-unlock-button-area").hide();
+    }
 });
 $("#periodical_number").on("change", function() {
     var month = document.getElementById("month").value;
     var year = document.getElementById("year").value;
     var periodical_number = document.getElementById("periodical_number").value;
+    handleInputChange();
     getAjaxvalue(month, year, periodical_number);
-    if( year != '' && month != ''){
+    if( year != '' && month != '' && periodical_number != ''){
        getAjaxlockunlock(month, year, periodical_number);
     }
+    if (month == '' || year == '' || periodical_number == '') {
+        $("#display-lock-unlock-button-area").hide();
+    }
 });
-
+function handleInputChange() {
+    var month = document.getElementById("month").value;
+  console.log('month'+month);
+    
+    // var year = document.getElementById("year").value;
+    // var periodical_number = document.getElementById("periodical_number").value;
+   
+    
+}
 function getAjaxlockunlock(monthVal, yearVal, periodicalsVal) {
     
     $.ajax({

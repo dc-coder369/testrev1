@@ -1253,4 +1253,115 @@ tfoot input{
       border-radius: var(--bs-border-radius);
       transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
+
+.dashboard .card {
+  border: none;
+  border-radius: 10px
+}
+
+.dashboard .c-details span {
+  font-weight: 300;
+  font-size: 13px
+}
+
+.dashboard .icon {
+  width: 50px;
+  height: 50px;
+  background-color: #eee;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 39px
+}
+
+.dashboard .badge span {
+  background-color: #fffbec;
+  width: 60px;
+  height: 25px;
+  padding-bottom: 3px;
+  border-radius: 5px;
+  display: flex;
+  color: #fed85d;
+  justify-content: center;
+  align-items: center
+}
+
+.dashboard .progress {
+  height: 10px;
+  border-radius: 10px
+}
+
+.dashboard .progress div {
+  background-color: red
+}
+
+.dashboard .text1 {
+  font-size: 14px;
+  font-weight: 600
+}
+
+.dashboard .text2 {
+  color: #a5aec0
+}
+.dashboard .style-h5 {
+border-bottom: 1px solid black;
+}
+.dashboard .icon {
+width: 50px;
+height: 50px;
+background-color: #eee;
+}
+.dashboard .details-files p {
+      margin-bottom: 3px; 
+      margin-left: 5px;
+}
+  
+.dashboard .pagination {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.dashboard .page-item {
+  margin: 0 5px;
+}
+
+.dashboard .page-link {
+  color: #b67373;;
+  text-decoration: none;
+  border: 2px solid #000;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+}
+
+.dashboard .page-link:hover,
+.dashboard .page-link:focus {
+  background-color: #f0f0f0;
+}
+
+.dashboard .active .page-link {
+  background-color: #b88c8c;
+  color: black;
+}
+
+.dashboard .prev-next .page-link {
+  width: auto;
+  padding: 5px 10px;
+}
+
+.dashboard .navstart{
+margin-top: 10px;
+}
+
+.dashboard .second_card{
+  height: 98.5%;
+}
    

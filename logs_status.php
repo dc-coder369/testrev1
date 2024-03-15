@@ -4,6 +4,20 @@
 
   <?php
 
+  // $date = (isset($_GET['date'])) ? $_GET['date'] : '';
+  // $locked = (isset($_GET['i'])) ? $_GET['i'] : '';
+  // if ($date) {
+  //   $condition = [];
+  //   // $condition = ['record_date' => $date ,'log_type' => 'upload'];
+  // } else {
+  //   $condition = [];
+  // }
+
+
+  // $listArr = $database->select('tab_status_lockupload', "*", $condition, "AND", 'multiple', 'date desc');
+ 
+  $userList = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
+
   $date = (isset($_GET['date'])) ? $_GET['date'] : '';
   $locked = (isset($_GET['i'])) ? $_GET['i'] : '';
   if ($date) {
@@ -12,11 +26,15 @@
   } else {
     $condition = [];
   }
-
-
+  $type = isset($_GET['type']) ? $_GET['type'] : '';
+  // echo $type;
+  $listArray = "";
+ if($type == "daily"){
   $listArr = $database->select('tab_status_lockupload', "*", $condition, "AND", 'multiple', 'date desc');
- 
-  $userList = $database->select('tab_user_details', "*", ['account_type' => 'station'], "AND", 'multiple');
+ }else{
+  $listArr = $database->select(' lock_unlock_periodicals_balance_sheet', "*", $condition, "AND", 'multiple');
+  $listArray = $database->select(' lock_unlock_periodicals_balance_sheet', "*", $condition, "AND", 'multiple');
+ }
   ?>
   <div class="pagetitle">
 
@@ -59,22 +77,37 @@
                   <button type="submit" class="btn btn-info" id="download-files-btn">Download All</button>
                 </form>
               </div> -->
+              <br>
+              <div class="d-flex justify-content-between col-sm-2">
+              <select name="file_type" class="form-control" id="file_type" <?php if($_SESSION['account_type'] == 'revenuecell'): ?>style="display: show;" <?php else : ?>style="display: none;" <?php endif ?> > 
+                 <option value="periodic"  <?php if ($type == 'periodic') : ?> selected <?php endif; ?>>Periodic</option>
+                 <option value="daily"   <?php if ($type == 'daily') : ?> selected <?php endif; ?>>Daily</option>
+              </select>
+              </div> <br>
 
               <div class="d-flex justify-content-between">
-                <h5 class="card-title">Check Lock Status</h5>  
+                <h5 class="card-title">Check Locked Status</h5>  
               </div>
 
                
               <!-- Table with stripped rows -->
               <table class="table datatable table-responsive table-hover">
+              <?php if (!empty($listArr[0]['date'])): ?>
               <colgroup>
                  <col style="width: 250px;"> 
                  <col style="width: 250px;">
                  <col> 
               </colgroup>
+              <?php else: ?>
+                <colgroup>
+                 <col style="width: 150px;"> 
+                 <col style="width: 150px;">
+                 <col> 
+              </colgroup>
+              <?php endif; ?>
                 <thead>
                   <tr>   
-                    <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
+                  <?php if($listArray) :?><th data-type="date" data-format="YYYY/DD/MM">Year</th><th data-type="date" data-format="YYYY/DD/MM">Month</th><th data-type="date" data-format="YYYY/DD/MM">Periodicals</th><?php else : ?><th data-type="date" data-format="YYYY/DD/MM">Record Date</th> <?php endif ?>
                     <th>Lock Status</th>
                     <th>Station Lock/Unlock status</th>
                   </tr>
@@ -83,8 +116,15 @@
                 
                   <?php foreach ($listArr as $list) : $count=0; $unlocked=[];?>
                     <tr id="<?= $list['id']; ?>"> 
-                      <td><?=$list['date'];?></td>
+                    <?php if (!empty($list['date'])): ?>
+                            <td><?= $list['date']; ?></td>
+                          <?php else: ?>
+                            <td><?= $list['year'] ?></td>
+                            <td><?= $list['month']; ?></td>
+                            <td><?= $list['periodicals']; ?></td>
+                          <?php endif; ?>
                       <td><?= ($list['lock_upload'] == '1' || $list['lock_upload'] == 'Locked') ? 'Locked' : 'Unlocked'; ?></td> 
+                      <?php if (!empty($list['date'])): ?>
                       <td value="<?php echo $list['date'];?>">
                         <?php 
                           foreach ($userList as $user) :
@@ -107,6 +147,31 @@
                           <?php endforeach;
                         endif; ?>
                       </td> 
+                      <?php else: ?>
+                        <td value="<?php echo $list['month'];?>">
+                        <?php 
+                          foreach ($userList as $user) :
+                            $fileUpload = $database->select('lock_unlock_periodicals_balance_sheet', "*", [$user['user_code'] => 1,'month' =>$list['month'], 'year' => $list['year'],  'periodicals' => $list['periodicals']], "AND", 'single');
+                            $lock_upload = $database->select('lock_unlock_periodicals_balance_sheet', "*", ['lock_upload' => 1,'month' =>$list['month'], 'year' => $list['year'],  'periodicals' => $list['periodicals']], "AND", 'single');
+                            if (!$fileUpload) :
+                              $count++;  
+                              $unlocked[]=$user['user_code'];
+                            endif;
+                          endforeach; 
+                          $user_count=count($userList); if($count == $user_count) :
+                        ?> 
+                        All station are un-locked 
+                        <?php elseif($count == 0): ?>
+                          All station are locked
+                        <?php else:
+                        foreach ($unlocked as $user) :
+                          ?>
+                            <button class="badge bg-secondary"><i class="bi bi-star me-1"></i>  <?= ($user) ? strtoupper($user) : strtoupper($user); ?></span>
+                          <?php endforeach;
+                        endif; ?>
+                      </td> 
+
+                      <?php endif; ?>
                     </tr> 
                   <?php endforeach; ?>
 
@@ -114,7 +179,7 @@
                 </tbody>
                 <tfoot>
                   <tr>   
-                    <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
+                  <?php if($listArray) :?><th data-type="date" data-format="YYYY/DD/MM">Year</th><th data-type="date" data-format="YYYY/DD/MM">Month</th><th data-type="date" data-format="YYYY/DD/MM">Periodicals</th><?php else : ?><th data-type="date" data-format="YYYY/DD/MM">Record Date</th> <?php endif ?>
                     <th>Lock Status</th> 
                     <th>Station Lock/Unlock status</th>
                   </tr>
@@ -142,3 +207,15 @@
 }
 
 </style>
+<script>
+  
+$("#file_type").on("change", function() {
+    var file_type = $(this).val(); // You can directly use $(this).val() to get the selected value
+    
+    var current = location.origin + location.pathname;
+    var getDate = "";
+    current += '?type=' + file_type;
+
+    location.href = current;
+  });
+</script>
