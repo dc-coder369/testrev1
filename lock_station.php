@@ -216,6 +216,10 @@ function handleInputChange() {
         // getAjaxlockunlock(month, year, periodical_number);
         getAjaxvalue(month, year, periodical_number);
     }
+    else
+    {
+        $("#periodic").empty();
+    }   
 }
 
 $("#month, #year, #periodical_number").on("change", handleInputChange);
@@ -326,6 +330,7 @@ $("#year").change(function () {
         }
     }
     else {
+        
         $("#month").html("<option value=''>Select Month</option>");
         document.getElementById('periodical_number').value='';
     }
@@ -343,7 +348,7 @@ function enablePeriodicalDropdown(month, year,periodicalDropdown) {
             else {
                 periodicalDropdowns.disabled = true;
             }
-        } else {
+        } else { 
             periodicalDropdowns.disabled = true;
         }
 }
