@@ -50,13 +50,12 @@
                                         <div class="col-md-6">
                                             <label for="validationDefault03" class="form-label">Choose a File:</label>
                                             <input type="file" class="form-control" id="file1" name="files[]">
-                                            <span class="form-text text-muted">Upload File of the Selected
-                                                Category</span>
+                                            <span class="form-text text-muted">Upload Consolidated Transactions File</span>
                                         </div>
                                         <div class="col-md-6">
                                             <label for="inputDate" class="form-label">Uploaded By</label>
                                             <input type="text" class="form-control" name="sc_name"
-                                                placeholder="Enter SC name" required>
+                                                placeholder="Enter name" required>
                                         </div>
                                     </div>
                                     <div class="row mt-2">
@@ -79,30 +78,6 @@
                     </div>
                   </div>
                 </div> 
-                <div id="file-upload-area" style="display: block;">
-                  <div class="row mt-2">
-                    <div class="col-md-6">
-                      <label for="validationDefault03" class="form-label">Choose a File:</label>
-                      <input type="file" class="form-control" id="file1" name="files[]">
-                      <span class="form-text text-muted">Upload Consolidated Transactions File</span>
-                    </div>
-                    <div class="col-md-6">
-                      <label for="inputDate" class="form-label">Uploaded By</label>
-                      <input type="text" class="form-control" name="sc_name" placeholder="Enter name" required>
-                    </div>
-                  </div>
-                  <div class="row mt-2">
-                    <div class="col-md-12">
-                      <label for="validationDefault03" class="form-label">Description (Optional):</label>
-                      <textarea class="form-control" name="remark" placeholder="Enter Description"></textarea>
-                    </div> 
-                  </div>
-                  <div class="row mt-2">
-                    <div class="col-12">
-                      <button class="btn btn-primary float-end" type="submit">Upload</button>
-                    </div>
-                  </div>
-                </div>
             </div>
             <?php endif;?>
             <div class="row">
