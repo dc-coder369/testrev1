@@ -10,7 +10,7 @@
   $functiondate = strtotime("23-02-2024");
   
   if (strtotime($date) > $functiondate) {
-    $fileTypesArray=['DER','SPOS','PPOS','URCI','URC','OS','OTH'];
+    $fileTypesArray=['DER','SPOS','PPOS','URCI','URC','OS','OTH', 'PINEPOS'];
     if ($date) {
       $condition = ['record_date' => $date ,'log_type' => 'upload','station_name' => $_SESSION['stationname'],'file_type' => $fileTypesArray];
     } else {
@@ -31,6 +31,10 @@
   
   // echo "<prE>"; print_r($listArr); die; 
   ?>
+  <?php foreach ($checkBoxdailyData as $check){
+    // echo "<pre>";
+    // echo($check);
+  }  ?>
   <div class="pagetitle">
 
     <section class="section">

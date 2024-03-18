@@ -31,7 +31,7 @@ require_once 'actions/db.php';
   'Forfeit Format', 'Ref. Def. CSC / Def. CST',  '1st Periodical', '2nd Periodical', '3rd Periodical', 'Balance Sheet','URC Images' ,'Other'];
 
   $checkBoxdailyData = [
-  'Daily Earning Sheet', 'Paytm POS Transaction', 'SBI POS Transaction','URC','Outstanding','URC Images' ,'Other'];
+  'Daily Earning Sheet', 'Paytm POS Transaction', 'SBI POS Transaction','URC','Outstanding','URC Images', 'Pine Labs POS Transaction' ,'Other'];
 
   $checkBoxArrPeriodicals =[
     'Penalty', 'URC', 'Refund Memo', 'Manual Collection', 'Outstanding',
