@@ -7,7 +7,7 @@
 $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF','DR-CSC-CST'];
 
 $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF','DR-CSC-CST'];
-$periodical_number=['Periodical_1','Periodical_2','Periodical_3','Balance Sheet'];
+$periodical_number=['Periodical 1','Periodical 2','Periodical 3','Balance Sheet'];
 $months = array("January", "February","March","April","May","June","July","August","September","October","November","December");
 $currentYear = date("Y");
 
@@ -94,7 +94,7 @@ $years = range($startYear, $currentYear);
                                         <select class="form-control" name="periodical_number" id="periodical_number" required disabled>
                                             <option value>Select Periodical</option>
                                             <?php foreach ($periodical_number as $number): ?>
-                                                <option value="<?php if($number == "Periodical_1"){echo "Periodical1";}elseif($number == "Periodical_2"){echo "Periodical2";}elseif($number == "Periodical_3"){echo "Periodical3";} else{echo "Balance_Sheet";} ?>"><?php echo $number; ?></option>
+                                                <option value="<?php if($number == "Periodical 1"){echo "Periodical1";}elseif($number == "Periodical 2"){echo "Periodical2";}elseif($number == "Periodical 3"){echo "Periodical3";} else{echo "Balance_Sheet";} ?>"><?php echo $number; ?></option>
                                             <?php endforeach; ?>
                                         </select>
                                     </div>

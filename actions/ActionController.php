@@ -454,7 +454,8 @@ function generateCategoryCodeFromCategoryName($categoryName) {
         "3rd Periodical" => "3rdP",
         "Balance Sheet" => "BS",
         "Cancelled Foil" => "CF",
-        "Ref. Def. CSC / Def. CST" => "DR-CSC-CST"
+        "Ref. Def. CSC / Def. CST" => "DR-CSC-CST",
+        "Pine Labs POS Transaction" => "PINEPOS"
     );
 
     // Check if the category name exists in the mappings array
@@ -579,7 +580,18 @@ if ($type == 'upload-files') {
                 // $folderType = "Data-scdata-Earning-Data-". $recordDate; 
                 $master_id=0;
                 handleFileUpload($database,$_FILES['files'], $folderType, $recordDate, $station_name, $sc_name, $remark , $user_id, $fileType ,$uploaded_for,$upload_type,$table,$master_id,$year,$monthName,$periodical_number);
-                header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
+                // header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
+                if(!$monthName && !$year){
+                    header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit(); 
+                 }else{
+                 //    header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?month=".$monthName."&year=".$year."&periodicals=".$periodical_number);exit(); 
+                  echo '<form id="hiddenForm" action="' . dirname(dirname($_SERVER['PHP_SELF'])) . '/' . $fileNamephp . '" method="post">';
+                  echo '<input type="hidden" name="month" value="' . htmlspecialchars($monthName) . '">';
+                  echo '<input type="hidden" name="year" value="' . htmlspecialchars($year) . '">';
+                  echo '<input type="hidden" name="periodicals" value="' . htmlspecialchars($periodical_number) . '">';
+                  echo '</form>';
+                  echo '<script>document.getElementById("hiddenForm").submit();</script>';
+                 }
             }
         }
     }
