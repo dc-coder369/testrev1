@@ -203,9 +203,13 @@ if ($type == 'logout') {
 
 
 if ($type == 'download-all-latest') {
-    $recordDate = $_POST['hiddenrecordDate2'];
+    $recordDate =(isset($_POST['hiddenrecordDate2'])) ? $_POST['hiddenrecordDate2'] : '';
     $date = new DateTime($recordDate);
+    $year = (isset($_POST['year'])) ? $_POST['year'] : '';
+    $month = (isset($_POST['month'])) ? $_POST['month'] : '';
+    $periodical_number = (isset($_POST['periodical'])) ? $_POST['periodical'] : '';
     // Prepare the SQL statement with placeholders
+    if($recordDate !== ""){
     $sql = "
         SELECT filename, id 
         FROM tab_logs_fileupload 
@@ -218,10 +222,65 @@ if ($type == 'download-all-latest') {
             GROUP BY file_type, upload_by, record_date
         )
     ";
-
+        }
+        elseif($year && $month == "" && $periodical_number == ""){
+            $sql = "
+        SELECT filename, id 
+        FROM tab_logs_fileupload 
+        WHERE log_type = 'upload' 
+        AND year = ? 
+        AND (file_type, upload_by, year, upload_time) IN ( 
+            SELECT file_type, upload_by, year, MAX(upload_time) AS latest_uploaded_at 
+            FROM tab_logs_fileupload 
+            WHERE log_type = 'upload' 
+            GROUP BY file_type, upload_by, year
+        )
+    ";
+        }
+        elseif($month && $periodical_number == "" ){
+            $sql = "
+        SELECT filename, id 
+        FROM tab_logs_fileupload 
+        WHERE log_type = 'upload' 
+        AND year = ? AND month = ?
+        AND (file_type, upload_by, year,month, upload_time) IN ( 
+            SELECT file_type, upload_by, year,month, MAX(upload_time) AS latest_uploaded_at 
+            FROM tab_logs_fileupload 
+            WHERE log_type = 'upload' 
+            GROUP BY file_type, upload_by, year, month
+        )
+    ";
+        }
+        elseif($periodical_number){
+            $sql = "
+        SELECT filename, id 
+        FROM tab_logs_fileupload 
+        WHERE log_type = 'upload' 
+        AND year = ? AND month = ? AND periodical_number = ?
+        AND (file_type, upload_by, year,month, periodical_number, upload_time) IN ( 
+            SELECT file_type, upload_by, year,month,periodical_number, MAX(upload_time) AS latest_uploaded_at 
+            FROM tab_logs_fileupload 
+            WHERE log_type = 'upload' 
+            GROUP BY file_type, upload_by, year, month, periodical_number
+        )
+    ";
+        }
     // Execute the query with the parameter binding
-    $result = $database->querydownload($sql, [$recordDate]);
-
+    if($recordDate !== ""){
+        $result = $database->querydownload($sql, [$recordDate]);
+    }elseif($year && $month == "" && $periodical_number == "" ){
+        $result = $database->querydownload($sql, [$year]);
+    }elseif($month && $periodical_number == "" ){ 
+        $result = $database->querydownload($sql, [$year,$month]);
+    }elseif($periodical_number){ 
+        $result = $database->querydownload($sql, [$year,$month,$periodical_number]);
+    }
+    if(!$result){
+        $response = 'error';
+        $message ="There is no file to download";
+        setErrorMessage($message); 
+        header("Location:".$_SERVER['HTTP_REFERER']);
+     }
     // Initialize the data array
     $data = [];
 
@@ -233,7 +292,7 @@ if ($type == 'download-all-latest') {
     $latestFilename = '';
     $latestIds = [];
     foreach ($result as $file) { 
-         $latestIds[] = $file['id']; 
+         $latestIds[] = $file['id'];
     } 
     if(!$latestIds){
         $response = 'error';
@@ -243,8 +302,11 @@ if ($type == 'download-all-latest') {
      }
     if(!empty($latestIds))
     {
+        if($recordDate !== ""){
         $response = DownloadSelectedFiles($database,$recordDate, 'scdata/', $recordDate . '.zip', 'scdata/' . $recordDate . '.zip', $latestIds);
-
+        }else{
+            $response = DownloadSelectedFiles($database,$year, 'scdata/Periodicals/', $year . '.zip', 'scdata/' . $year . '.zip', $latestIds);
+        }
         echo "Latest Filename: $latestFilename\n";
         echo "Latest IDs: " . implode(', ', $latestIds) . "\n";die; 
     
@@ -537,7 +599,7 @@ if ($type == 'upload-files') {
         $monthName = $_POST['month'];
         $year = $_POST['year'];
         $periodical_number = $_POST['periodical_number'];
-        $recordDate = $_POST['recordDate']; 
+        $recordDate = isset($_POST['recordDate']) ? $_POST['recordDate'] : '';
         $date = new DateTime($recordDate);
         $formattedDate = $date->format('Y-M-d');
         $folderArr = explode('-',$formattedDate); 
@@ -576,7 +638,8 @@ if ($type == 'upload-files') {
                 $folderType = $fileType.'/'. $folderArr[0].'/'.$folderArr[1].'/'.$folderArr[2]; 
                 }
                 else{
-                    $folderType = "20".$year.'/'. $monthName.'/'.$periodical_number; 
+                    // print_r($fileType); die;
+                    $folderType = "20".$year.'/'. $monthName.'/'.$periodical_number.'/'.$fileType; 
                 }
                 // $folderType = "Data-scdata-Earning-Data-". $recordDate; 
                 $master_id=0;
@@ -1062,6 +1125,7 @@ function DownloadAllFiles( $recordDate ,  $baseFolderPath, $zipFileName , $zipFi
 
 function DownloadSelectedFiles($database,$recordDate, $baseFolderPath, $zipFileName, $zipFilePath, $selectedIds)
 {
+   
     try {
         // Check if the base folder exists
         if (!is_dir($baseFolderPath)) {
@@ -1089,9 +1153,9 @@ function DownloadSelectedFiles($database,$recordDate, $baseFolderPath, $zipFileN
             $filePath = $baseFolderPath . $fileInfo['folder_name'] . '/' . $fileInfo['filename'];
             //Folder name contains multiple folders. So taking just main category folder in the zip.
             $tempfolderParts = explode('/', $fileInfo['folder_name']); 
-
+            
             $relativePath = $tempfolderParts[0] . '/' . $fileInfo['filename'];
-
+            
             if ($zip->addFile($filePath, $relativePath) !== true) {
                 setErrorMessage('Error adding file to the zip archive.');
                 return 'error';
@@ -1099,7 +1163,7 @@ function DownloadSelectedFiles($database,$recordDate, $baseFolderPath, $zipFileN
                 // throw new Exception('Error adding file to the zip archive.');
             }
         }
-
+        
         $zip->close();
 
         // Download the zip file
@@ -1110,7 +1174,7 @@ function DownloadSelectedFiles($database,$recordDate, $baseFolderPath, $zipFileN
 
         // Clean up: Remove the created zip file
         unlink($zipFilePath);
-
+        
         return "success";
     } catch (Exception $e) {
 

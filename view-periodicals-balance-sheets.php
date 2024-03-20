@@ -93,10 +93,17 @@
                         <div class="card">
                             <div class="card-body"> 
                              <div class="action-buttons float-end mt-3 d-flex justify-content-around">
-                                <form class="row g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-form">
+                                <form class="g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-form">
                                 <input type="hidden" name="type" value="download-all-files">
                                 <input type="hidden" name="hiddenrecordDate2" value="<?=  date('Y-m-d'); ?>">
                                 <button type="submit" class="btn btn-info" id="download-files-btn">Download All</button>
+                                </form>
+                                <form class="g-3 needs-validation" method="post" action="actions/ActionController.php" id="download-all-files-latest">
+                                    <input type="hidden" name="type" value="download-all-latest"> 
+                                    <input type="hidden" name="year" id="selected_year" value="">
+                                    <input type="hidden" name="month" id="selected_month" value="">
+                                    <input type="hidden" name="periodical" id="selected_periodical" value="">
+                                    <button type="submit" class="btn btn-secondary" id="download-files-btn">Download All Latest</button>
                                 </form>
                             </div>
                                 <div class="d-flex justify-content-between">
@@ -111,29 +118,14 @@
                                             <th>Filename (System)</th>
                                             <th>Filename (Original)</th>
                                             <th>Category</th>
-                                            <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
+                                            <!-- <th data-type="date" data-format="YYYY/DD/MM">Record Date</th> -->
                                             <th>Upload Time</th>
+                                            <th>Y/M/P</th>
                                             <th>Remark</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <!-- <?php foreach ($listArr as $list) :
-                                            $path = 'actions/scdata/' . $list['folder_name'] . '/' . $list['filename'];
-                                            $list['path']=$path;
-                                        ?>
-                                        <tr id="<?= $list['id']; ?>">
-                                            <td><?= $list['Sc_Name']; ?></td>
-                                            <td><?= strtoupper($list['station_name']); ?></td>
-                                            <td><a href="#"
-                                                    onclick="SingleDownload(<?= htmlspecialchars(json_encode($list), ENT_QUOTES, 'UTF-8'); ?>)"><?= $list['filename']; ?></a>
-                                            </td>
-                                            <td><?= $list['original_filename']; ?></td>
-                                            <td><?= $list['file_type']; ?></td>
-                                            <td><?= $list['record_date']; ?></td>
-                                            <td><?= $list['upload_time']; ?></td>
-                                            <td><?= $list['Remark']; ?></td>
-                                        </tr>
-                                        <?php endforeach; ?> -->
+                                        
                                     </tbody>
                                     <tfoot>
                                         <tr>
@@ -142,8 +134,9 @@
                                             <th>Filename (System)</th>
                                             <th>Filename (Original)</th>
                                             <th>Category</th>
-                                            <th data-type="date" data-format="YYYY/DD/MM">Record Date</th>
+                                            <!-- <th data-type="date" data-format="YYYY/DD/MM">Record Date</th> -->
                                             <th>Upload Time</th>
+                                            <th>Y/M/P</th>
                                             <th>Remark</th>
                                         </tr>
                                     </tfoot>
@@ -159,6 +152,12 @@
 <?php include 'layouts/footer.php'; ?>
 
 <script>
+// JavaScript function to update the value of the hidden input field with the selected year
+// document.getElementById('year').addEventListener('change', function() {
+//     var selectedYear = this.value;
+//     document.getElementById('selected_year').value = selectedYear;
+// });
+
 $("#year").change(function () {
     var date = new Date();
     var selectedmonth = parseInt(document.getElementById("year").value); 
@@ -334,6 +333,7 @@ $("#month").on("change", function() {
     if (month == '' || year == '' || periodical_number == '') {
         $("#display-lock-unlock-button-area").hide();
     }
+    document.getElementById('selected_month').value = month;
 });
 $("#year").on("change", function() {
     var month = document.getElementById("month").value;
@@ -350,6 +350,8 @@ $("#year").on("change", function() {
         if (month == '' || year == '' || periodical_number == '') {
         $("#display-lock-unlock-button-area").hide();
     }
+    var validyear = '20'+year;
+    document.getElementById('selected_year').value = validyear;
 });
 $("#periodical_number").on("change", function() {
     var month = document.getElementById("month").value;
@@ -363,10 +365,11 @@ $("#periodical_number").on("change", function() {
     if (month == '' || year == '' || periodical_number == '') {
         $("#display-lock-unlock-button-area").hide();
     }
+    document.getElementById('selected_periodical').value = periodical_number;
 });
 function handleInputChange() {
     var month = document.getElementById("month").value;
-  console.log('month'+month);
+//   console.log('month'+month);
     
     // var year = document.getElementById("year").value;
     // var periodical_number = document.getElementById("periodical_number").value;
@@ -421,6 +424,9 @@ $.ajax({
     
     success: function(response) {
         // Clear existing table rows
+        $('.datatable').DataTable().destroy(); // Destroy the existing DataTable instance
+        var table = $('.datatable').DataTable(); // Reinitialize DataTable
+        table.clear().draw();
         $("tbody").empty();
         if(response.error === "No data found for the specified date"){
             $("tbody").html("<tr><td colspan='8' style='text-align: center;'>No data available in table</td></tr>");
@@ -440,16 +446,46 @@ $.ajax({
                 ")'>" + record.filename + "</a></td>");
             newRow.append("<td>" + record.original_filename + "</td>");
             newRow.append("<td>" + record.file_type + "</td>");
-            newRow.append("<td>" + record.record_date + "</td>");
+            // newRow.append("<td>" + record.record_date + "</td>");
             newRow.append("<td>" + record.upload_time + "</td>");
+            newRow.append("<td>" + record.year + '/' + record.month + '/' + record.periodical_number + "</td>");
             newRow.append("<td>" + record.Remark + "</td>");
 
             // Append the new row to the table body
-            $("tbody").append(newRow);
+            table.row.add(newRow).draw();
             $("#download-all-files-form").append('<input type="hidden" name="fileid[]" value="'+ record.id +'">');
         });
       }
     },
+            //    success: function(response) {
+            //         // Clear existing table rows
+            //         var table = $('.datatable').DataTable();
+            //     table.clear().draw();
+
+            //     if (response.error === "No data found for the specified date") {
+            //         $("tbody").html("<tr><td colspan='8' style='text-align: center;'>No data available in table</td></tr>");
+            //     } else {
+            //         response.forEach(function(record) {
+            //             var path = 'actions/scdata/Periodicals/' + record.folder_name + '/' + record.filename;
+            //             record.path = path;
+                        
+            //             var newRow = $("<tr id =" + record.id + ">");
+            //             newRow.append("<td>" + record.Sc_Name + "</td>");
+            //             newRow.append("<td>" + record.uploaded_for + "</td>");
+            //             newRow.append("<td><a href='#' onclick='SingleDownload(" + JSON.stringify(record) + ")'>" + record.filename + "</a></td>");
+            //             newRow.append("<td>" + record.original_filename + "</td>");
+            //             newRow.append("<td>" + record.file_type + "</td>");
+            //             newRow.append("<td>" + record.upload_time + "</td>");
+            //             newRow.append("<td>" + record.year + '/' + record.month + '/' + record.periodical_number + "</td>");
+            //             newRow.append("<td>" + record.Remark + "</td>");
+
+            //             table.row.add(newRow).draw();
+                        
+            //             // Append hidden input field to the form
+            //             $("#fileids").append('<input type="hidden" name="fileid[]" value="' + record.id + '">');
+            //         });
+            //     }
+            // },
 
     error: function(error) {
 // Clear existing table rows
