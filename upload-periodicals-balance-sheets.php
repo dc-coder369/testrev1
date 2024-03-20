@@ -209,6 +209,7 @@ $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF',
                                         <th>Filename (Original)</th>
                                         <th>Category</th>
                                         <th>Upload Time</th>
+                                        <th>Y/M/P</th>
                                         <th>Remark</th>
                                     </tr>
                                 </thead>
@@ -222,6 +223,7 @@ $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF',
                                         <th>Filename (Original)</th>
                                         <th>Category</th>
                                         <th>Upload Time</th>
+                                        <th>Y/M/P</th>
                                         <th>Remark</th>
                                     </tr>
                                 </tfoot>
@@ -241,6 +243,75 @@ $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF',
 <script>
 console.log("Asd")
 var today = "<?= date('Y-m-d'); ?>";
+
+$(document).ready(function() {
+    var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    var valueofmonth = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    var selectedMonth = "<?= isset($_POST['month']) ? $_POST['month'] : '';?>";
+    if (selectedMonth !== "") {
+    var monthDropdown = $("#month");
+    monthDropdown.prop('disabled', false);
+    for (var i = 0; i < months.length; i++) {
+        monthDropdown.append("<option value='" + valueofmonth[i] + "'>" + months[i] + "</option>");
+    }
+    monthDropdown.val(selectedMonth);
+}
+    var selectedperiodicals = "<?= isset($_POST['periodicals']) ? $_POST['periodicals'] : ''; ?>";
+
+    if (selectedperiodicals !== "") {
+        var periodicalDropdowns = document.getElementById("periodical_number");
+        periodicalDropdowns.disabled = false;
+
+        // Loop through options to find and set the selected value
+        for (var i = 0; i < periodicalDropdowns.options.length; i++) {
+            if (periodicalDropdowns.options[i].value === selectedperiodicals) {
+                periodicalDropdowns.selectedIndex = i;
+                break;
+            }
+        }
+    }
+    if(selectedMonth !== "" && selectedperiodicals !== ""){
+        var yearVal = parseInt(document.getElementById("year").value);
+        getAjaxlockunlock(selectedMonth, yearVal, selectedperiodicals);
+        getAjaxvalue(selectedMonth, yearVal, selectedperiodicals);
+        getHideFiletypePNumber(selectedperiodicals);
+    }
+});
+
+function getHideFiletypePNumber(selectedperiodicals){
+    $('#fileTypea option[value="1st Periodical"]').hide();
+        $('#fileTypea option[value="2nd Periodical"]').hide();
+        $('#fileTypea option[value="3rd Periodical"]').hide();
+        $('#fileTypea option[value="Balance Sheet"]').hide();
+
+        // Show all other options
+        $('#fileTypea option').not(
+            '[value="1st Periodical"], [value="2nd Periodical"], [value="3rd Periodical"], [value="Balance Sheet"]'
+            ).show();
+
+
+        // Show the required options based on periodical_number
+        switch (selectedperiodicals) {
+            case 'Periodical1':
+                $('#fileTypea option[value="1st Periodical"]').show();
+                break;
+            case 'Periodical2':
+                $('#fileTypea option[value="2nd Periodical"]').show();
+                break;
+            case 'Periodical3':
+                $('#fileTypea option[value="3rd Periodical"]').show();
+                break;
+            case 'Balance_Sheet':
+                $('#fileTypea option[value="Balance Sheet"]').show();
+                break;
+            default:
+                // Show all options if none of the above conditions are met
+                $('#fileTypea option').show();
+                break;
+        }
+    }
+
+
 
 function getAjaxlockunlock(monthVal, yearVal, periodicalsVal) {
     var user_code = "<?= $_SESSION['user_code'] ?>";
@@ -346,36 +417,7 @@ $("#periodical_number").on("change", function() {
     if (year != '' && month != '') {
         getAjaxlockunlock(month, year, periodical_number);
     }
-    $('#fileTypea option[value="1st Periodical"]').hide();
-    $('#fileTypea option[value="2nd Periodical"]').hide();
-    $('#fileTypea option[value="3rd Periodical"]').hide();
-    $('#fileTypea option[value="Balance Sheet"]').hide();
-
-    // Show all other options
-    $('#fileTypea option').not(
-        '[value="1st Periodical"], [value="2nd Periodical"], [value="3rd Periodical"], [value="Balance Sheet"]'
-        ).show();
-
-
-    // Show the required options based on periodical_number
-    switch (periodical_number) {
-        case 'Periodical1':
-            $('#fileTypea option[value="1st Periodical"]').show();
-            break;
-        case 'Periodical2':
-            $('#fileTypea option[value="2nd Periodical"]').show();
-            break;
-        case 'Periodical3':
-            $('#fileTypea option[value="3rd Periodical"]').show();
-            break;
-        case 'Balance_Sheet':
-            $('#fileTypea option[value="Balance Sheet"]').show();
-            break;
-        default:
-            // Show all options if none of the above conditions are met
-            $('#fileTypea option').show();
-            break;
-    }
+    getHideFiletypePNumber(periodical_number);
 });
 
 $("#month").on("change", function() {
@@ -422,6 +464,9 @@ function getAjaxvalue(month, year, periodicalsVal) {
 
         success: function(response) {
             // Clear existing table rows
+            $('.datatable').DataTable().destroy(); // Destroy the existing DataTable instance
+            var table = $('.datatable').DataTable(); // Reinitialize DataTable
+            table.clear().draw();
             $("tbody").empty();
             if (response.error === "No data found for the specified date") {
                 $("tbody").html(
@@ -437,22 +482,53 @@ function getAjaxvalue(month, year, periodicalsVal) {
 
                     newRow.append("<td>" + record.Sc_Name + "</td>");
                     newRow.append("<td>" + record.uploaded_for + "</td>");
-                    newRow.append("<td><a href='#' onclick='SingleDownload(" + JSON.stringify(
-                            record) +
-                        ")'>" + record.filename + "</a></td>");
+                    newRow.append("<td><a href='#' onclick='SingleDownload(" + JSON.stringify(record) +")'>" + record.filename + "</a></td>");
                     newRow.append("<td>" + record.original_filename + "</td>");
                     newRow.append("<td>" + record.file_type + "</td>");
                     // newRow.append("<td>" + record.record_date + "</td>");
                     newRow.append("<td>" + record.upload_time + "</td>");
+                    newRow.append("<td>" + record.year + '/' + record.month + '/' + record.periodical_number + "</td>");
                     newRow.append("<td>" + record.Remark + "</td>");
 
                     // Append the new row to the table body
-                    $("tbody").append(newRow);
+                    table.row.add(newRow).draw();
                     $("#fileids").append('<input type="hidden" name="fileid[]" value="' + record
                         .id + '">');
                 });
             }
         },
+
+        // success: function(response) {
+        //         // Clear existing table rows
+        //         var table = $('.datatable').DataTable();
+        //         table.clear().draw();
+
+        //         if (response.error === "No data found for the specified date") {
+        //             $("tbody").html("<tr><td colspan='8' style='text-align: center;'>No data available in table</td></tr>");
+        //         } else {
+        //             response.forEach(function(record) {
+        //                 var path = 'scdata/Periodicals/' + record.folder_name + '/' + record.filename;
+        //                 record.path = path;
+                        
+        //                 // Create a new row and append data
+        //                 var newRow = $("<tr id =" + record.id + ">");
+        //                 newRow.append("<td>" + record.Sc_Name + "</td>");
+        //                 newRow.append("<td>" + record.uploaded_for + "</td>");
+        //                 newRow.append("<td><a href='#' onclick='SingleDownload(" + JSON.stringify(record) + ")'>" + record.filename + "</a></td>");
+        //                 newRow.append("<td>" + record.original_filename + "</td>");
+        //                 newRow.append("<td>" + record.file_type + "</td>");
+        //                 newRow.append("<td>" + record.upload_time + "</td>");
+        //                 newRow.append("<td>" + record.year + '/' + record.month + '/' + record.periodical_number + "</td>");
+        //                 newRow.append("<td>" + record.Remark + "</td>");
+
+        //                 // Append the new row to the table body
+        //                 table.row.add(newRow).draw();
+                        
+        //                 // Append hidden input field to the form
+        //                 $("#fileids").append('<input type="hidden" name="fileid[]" value="' + record.id + '">');
+        //             });
+        //         }
+        //     },
 
 
         error: function(error) {
