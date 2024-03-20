@@ -517,7 +517,9 @@ function generateCategoryCodeFromCategoryName($categoryName) {
         "3rd Periodical" => "3rdP",
         "Balance Sheet" => "BS",
         "Cancelled Foil" => "CF",
-        "Ref. Def. CSC / Def. CST" => "DR-CSC-CST",
+        // "Ref. Def. CSC / Def. CST" => "DR-CSC-CST",
+        "Ref. Def. CSC" => "DR-CSC",
+        "Def. CST" => "DR-CST",
         "Pine Labs POS Transaction" => "PINEPOS"
     );
 
@@ -596,9 +598,9 @@ if ($type == 'upload-files') {
 
     //check the seesion while uploading file.
     if(isset($_SESSION['user_code'])) { 
-        $monthName = $_POST['month'];
-        $year = $_POST['year'];
-        $periodical_number = $_POST['periodical_number'];
+        $monthName = isset($_POST['month']) ? $_POST['month'] : '';
+        $year = isset($_POST['year']) ? $_POST['year'] : '';
+        $periodical_number = isset($_POST['periodical_number']) ? $_POST['periodical_number'] : '';
         $recordDate = isset($_POST['recordDate']) ? $_POST['recordDate'] : '';
         $date = new DateTime($recordDate);
         $formattedDate = $date->format('Y-M-d');
@@ -613,6 +615,10 @@ if ($type == 'upload-files') {
         
         $httpRefer = basename($_SERVER['HTTP_REFERER']);  
         $fileNamephp = parse_url($httpRefer, PHP_URL_PATH);
+        if($_POST['fileType'] == 'Select file type'){
+            setErrorMessage("You must select a file type to upload."); 
+            header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) ."/".$fileNamephp. "?date=".$recordDate."&i=".$result['lock_upload']);exit();
+        }
         if($_POST['fileType'] == 'pos-failed')
         {
             $fileType = 'FTX' ; 
@@ -624,7 +630,9 @@ if ($type == 'upload-files') {
             $table = 'tab_logs_fileupload';
         }
         $result = $database->select('tab_status_lockupload', "*", ['date' => $recordDate], "AND", 'single');
-        // echo "<pre>"; print_r($_SERVER); die; 
+         if(isset($result['lock_upload']) != 1 || isset($result['lock_upload']) != '1' ){
+            $result['lock_upload'] = "";
+         }
         if ($_SESSION['user_code'] != 'revenuecell' && ($result['lock_upload'] == 1 || $result['lock_upload'] == '1' )){ 
             setErrorMessage("You are not allowed to upload Images or Csv."); 
             header("Location: " . dirname(dirname($_SERVER['PHP_SELF'])) . "/scdata-list.php?date=".$recordDate."&i=".$result['lock_upload']);
@@ -928,7 +936,7 @@ function resetSessionMessages()
                     $prefixedFileName = $_SESSION['user_code'] . "_" . $fileType . "_" . $uniqueId . "." . $fileExtension;
                     }
                     else{
-                        $prefixedFileName = $_SESSION['user_code'] . "_" . "Periodicals" ."_". $monthName . "-" . $year .  "_" . $periodical_number ."_".$fileType . "." . $fileExtension;
+                        $prefixedFileName = $_SESSION['user_code'] . "_" . $periodical_number ."_".$fileType ."_". $monthName . "-" . $year  . "." . $fileExtension;
                     }
                 }
             
@@ -939,7 +947,7 @@ function resetSessionMessages()
                 $newFileName = getUniqueFileName($targetDir,$prefixedFileName);
 
                 $targetFile = $targetDir . handleDuplicateFile($newFileName, $targetDir);  
-                
+                // print_r($newFileName);die;
                 if (move_uploaded_file($fileArray['tmp_name'][$i], $targetFile)) {
                 
                     $filesize = round($_FILES['files']['size'][$i] / 1024 / 1024, 2);
