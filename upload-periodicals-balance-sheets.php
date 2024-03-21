@@ -279,14 +279,15 @@ $(document).ready(function() {
 });
 
 function getHideFiletypePNumber(selectedperiodicals){
-    $('#fileTypea option[value="1st Periodical"]').hide();
+        $('#fileTypea option[value="1st Periodical"]').hide();
         $('#fileTypea option[value="2nd Periodical"]').hide();
         $('#fileTypea option[value="3rd Periodical"]').hide();
         $('#fileTypea option[value="Balance Sheet"]').hide();
+        $('#fileTypea option[value="Forfeit Format"]').hide();
 
         // Show all other options
         $('#fileTypea option').not(
-            '[value="1st Periodical"], [value="2nd Periodical"], [value="3rd Periodical"], [value="Balance Sheet"]'
+            '[value="1st Periodical"], [value="2nd Periodical"], [value="3rd Periodical"], [value="Balance Sheet"], [value="Forfeit Format"]'
             ).show();
 
 
@@ -303,6 +304,16 @@ function getHideFiletypePNumber(selectedperiodicals){
                 break;
             case 'Balance_Sheet':
                 $('#fileTypea option[value="Balance Sheet"]').show();
+                $('#fileTypea option[value="Forfeit Format"]').show();
+                $('#fileTypea option[value="Other"]').show();
+                $('#fileTypea option[value="Cancelled Foil"]').hide();
+                $('#fileTypea option[value="Outstanding"]').hide();
+                $('#fileTypea option[value="Refund Memo"]').hide();
+                $('#fileTypea option[value="URC"]').hide();
+                $('#fileTypea option[value="Penalty"]').hide();
+                $('#fileTypea option[value="Manual Collection"]').hide();
+                $('#fileTypea option[value="Ref. Def. CSC"]').hide();
+                $('#fileTypea option[value="Def. CST"]').hide();
                 break;
             default:
                 // Show all options if none of the above conditions are met
@@ -496,6 +507,7 @@ function getAjaxvalue(month, year, periodicalsVal) {
                         .id + '">');
                 });
             }
+         
         },
 
         // success: function(response) {
