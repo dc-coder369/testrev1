@@ -43,7 +43,7 @@ $fileTypesArray=['PR','URC','RM','OS','MC','FOF','1stP','2ndP','3rdP','BS','CF',
    function generateYearOptions($selectedYear) {
     $currentYear = date('Y');
     $options = '<option value="">Select Year</option>';
-    for ($year = 2023; $year <= $currentYear; $year++) {
+    for ($year = 2024; $year <= $currentYear; $year++) {
         $lastTwoDigits = substr($year, -2);
         $selected = ($selectedYear == $lastTwoDigits) ? 'selected' : ''; // Check if $selectedYear matches the current $lastTwoDigits
         $options .= "<option value=\"$lastTwoDigits\" $selected>$year</option>";

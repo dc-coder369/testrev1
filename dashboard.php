@@ -18,7 +18,7 @@
     <h3> Welcome, <?= strtoupper($_SESSION['username']) ;?> </h3>
     <div class="container mt-5 mb-3">
     <div class="row">
-        <div class="col-md-4">
+        <!-- <div class="col-md-4">
             <div class="card p-3 mb-2">
                 <div class="d-flex justify-content-between">
                     <div class="d-flex flex-row align-items-center">
@@ -87,60 +87,42 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="col-md-4">
-            <div class="card p-3 mb-2 second_card" >
-                <div class="d-flex justify-content-between">
-                    <div class="d-flex flex-row align-items-center">
-                        <div class="icon d-none"> <i class="bx bxl-dribbble"></i></div>
-                        <div class="ms-2 c-details">
-                            <h6 class="mb-0">GMRC</h6> <span>4 days ago</span>
-                        </div>
+            <div class="card p-3 mb-2 second_card">
+                <div class="mt-4">
+                   <div class = "style-h5">
+                      <h4 class="heading">New Features </h4>
                     </div>
-                    <div class="badge"> <span>Features</span> </div>
-                </div>
-                <!-- <div class="mt-5">
-                    <h3 class="heading">Junior Product<br>Designer-Singapore</h3> -->
-                    <div class="mt-4">
-                        <div class = "style-h5">
-                           <h4 class="heading">Let's See New Features<br> & Version </h4>
+
+                    <div class="files-records" <?php if(count($listFeatures) == 0): ?> style="display:none" <?php endif ?>>
+                      <?php
+                      // Get the last 5 items from $listFeatures
+                      $lastFiveFeatures = array_slice($listFeatures, -5);
+
+                      // Loop through the last 5 items
+                      foreach ($lastFiveFeatures as $key => $feature) :
+                          // Generate a unique ID for each eye icon
+                          $eyeIconId = 'eyeIcon_' . $key;
+                      ?>
+                      <div class="d-flex mt-3">
+                        <div class="icon d-none">
+                           <i class="bi bi-file-earmark-text"></i>
                         </div>
-                        <div class="files-records" <?php if(count($listFeatures) == 0): ?> style="display:none" <?php endif ?>>
-                              <div class="d-flex mt-3">
-                                <div class="icon d-none">
-                                  <i class="bi bi-file-earmark-text"></i>
+                        <div class="details-files">
+                            <h5><?= $feature['title']; ?></h5>
+                            <div class="d-flex">
+                                <div class="description">
+                                    <p><?= substr($feature['description'], 0, 65); echo "...."; ?></p>
                                 </div>
-                                <div class="details-files">
-                                  <h5><?= $listFeatures[0]['title']; ?></h5>
-                                  <div class="d-flex">
-                                      <div class="description">
-                                        <p><?= substr($listFeatures[0]['description'],0,65); echo "....";?></p>
-                                      </div>
-                                      <div class="icon">
-                                          <i id="b6" class="bi bi-eye-fill"></i>
-                                      </div>
-                                  </div>
+                                <div class="icon">
+                                    <i id="<?= $eyeIconId ?>" class="bi bi-eye-fill" ></i>
                                 </div>
-                              </div>
+                            </div>
                         </div>
-                        <div class="files-records" <?php if(count($listFeatures) == 0): ?> style="display:none" <?php endif ?>>
-                              <div class="d-flex mt-3">
-                                <div class="icon d-none">
-                                  <i class="bi bi-file-earmark-text"></i>
-                                </div>
-                                <div class="details-files">
-                                  <h5><?= $listFeatures[1]['title']; ?></h5>
-                                  <div class="d-flex">
-                                      <div class="description">
-                                        <p><?= substr($listFeatures[1]['description'],0,65); echo "....";?></p>
-                                      </div>
-                                      <div class="icon">
-                                          <i id="b7" class="bi bi-eye-fill"></i>
-                                      </div>
-                                  </div>
-                                </div>
-                              </div>
-                        </div>
+                      </div>
+                      <?php endforeach; ?>
+                  </div>
                 </div>
             </div>
         </div>
@@ -229,16 +211,13 @@
 <?php include 'layouts/footer.php'; ?>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-  document.getElementById('b7').onclick = function(){
-	swal.fire({
-		title: "<?= $listFeatures[1]['title']; ?>",
-		text: "<?= $listFeatures[1]['description']; ?>"
-	});
-};
-document.getElementById('b6').onclick = function(){
-	swal.fire({
-		title: "<?= $listFeatures[0]['title']; ?>",
-		text: "<?= $listFeatures[0]['description']; ?>"
-	});
-};
+// Bind click event to each eye icon dynamically
+<?php foreach ($lastFiveFeatures as $key => $feature) : ?>
+    document.getElementById('eyeIcon_<?= $key ?>').onclick = function() {
+        swal.fire({
+            title: "<?= $feature['title']; ?>",
+            text: "<?= $feature['description']; ?>"
+        });
+    };
+    <?php endforeach; ?>
 </script>
