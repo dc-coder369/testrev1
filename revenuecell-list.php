@@ -10,7 +10,7 @@
   $functiondate = strtotime("23-02-2024");
   
   if (strtotime($date) > $functiondate) {
-    $fileTypesArray=['DER','SPOS','PPOS','URCI','URC','OS','OTH'];
+    $fileTypesArray=['DER','SPOS','PPOS','URCI','URC','OS','OTH','PINEPOS'];
     if ($date) {
       $condition = ['record_date' => $date, 'log_type' => 'upload','file_type' => $fileTypesArray];
     } else {
