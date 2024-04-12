@@ -14,7 +14,7 @@
     if ($date) {
       $condition = ['record_date' => $date ,'log_type' => 'upload','station_name' => $_SESSION['stationname'],'file_type' => $fileTypesArray];
     } else {
-       $condition = [];
+       $condition = ['log_type' => 'upload','station_name' => $_SESSION['stationname']];
     }
   }
   else
@@ -22,7 +22,7 @@
     if ($date) {
       $condition = ['record_date' => $date ,'log_type' => 'upload','station_name' => $_SESSION['stationname']];
     } else {
-       $condition = [];
+       $condition = ['log_type' => 'upload','station_name' => $_SESSION['stationname']];
     }
   }
   
@@ -239,7 +239,7 @@
       method: "GET", // Use GET or POST depending on your API requirements
       data: {
         "type": "local_unlock_status",
-        date: val
+        date: val,
       }, // Pass any data you need to send to the server
       dataType: "json", // Specify the expected data type
       success: function(response) {
