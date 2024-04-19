@@ -14,7 +14,8 @@
     if ($date) {
       $condition = ['record_date' => $date ,'log_type' => 'upload','station_name' => $_SESSION['stationname'],'file_type' => $fileTypesArray];
     } else {
-       $condition = ['log_type' => 'upload','station_name' => $_SESSION['stationname']];
+      $todays_date = date("Y/m/d");
+       $condition = [ 'record_date' => $todays_date , 'log_type' => 'upload','station_name' => $_SESSION['stationname']];
     }
   }
   else
@@ -22,7 +23,8 @@
     if ($date) {
       $condition = ['record_date' => $date ,'log_type' => 'upload','station_name' => $_SESSION['stationname']];
     } else {
-       $condition = ['log_type' => 'upload','station_name' => $_SESSION['stationname']];
+      $todays_date = date("Y/m/d");
+       $condition = [ 'record_date' => $todays_date , 'log_type' => 'upload','station_name' => $_SESSION['stationname']];
     }
   }
   
